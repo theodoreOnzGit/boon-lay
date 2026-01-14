@@ -39,11 +39,26 @@ pub mod magnesium;
 /// this is for aluminium isotopes 
 pub mod aluminium;
 
+/// this is for silicon isotopes 
+pub mod silicon;
+
 /// this is for phosphorous isotopes 
 pub mod phosphorous;
 
 /// this is for sulfur isotopes 
 pub mod sulfur;
+
+/// this is for chlorine isotopes 
+pub mod chlorine;
+
+/// this is for argon isotopes 
+pub mod argon;
+
+/// this is for potassium isotopes 
+pub mod potassium;
+
+/// this is for calcium isotopes
+pub mod calcium;
 
 // notes, code was done from vibe coding using AI, then 
 // modified
