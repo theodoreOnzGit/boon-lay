@@ -4,7 +4,7 @@
 
 #[test]
 fn hydrogen_nuclide_test() {
-use crate::decay_xml_info_serde::SerdeNuclideVec;
+    use crate::decay_xml_info_serde::SerdeNuclideVec;
     let xml = r#"
 <nuclides>
   <nuclide name="H1" reactions="1">
@@ -38,8 +38,4 @@ use crate::decay_xml_info_serde::SerdeNuclideVec;
 
     let nuclides: SerdeNuclideVec = serde_xml_rs::from_str(xml).unwrap();
     dbg!("{:#?}", nuclides);
-
-
-
-    todo!();
 }

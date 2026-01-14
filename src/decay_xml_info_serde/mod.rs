@@ -1,7 +1,15 @@
 /// this is for hydrogen isotopes 
 pub mod hydrogen;
 
+/// this is for helium isotopes 
+pub mod helium;
 
+
+/// this is for lithium isotopes 
+pub mod lithium;
+
+// notes, code was done from vibe coding using AI, then 
+// modified
 use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct SerdeNuclideVec {
@@ -39,7 +47,7 @@ pub struct RawReactionData {
     #[serde(rename = "@Q")]
     q: f64,
     #[serde(rename = "@target")]
-    target: String,
+    target: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -47,7 +55,7 @@ pub struct RawDecayData {
     #[serde(rename = "@type")]
     decay_type: String,
     #[serde(rename = "@target")]
-    target: String,
+    target: Option<String>,
     #[serde(rename = "@branching_ratio")]
     branching_ratio: f64,
 }
@@ -58,7 +66,7 @@ pub struct RawSourceData {
     source_type: String,
     #[serde(rename = "@particle")]
     particle: String,
-    //parameters: Parameters,
+    parameters: Parameters,
 }
 
 #[derive(Debug, Deserialize)]
