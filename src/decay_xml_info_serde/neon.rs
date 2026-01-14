@@ -10,103 +10,124 @@ fn serde_nuclide_test() {
     use crate::decay_xml_info_serde::SerdeNuclideVec;
     let xml = r#"
     <nuclides>
-          <nuclide name="F14" half_life="5.0007e-22" decay_modes="1" decay_energy="1560000.0" reactions="0">
-    <decay type="p" target="O13" branching_ratio="1.0"/>
+          <nuclide name="Ne16" half_life="3.73524e-21" decay_modes="1" decay_energy="1411000.0" reactions="0">
+    <decay type="p,p" target="O14" branching_ratio="1.0"/>
   </nuclide>
-  <nuclide name="F15" half_life="4.557e-22" decay_modes="1" decay_energy="1516490.0" reactions="0">
-    <decay type="p" target="O14" branching_ratio="1.0"/>
+  <nuclide name="Ne17" half_life="0.1092" decay_modes="1" decay_energy="10431696.0" reactions="0">
+    <decay type="ec/beta+,p" target="O16" branching_ratio="1.0"/>
   </nuclide>
-  <nuclide name="F16" half_life="1.13925e-20" decay_modes="1" decay_energy="535680.0" reactions="0">
-    <decay type="p" target="O15" branching_ratio="1.0"/>
-  </nuclide>
-  <nuclide name="F17" half_life="64.49" decay_modes="1" decay_energy="1759269.2" reactions="0">
-    <decay type="ec/beta+" target="O17" branching_ratio="1.0"/>
+  <nuclide name="Ne18" half_life="1.672" decay_modes="1" decay_energy="2604134.0" reactions="0">
+    <decay type="ec/beta+" target="F18" branching_ratio="1.0"/>
+    <source type="discrete" particle="photon">
+      <parameters>677.0 510998.9 659250.0 1041520.0 1080510.0 1700720.0 1.6630619777164982e-06 0.8287926014771553 0.0005596583096626353 0.03246018196043284 9.369094665463375e-06 0.00022303420044333166</parameters>
+    </source>
     <source type="discrete" particle="positron">
-      <parameters>1890070.0 2760800.0 1.8271828298215338e-06 0.010748134293067845</parameters>
+      <parameters>2744890.0 3365160.0 3404150.0 4445700.0 0.0007793760164190772 8.705795928085437e-06 0.03192125173631327 0.38185279187426174</parameters>
     </source>
     <source type="discrete" particle="electron">
-      <parameters>520.0 1.4703093024485143e-05</parameters>
-    </source>
-    <source type="discrete" particle="photon">
-      <parameters>525.0 510998.9 1.2274906769398133e-07 0.021468538399659575</parameters>
+      <parameters>660.0 0.00012391460964114145</parameters>
     </source>
   </nuclide>
-  <nuclide name="F18" half_life="6586.2" decay_modes="1" decay_energy="1230197.1" reactions="0">
-    <decay type="ec/beta+" target="O18" branching_ratio="1.0"/>
+  <nuclide name="Ne19" half_life="17.22" decay_modes="1" decay_energy="1983181.9" reactions="0">
+    <decay type="ec/beta+" target="F19" branching_ratio="1.0"/>
+    <source type="discrete" particle="photon">
+      <parameters>677.0 109894.0 197142.0 510998.9 1356843.0 1444085.0 1553970.0 5.041796411888944e-07 4.830293941184288e-06 8.292004599033027e-07 0.08042612497604731 8.292004599033027e-07 4.347264547065859e-08 2.2943896220625368e-08</parameters>
+    </source>
     <source type="discrete" particle="positron">
-      <parameters>1655300.0 0.00010524235227596267</parameters>
+      <parameters>1684362.0 3128506.0 3238400.0 8.936043791190933e-07 4.830293941184288e-06 0.040247619215927885</parameters>
     </source>
     <source type="discrete" particle="electron">
-      <parameters>520.0 3.233088211282006e-06</parameters>
-    </source>
-    <source type="discrete" particle="photon">
-      <parameters>525.0 510998.9 2.6991506088216148e-08 0.0002036018547130774</parameters>
+      <parameters>660.0 3.75663955035856e-05</parameters>
     </source>
   </nuclide>
-  <nuclide name="F19" reactions="4">
-    <reaction type="(n,2n)" Q="-10431000.0" target="F18"/>
-    <reaction type="(n,gamma)" Q="6601300.0" target="F20"/>
-    <reaction type="(n,p)" Q="-4036000.0" target="O19"/>
-    <reaction type="(n,a)" Q="-1523000.0" target="N16"/>
+  <nuclide name="Ne20" reactions="4">
+    <reaction type="(n,2n)" Q="-16957400.0" target="Ne19"/>
+    <reaction type="(n,gamma)" Q="6669040.0" target="Ne21"/>
+    <reaction type="(n,p)" Q="-6334240.0" target="F20"/>
+    <reaction type="(n,a)" Q="-603283.0" target="O17"/>
   </nuclide>
-  <nuclide name="F20" half_life="11.163" decay_modes="1" decay_energy="4115248.0" reactions="0">
-    <decay type="beta-" target="Ne20" branching_ratio="1.0"/>
+  <nuclide name="Ne21" reactions="5">
+    <reaction type="(n,2n)" Q="-6669040.0" target="Ne20"/>
+    <reaction type="(n,3n)" Q="-23626500.0" target="Ne19"/>
+    <reaction type="(n,gamma)" Q="10364300.0" target="Ne22"/>
+    <reaction type="(n,p)" Q="-4901810.0" target="F21"/>
+    <reaction type="(n,a)" Q="778193.0" target="O18"/>
+  </nuclide>
+  <nuclide name="Ne22" reactions="5">
+    <reaction type="(n,2n)" Q="-10364300.0" target="Ne21"/>
+    <reaction type="(n,3n)" Q="-17033300.0" target="Ne20"/>
+    <reaction type="(n,gamma)" Q="5200650.0" target="Ne23"/>
+    <reaction type="(n,p)" Q="-10035700.0" target="F22"/>
+    <reaction type="(n,a)" Q="-5711160.0" target="O19"/>
+  </nuclide>
+  <nuclide name="Ne23" half_life="37.24" decay_modes="1" decay_energy="2066016.1" reactions="0">
+    <decay type="beta-" target="Na23" branching_ratio="1.0"/>
     <source type="discrete" particle="photon">
-      <parameters>848.0 849.0 1633602.0 3332540.0 4965850.0 1.4045764828051245e-09 2.809152965610249e-09 0.0620929602099832 5.0916481954596e-06 3.104663533816829e-08</parameters>
+      <parameters>1041.0 439986.0 1635960.0 2075910.0 2541920.0 2981850.0 4.824849736858078e-09 0.006142281675208967 0.00018612974773360506 1.8799104521094112e-05 5.0255031888073364e-06 7.072930413876992e-06</parameters>
     </source>
     <source type="discrete" particle="electron">
-      <parameters>820.0 1632735.0 1633602.0 2058020.0 3331673.0 3332540.0 4964984.0 4965850.0 5390856.0 7024530.0 2.3053778419589948e-07 2.3409045067764607e-07 1.2977425268756603e-08 5.0916481954596e-06 5.60081301500556e-12 3.156821881184952e-13 2.3719629398360573e-14 1.3132726748045187e-15 0.062087868561787746 3.1046635338168295e-07</parameters>
+      <parameters>990.0 438913.9 439986.0 1393750.0 1634888.0 1635960.0 2074838.0 2075910.0 2299800.0 2540848.0 2541920.0 2980778.0 2981850.0 3935819.0 4375810.0 3.086327163722068e-07 3.144848217706991e-07 1.9278779493978384e-08 1.2098433602684328e-05 7.817449404811412e-10 4.795260690860867e-11 6.109708969355586e-11 3.747789477325321e-12 0.00020474272250696555 1.045304663271926e-11 6.386912002655244e-13 1.1578387087516636e-11 7.094149205118624e-13 0.005956151927475362 0.012452080123378178</parameters>
     </source>
   </nuclide>
-  <nuclide name="F21" half_life="4.158" decay_modes="1" decay_energy="2900338.3" reactions="0">
-    <decay type="beta-" target="Ne21" branching_ratio="1.0"/>
+  <nuclide name="Ne24" half_life="202.8" decay_modes="1" decay_energy="872557.39" reactions="0">
+    <decay type="beta-" target="Na24_m1" branching_ratio="1.0"/>
     <source type="discrete" particle="photon">
-      <parameters>350725.0 1395131.0 1745800.0 1890400.0 1989000.0 2779400.0 2793940.0 3384600.0 3533200.0 3735200.0 3883900.0 4174100.0 4333520.0 4525840.0 4684270.0 0.1492816979777371 0.02557194652848319 0.0012897938705276487 2.9856339595547425e-06 3.284197355510217e-07 2.642286054205947e-06 2.9856339595547425e-06 5.821986221131748e-07 4.86658335407423e-06 4.150031203781092e-06 1.5973141683617873e-06 5.3293566178052154e-05 7.926858162617841e-05 1.5823859985640135e-05 4.672517146703172e-05</parameters>
+      <parameters>874410.0 0.00027001295495185243</parameters>
     </source>
     <source type="discrete" particle="electron">
-      <parameters>999640.1 1158360.0 1799240.0 1948610.0 3938290.0 5333473.0 5684200.0 0.00012836058899258243 7.168188735949409e-05 6.501380481442487e-06 5.001061908801914e-06 0.026839032243903604 0.12352622914740727 0.016003398108166124</parameters>
+      <parameters>1119970.0 1994393.0 0.00027001295495185243 0.003147872550767799</parameters>
     </source>
   </nuclide>
-  <nuclide name="F22" half_life="4.23" decay_modes="1" decay_energy="7536090.0" reactions="0">
-    <decay type="beta-" target="Ne22" branching_ratio="1.0"/>
+  <nuclide name="Ne25" half_life="0.602" decay_modes="1" decay_energy="3588564.9" reactions="0">
+    <decay type="beta-" target="Na25" branching_ratio="1.0"/>
     <source type="discrete" particle="photon">
-      <parameters>1274537.0 1431100.0 1900000.0 2082600.0 2166100.0 2283900.0 2987700.0 3983500.0 4247900.0 4366100.0 0.16386458169265844 0.0004752072869087094 0.014256218607261284 0.13420509240628725 0.1009405823226776 0.00835709366632558 0.011470520718486091 0.0019663749803119014 0.0016386458169265845 0.018516697731270404</parameters>
+      <parameters>89530.0 979770.0 1069300.0 1132800.0 2112500.0 2202000.0 3220000.0 3599000.0 3688000.0 1.098442541950478 0.20840471707865463 0.02694293027425701 0.0046056291067106 0.007138725115401429 0.01266548004345415 0.006102458566391545 0.00253309600869083 0.01105350985610544</parameters>
     </source>
     <source type="discrete" particle="electron">
-      <parameters>3395900.0 3477300.0 4471500.0 5176600.0 5294300.0 7460300.0 9543423.0 0.014256218607261284 0.002441582267220611 0.011470520718486091 0.026873791397595985 0.0883230095323429 0.0050798020324724115 0.001392848944387597</parameters>
+      <parameters>2961000.0 3563000.0 5048000.0 6180680.0 7160470.0 0.006102458566391545 0.0138168873201318 0.02417955281023065 0.22452441895214176 0.8819779739350799</parameters>
     </source>
   </nuclide>
-  <nuclide name="F23" half_life="2.23" decay_modes="1" decay_energy="5655862.0" reactions="0">
-    <decay type="beta-" target="Ne23" branching_ratio="1.0"/>
+  <nuclide name="Ne26" half_life="0.197" decay_modes="2" decay_energy="3484880.54" reactions="0">
+    <decay type="beta-" target="Na26" branching_ratio="0.9987"/>
+    <decay type="beta-,n" target="Na25" branching_ratio="0.0013"/>
+    <source type="discrete" particle="photon">
+      <parameters>1041.0 82500.0 151100.0 233600.0 0.005905529534044168 2.9805589134084554 0.12842574665196954 0.12842574665196954</parameters>
+    </source>
+    <source type="discrete" particle="electron">
+      <parameters>990.0 81427.9 82500.0 7106400.0 7257500.0 0.3777609911888418 0.3859823500827321 0.02372763484073409 0.2568514933039391 3.2616621135993364</parameters>
+    </source>
   </nuclide>
-  <nuclide name="F24" half_life="0.39" decay_modes="2" decay_energy="8681425.19" reactions="0">
-    <decay type="beta-" target="Ne24" branching_ratio="0.941"/>
-    <decay type="beta-,n" target="Ne23" branching_ratio="0.059"/>
+  <nuclide name="Ne27" half_life="0.032" decay_modes="2" decay_energy="8289504.75" reactions="0">
+    <decay type="beta-" target="Na27" branching_ratio="0.98"/>
+    <decay type="beta-,n" target="Na26" branching_ratio="0.02"/>
   </nuclide>
-  <nuclide name="F25" half_life="0.05" decay_modes="2" decay_energy="8657085.9" reactions="0">
-    <decay type="beta-" target="Ne25" branching_ratio="0.86"/>
-    <decay type="beta-,n" target="Ne24" branching_ratio="0.14"/>
+  <nuclide name="Ne28" half_life="0.0189" decay_modes="3" decay_energy="7724240.0" reactions="0">
+    <decay type="beta-" target="Na28" branching_ratio="0.845"/>
+    <decay type="beta-,n" target="Na27" branching_ratio="0.119"/>
+    <decay type="beta-,n,n" target="Na26" branching_ratio="0.036"/>
   </nuclide>
-  <nuclide name="F26" half_life="0.0096" decay_modes="2" decay_energy="11805584.6" reactions="0">
-    <decay type="beta-" target="Ne26" branching_ratio="0.89"/>
-    <decay type="beta-,n" target="Ne25" branching_ratio="0.11"/>
+  <nuclide name="Ne29" half_life="0.0148" decay_modes="3" decay_energy="9715809.0" reactions="0">
+    <decay type="beta-" target="Na29" branching_ratio="0.68"/>
+    <decay type="beta-,n" target="Na28" branching_ratio="0.28"/>
+    <decay type="beta-,n,n" target="Na27" branching_ratio="0.04"/>
   </nuclide>
-  <nuclide name="F27" half_life="0.005" decay_modes="2" decay_energy="12183691.0" reactions="0">
-    <decay type="beta-" target="Ne27" branching_ratio="0.23"/>
-    <decay type="beta-,n" target="Ne26" branching_ratio="0.77"/>
+  <nuclide name="Ne30" half_life="0.0073" decay_modes="3" decay_energy="9473072.2" reactions="0">
+    <decay type="beta-" target="Na30" branching_ratio="0.781"/>
+    <decay type="beta-,n" target="Na29" branching_ratio="0.13"/>
+    <decay type="beta-,n,n" target="Na28" branching_ratio="0.089"/>
   </nuclide>
-  <nuclide name="F28" half_life="4e-08" decay_modes="1" decay_energy="14533334.0" reactions="0">
-    <decay type="beta-" target="Ne28" branching_ratio="1.0"/>
+  <nuclide name="Ne31" half_life="0.0034" decay_modes="1" decay_energy="12187174.0" reactions="0">
+    <decay type="beta-" target="Na31" branching_ratio="1.0"/>
   </nuclide>
-  <nuclide name="F29" half_life="0.0025" decay_modes="1" decay_energy="15735750.0" reactions="0">
-    <decay type="beta-,n" target="Ne28" branching_ratio="1.0"/>
+  <nuclide name="Ne32" half_life="0.0035" decay_modes="1" decay_energy="12126000.0" reactions="0">
+    <decay type="beta-" target="Na32" branching_ratio="1.0"/>
   </nuclide>
-  <nuclide name="F30" half_life="2.6e-07" decay_modes="1" decay_energy="377000.0" reactions="0">
-    <decay type="n" target="F29" branching_ratio="1.0"/>
+  <nuclide name="Ne33" half_life="1.8e-07" decay_modes="1" decay_energy="927000.0" reactions="0">
+    <decay type="n" target="Ne32" branching_ratio="1.0"/>
   </nuclide>
-  <nuclide name="F31" half_life="2.5e-07" decay_modes="2" decay_energy="17793166.0" reactions="0">
-    <decay type="beta-" target="Ne31" branching_ratio="0.5"/>
-    <decay type="beta-,n" target="Ne30" branching_ratio="0.5"/>
+  <nuclide name="Ne34" half_life="6e-08" decay_modes="2" decay_energy="14744334.0" reactions="0">
+    <decay type="beta-" target="Na34" branching_ratio="0.5"/>
+    <decay type="beta-,n" target="Na33" branching_ratio="0.5"/>
   </nuclide>
 </nuclides>
   "#;
