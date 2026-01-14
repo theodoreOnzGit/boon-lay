@@ -17,4 +17,9 @@ were xml files. However, the files are huge, about 27 Mb in size.
 
 Not only that, there are thousands of Nuclides. How will this work?
 
+We are going to use serde-xml-rs. 
+
+This will take the Nuclide, then access the data library. 
+The serde should return the nuclide decay data.
+
 
