@@ -10,6 +10,9 @@ pub mod lithium;
 /// this is for beryllium isotopes 
 pub mod beryllium;
 
+/// this is for boron isotopes 
+pub mod boron;
+
 // notes, code was done from vibe coding using AI, then 
 // modified
 use serde::Deserialize;

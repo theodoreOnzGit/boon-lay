@@ -4,7 +4,7 @@
 
 
 #[test]
-fn lithium_nuclide_test() {
+fn serde_nuclide_test() {
     use crate::decay_xml_info_serde::SerdeNuclideVec;
     let xml = r#"
     <nuclides>
