@@ -28,6 +28,11 @@ pub mod fluorine;
 
 /// this is for neon isotopes 
 pub mod neon;
+
+
+/// this is for sodium isotopes 
+pub mod sodium;
+
 // notes, code was done from vibe coding using AI, then 
 // modified
 use serde::Deserialize;
@@ -59,6 +64,7 @@ pub struct SerdeNuclideData {
     #[serde(default)]
     source: Vec<RawSourceData>,
 }
+
 
 #[derive(Debug, Deserialize)]
 pub struct RawReactionData {
