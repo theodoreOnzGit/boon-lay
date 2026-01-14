@@ -12,3 +12,16 @@ mod tests {
         assert_eq!(result, 4);
     }
 }
+
+/// prelude is here for easy imports
+pub mod prelude;
+
+/// import the nuclide enum
+pub use fission_yields_data::prelude::Nuclide;
+/// import all nuclides into this crate
+pub use fission_yields_data::prelude::Nuclide::*;
+
+#[test]
+pub fn test_1(){
+    let seaborgium = Nuclide::Sg264;
+}

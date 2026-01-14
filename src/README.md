@@ -1,0 +1,20 @@
+# Intro 
+
+The purpose of this crate is to build libraries for a neutron bombardment 
+simulator for nuclei where the user can watch nuclei transmute and decay 
+in real-time.
+
+Basically, it also holds all the libraries necessary for decay simulation,
+neutron capture and so on. 
+
+I intend to build a simulator that demonstrates these libraries as a testing 
+ground.
+
+# Decay Data 
+
+Decay data was provided by OpenMC depletion chains based on endfb 8. These 
+were xml files. However, the files are huge, about 27 Mb in size.
+
+Not only that, there are thousands of Nuclides. How will this work?
+
+

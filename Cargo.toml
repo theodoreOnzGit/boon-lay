@@ -6,3 +6,5 @@ edition = "2024"
 [dependencies]
 fission-yields-data = "0.1.2"
 uom = "0.37.0"
+serde = {version = "1.0.228",  features = ["derive"]}
+serde-xml-rs = "0.8.2"
