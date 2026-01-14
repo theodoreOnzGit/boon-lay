@@ -1,7 +1,3 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 
 /// prelude is here for easy imports
 pub mod prelude;

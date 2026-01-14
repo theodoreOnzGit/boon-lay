@@ -244,6 +244,8 @@ pub struct RawSourceData {
     source_type: String,
     #[serde(rename = "@particle")]
     particle: String,
+    #[serde(rename = "@interpolation")]
+    interpolation: Option<String>,
     parameters: Parameters,
 }
 
