@@ -36,6 +36,8 @@ pub mod sodium;
 /// this is for magnesium isotopes 
 pub mod magnesium;
 
+/// this is for aluminium isotopes 
+pub mod aluminium;
 
 // notes, code was done from vibe coding using AI, then 
 // modified
