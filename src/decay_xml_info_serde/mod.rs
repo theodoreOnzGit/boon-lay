@@ -39,6 +39,12 @@ pub mod magnesium;
 /// this is for aluminium isotopes 
 pub mod aluminium;
 
+/// this is for phosphorous isotopes 
+pub mod phosphorous;
+
+/// this is for sulfur isotopes 
+pub mod sulfur;
+
 // notes, code was done from vibe coding using AI, then 
 // modified
 use serde::Deserialize;
