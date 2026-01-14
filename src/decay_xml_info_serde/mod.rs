@@ -33,6 +33,10 @@ pub mod neon;
 /// this is for sodium isotopes 
 pub mod sodium;
 
+/// this is for magnesium isotopes 
+pub mod magnesium;
+
+
 // notes, code was done from vibe coding using AI, then 
 // modified
 use serde::Deserialize;
