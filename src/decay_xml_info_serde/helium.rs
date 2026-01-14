@@ -3,11 +3,13 @@
 // modified
 
 
+#[cfg(test)]
+mod parsing_tests {
 #[test]
-fn serde_nuclide_test() {
-    use crate::decay_xml_info_serde::SerdeNuclideVec;
-    let xml = 
-        r#"
+    fn serde_nuclide_test() {
+        use crate::decay_xml_info_serde::SerdeNuclideVec;
+        let xml = 
+            r#"
 <nuclides>
      <nuclide name="He3" reactions="2">
     <reaction type="(n,gamma)" Q="20577780.0" target="He4"/>
@@ -45,7 +47,8 @@ fn serde_nuclide_test() {
 </nuclides>
   "#;
 
-    let nuclides: SerdeNuclideVec = serde_xml_rs::from_str(xml).unwrap();
-    dbg!("{:#?}", nuclides);
+        let nuclides: SerdeNuclideVec = serde_xml_rs::from_str(xml).unwrap();
+        dbg!("{:#?}", nuclides);
 
+    }
 }

@@ -13,6 +13,21 @@ pub mod beryllium;
 /// this is for boron isotopes 
 pub mod boron;
 
+
+/// this is for carbon isotopes 
+pub mod carbon;
+
+/// this is for nitrogen isotopes 
+pub mod nitrogen;
+
+/// this is for oxygen isotopes 
+pub mod oxygen;
+
+/// this is for fluorine isotopes 
+pub mod fluorine;
+
+/// this is for neon isotopes 
+pub mod neon;
 // notes, code was done from vibe coding using AI, then 
 // modified
 use serde::Deserialize;
