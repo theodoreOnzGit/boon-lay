@@ -4,9 +4,11 @@ pub mod hydrogen;
 /// this is for helium isotopes 
 pub mod helium;
 
-
 /// this is for lithium isotopes 
 pub mod lithium;
+
+/// this is for beryllium isotopes 
+pub mod beryllium;
 
 // notes, code was done from vibe coding using AI, then 
 // modified
