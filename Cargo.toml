@@ -1,0 +1,8 @@
+[package]
+name = "boon-lay"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+fission-yields-data = "0.1.2"
+uom = "0.37.0"
