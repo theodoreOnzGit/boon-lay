@@ -70,6 +70,26 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             if let Some(stripped) = nuclide_string.strip_suffix("Ru103_m") {
                 nuclide_string = format!("{stripped}Ru103");
             }
+            // Na24m, just replace with Na24 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Na24_m") {
+                nuclide_string = format!("{stripped}Na24");
+            }
+            // Cs125m, just replace with Cs125 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Cs125_m") {
+                nuclide_string = format!("{stripped}Cs125");
+            }
+            // Cs144m, just replace with Cs144 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Cs144_m") {
+                nuclide_string = format!("{stripped}Cs144");
+            }
+            // Fr214m, just replace with Fr214 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Fr214_m") {
+                nuclide_string = format!("{stripped}Fr214");
+            }
+            // Fr218m, just replace with Fr218 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Fr218_m") {
+                nuclide_string = format!("{stripped}Fr218");
+            }
 
         }
 
