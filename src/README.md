@@ -23,3 +23,19 @@ This will take the Nuclide, then access the data library.
 The serde should return the nuclide decay data.
 
 
+# Scattering Data and Cross Sections
+
+For diffusion, in neutron theory,
+
+D = 1/(3 Sigma Transport) = 1/(3 * Sigma scatter *(1-mubar))
+
+mubar is average scattering cosine.
+
+But for isotropic scattering, mubar = 0
+
+
+
+D = 1/(3 Sigma Scatter) 
+
+This helps me correlate diffusion coefficient vs macroscopic 
+scattering cross section
