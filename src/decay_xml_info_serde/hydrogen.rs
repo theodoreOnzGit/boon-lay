@@ -6,6 +6,8 @@ use crate::decay_xml_info_serde::SerdeNuclideVec;
 
 #[cfg(test)]
 mod parsing_tests {
+    use crate::decay_xml_info_serde::hydrogen::get_hydrogen_xml_serde_data;
+
 
     #[test]
     fn serde_nuclide_test() {
@@ -42,8 +44,9 @@ mod parsing_tests {
     "#;
 
         let nuclides: SerdeNuclideVec = serde_xml_rs::from_str(xml).unwrap();
-        dbg!("{:#?}", nuclides);
+        assert_eq!(nuclides,get_hydrogen_xml_serde_data());
     }
+    
 }
 
 
