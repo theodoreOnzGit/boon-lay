@@ -16,13 +16,58 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
 
         // first convert nuclide name to string 
 
-        let nuclide_string: String = value.name;
+        let mut nuclide_string: String = value.name;
+
+        {
+            // this part modifies the isomer nuclides 
+            // in the string from OpenMC style to my Nuclide style 
+            //
+            // I denote the first isomer as m 
+            // OpenMC denotes it as m1 
+            //
+            // likewise, 
+            //
+            // OpenMC calls the second isomer m2 
+            //
+            // OpenMC => fission-yields-data library
+            // m1 => m 
+            // m2 => m1 
+            // m3 => m2
+            //
+            //
+
+            // first, if i detect m1, change it to m 
+
+            if let Some(stripped) = nuclide_string.strip_suffix("m1") {
+                nuclide_string = format!("{stripped}m");
+            }
+
+            // second, if i detect m2, change it to m1
+            if let Some(stripped) = nuclide_string.strip_suffix("m2") {
+                nuclide_string = format!("{stripped}m1");
+            }
+
+            // third, if i detect m3, change it to m2
+            if let Some(stripped) = nuclide_string.strip_suffix("m3") {
+                nuclide_string = format!("{stripped}m2");
+            }
+
+            // third, if i detect m4, change it to m3
+            if let Some(stripped) = nuclide_string.strip_suffix("m4") {
+                nuclide_string = format!("{stripped}m3");
+            }
+
+            // thus, openmc conversion should be okay
+
+        }
+
 
         let nuclide_enum: Nuclide = 
             parse_nuclide_allow_underscore_isomer(&nuclide_string)
             .unwrap();
 
 
+        // final step, finish the data
         let data = NuclideReactionAndDecayData {
             nuclide: nuclide_enum,
         };
