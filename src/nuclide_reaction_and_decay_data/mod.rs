@@ -70,6 +70,7 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             if let Some(stripped) = nuclide_string.strip_suffix("Ru103_m") {
                 nuclide_string = format!("{stripped}Ru103");
             }
+            // alkali metals
             // Na24m, just replace with Na24 for the time being
             if let Some(stripped) = nuclide_string.strip_suffix("Na24_m") {
                 nuclide_string = format!("{stripped}Na24");
@@ -109,6 +110,12 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             // Fr218m, just replace with Fr218 for the time being
             if let Some(stripped) = nuclide_string.strip_suffix("Fr218_m") {
                 nuclide_string = format!("{stripped}Fr218");
+            }
+
+            // Alkaline earth metals
+            // Be5, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Be5") {
+                nuclide_string = format!("{stripped}K35");
             }
 
         }
