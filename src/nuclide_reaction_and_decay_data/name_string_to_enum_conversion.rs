@@ -17,6 +17,12 @@ fn test_ruthenium_parsing(){
 
         let nuclide_data: NuclideReactionAndDecayData 
             = raw_nuclide_data.try_into().unwrap();
+        // now, in doing this test, I realise the nuclear isomers have 
+        // different naming conventions
+        //
+        // for example m1 is meant by m in my crate
+        //
+        // the openmc part m1, needs to be replaced by m
 
         nuclide_vec_processed.push(nuclide_data);
         dbg!(&nuclide_vec_processed);
