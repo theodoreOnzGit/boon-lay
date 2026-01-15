@@ -175,15 +175,17 @@ pub mod hassium;
 pub mod meitnerium;
 pub mod darmstadtium;
 pub mod roentgenium;
-pub mod copernicium;
-pub mod nihonium;
-pub mod flerovium;
-
-// 115–118
-pub mod moscovium;
-pub mod livermorium;
-pub mod tennessine;
-pub mod oganesson;
+// note, these modules do not have 
+// data from openmc serde data
+// pub mod copernicium;
+// pub mod nihonium;
+// pub mod flerovium;
+// 
+// // 115–118
+// pub mod moscovium;
+// pub mod livermorium;
+// pub mod tennessine;
+// pub mod oganesson;
 
 // notes, code was done from vibe coding using AI, then 
 // modified
