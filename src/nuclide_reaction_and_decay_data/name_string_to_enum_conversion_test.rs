@@ -24,8 +24,8 @@ fn test_ruthenium_parsing(){
         //
         // the openmc part m1, needs to be replaced by m
 
+        dbg!(&nuclide_data);
         nuclide_vec_processed.push(nuclide_data);
-        dbg!(&nuclide_vec_processed);
         
     }
 }

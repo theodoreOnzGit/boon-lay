@@ -59,6 +59,18 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
 
             // thus, openmc conversion should be okay
 
+            dbg!(&nuclide_string);
+
+        }
+
+        // these are missing nuclides I need to add in 
+        {
+
+            // Ru103m, just replace with Ru103 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ru103_m") {
+                nuclide_string = format!("{stripped}Ru103");
+            }
+
         }
 
 
