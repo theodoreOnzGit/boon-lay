@@ -193,14 +193,14 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize,PartialEq)]
 pub struct SerdeNuclideVec {
     #[serde(rename = "nuclide")]
-    items: Vec<SerdeNuclideData>,
+    pub nuclides: Vec<SerdeNuclideData>,
 }
 
 #[derive(Debug, Deserialize,PartialEq)]
 pub struct SerdeNuclideData {
     // Attributes on <nuclide ...>
     #[serde(rename = "@name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "@half_life")]
     half_life: Option<f64>,
     #[serde(rename = "@decay_modes")]
