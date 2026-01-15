@@ -33,4 +33,4 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
 /// First, to convert the nuclide name, I want to convert it to an enum
 /// this will require long match statements
 #[cfg(test)]
-pub mod name_string_to_enum_conversion;
+pub mod name_string_to_enum_conversion_test;
