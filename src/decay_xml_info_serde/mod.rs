@@ -190,13 +190,13 @@ pub mod roentgenium;
 // notes, code was done from vibe coding using AI, then 
 // modified
 use serde::Deserialize;
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize,PartialEq)]
 pub struct SerdeNuclideVec {
     #[serde(rename = "nuclide")]
     items: Vec<SerdeNuclideData>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize,PartialEq)]
 pub struct SerdeNuclideData {
     // Attributes on <nuclide ...>
     #[serde(rename = "@name")]
@@ -220,7 +220,7 @@ pub struct SerdeNuclideData {
 }
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize,PartialEq)]
 pub struct RawReactionData {
     #[serde(rename = "@type")]
     reaction_type: String,
@@ -230,7 +230,7 @@ pub struct RawReactionData {
     target: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize,PartialEq)]
 pub struct RawDecayData {
     #[serde(rename = "@type")]
     decay_type: String,
@@ -240,7 +240,7 @@ pub struct RawDecayData {
     branching_ratio: f64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize,PartialEq)]
 pub struct RawSourceData {
     #[serde(rename = "@type")]
     source_type: String,
@@ -251,7 +251,7 @@ pub struct RawSourceData {
     parameters: Parameters,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize,PartialEq)]
 pub struct Parameters {
     // Text content inside <parameters>...</parameters>
     #[serde(rename = "$value")]
