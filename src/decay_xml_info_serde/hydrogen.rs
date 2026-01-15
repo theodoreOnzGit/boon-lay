@@ -1,13 +1,13 @@
 // notes, code was done from vibe coding using AI, then 
 // modified
 
-use crate::decay_xml_info_serde::SerdeNuclideVec;
 
 
 #[cfg(test)]
 mod parsing_tests {
 
 
+    use crate::decay_xml_info_serde::hydrogen::get_hydrogen_xml_serde_data;
     #[test]
     fn serde_nuclide_test() {
         use crate::decay_xml_info_serde::SerdeNuclideVec;
@@ -43,13 +43,13 @@ mod parsing_tests {
     "#;
 
         let nuclides: SerdeNuclideVec = serde_xml_rs::from_str(xml).unwrap();
-        use crate::decay_xml_info_serde::hydrogen::get_hydrogen_xml_serde_data;
         assert_eq!(nuclides,get_hydrogen_xml_serde_data());
     }
     
 }
 
 
+use crate::decay_xml_info_serde::SerdeNuclideVec;
 pub fn get_hydrogen_xml_serde_data() -> SerdeNuclideVec {
     let xml = r#"
     <nuclides>
