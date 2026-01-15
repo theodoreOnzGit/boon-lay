@@ -29,3 +29,35 @@ fn test_ruthenium_parsing(){
         
     }
 }
+
+// from chat gpt 5, the type that accepts m1 to translate to m 
+//
+//
+// use std::str::FromStr;
+// 
+// // Normalise: remove underscores; map ...m1 -> ...m
+// fn normalize_isomer_token(s: &str) -> String {
+//     let mut t = s.replace('_', "");
+//     if let Some(stripped) = t.strip_suffix("m1") {
+//         t = format!("{stripped}m");
+//     }
+//     t
+// }
+// 
+// pub fn parse_nuclide_with_m1_alias(s: &str) -> Option<Nuclide> {
+//     let s = s.trim();
+// 
+//     match s {
+//         // If it contains an underscore or ends with m1, normalise then parse
+//         u if u.contains('_') || u.ends_with("m1") => {
+//             let norm = normalize_isomer_token(u);
+//             Nuclide::from_str(&norm).ok()
+//         }
+//         // Try exact parse first
+//         _ => Nuclide::from_str(s).ok().or_else(|| {
+//             // Fallback: try normalised (handles cases where only m1 alias appears)
+//             let norm = normalize_isomer_token(s);
+//             Nuclide::from_str(&norm).ok()
+//         }),
+//     }
+// }
