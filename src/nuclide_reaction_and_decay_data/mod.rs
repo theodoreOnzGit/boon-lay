@@ -131,6 +131,9 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
 #[cfg(test)]
 pub mod alkali_metals_and_hydrogen;
 
+/// this contains tests for alkaline_earth metals 
+#[cfg(test)]
+pub mod alkaline_earth_metals;
 
 /// this contains tests for transition metals
 #[cfg(test)]
