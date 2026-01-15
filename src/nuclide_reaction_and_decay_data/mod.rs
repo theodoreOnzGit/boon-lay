@@ -87,7 +87,11 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
         return data;
     }
 }
-/// First, to convert the nuclide name, I want to convert it to an enum
-/// this will require long match statements
+/// this contains tests for alkali metals and hydrogen
 #[cfg(test)]
-pub mod name_string_to_enum_conversion_test;
+pub mod alkali_metals_and_hydrogen;
+
+
+/// this contains tests for transition metals
+#[cfg(test)]
+pub mod transition_metals_test;
