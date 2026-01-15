@@ -74,6 +74,26 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             if let Some(stripped) = nuclide_string.strip_suffix("Na24_m") {
                 nuclide_string = format!("{stripped}Na24");
             }
+            // Na36, just replace with Na35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Na36") {
+                nuclide_string = format!("{stripped}Na35");
+            }
+            // K32, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("K32") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // K33, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("K33") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // K34, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("K34") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Rb71, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Rb71") {
+                nuclide_string = format!("{stripped}K35");
+            }
             // Cs125m, just replace with Cs125 for the time being
             if let Some(stripped) = nuclide_string.strip_suffix("Cs125_m") {
                 nuclide_string = format!("{stripped}Cs125");
