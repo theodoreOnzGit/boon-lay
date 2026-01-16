@@ -225,7 +225,7 @@ pub struct RawReactionData {
     #[serde(rename = "@type")]
     reaction_type: String,
     #[serde(rename = "@Q")]
-    q: f64,
+    q_value_electronvolt: f64,
     #[serde(rename = "@target")]
     target: Option<String>,
 }
