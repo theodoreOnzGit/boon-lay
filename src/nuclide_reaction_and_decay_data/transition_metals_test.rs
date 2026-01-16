@@ -277,6 +277,54 @@ fn test_ruthenium_parsing(){
         
     }
 }
+// chat gpt vibe coded, saves time!
+#[test]
+fn test_transition_metals_parsing_y_to_hg_excl_ru() {
+    // Collect SerdeNuclideVec for each transition metal from Y to Hg, excluding Ru.
+    // Adjust module/function names if your crate uses different identifiers.
+    let all_raw_data: Vec<SerdeNuclideVec> = vec![
+        yttrium::get_yttrium_xml_serde_data(),
+        zirconium::get_zirconium_xml_serde_data(),
+        niobium::get_niobium_xml_serde_data(),
+        molybdenum::get_molybdenum_xml_serde_data(),
+        technetium::get_technetium_xml_serde_data(),
+        // ruthenium excluded
+        rhodium::get_rhodium_xml_serde_data(),
+        palladium::get_palladium_xml_serde_data(),
+        silver::get_silver_xml_serde_data(),
+        cadmium::get_cadmium_xml_serde_data(),
+        hafnium::get_hafnium_xml_serde_data(),
+        tantalum::get_tantalum_xml_serde_data(),
+        tungsten::get_tungsten_xml_serde_data(),
+        rhenium::get_rhenium_xml_serde_data(),
+        osmium::get_osmium_xml_serde_data(),
+        iridium::get_iridium_xml_serde_data(),
+        platinum::get_platinum_xml_serde_data(),
+        gold::get_gold_xml_serde_data(),
+        mercury::get_mercury_xml_serde_data(),
+    ];
+
+    let mut nuclide_vec_processed: Vec<NuclideReactionAndDecayData> = vec![];
+
+    for element_raw_data in all_raw_data {
+        let nuclide_vec_raw = element_raw_data.nuclides;
+
+        for raw_nuclide_data in nuclide_vec_raw {
+            let nuclide_data: NuclideReactionAndDecayData = raw_nuclide_data
+                .try_into()
+                .expect("Failed to convert raw nuclide data into processed type");
+
+            // If you need to normalize isomer naming (e.g., OpenMC m1 -> crate m),
+            // you can add that normalization here before pushing to processed vec.
+
+            dbg!(&nuclide_data);
+            nuclide_vec_processed.push(nuclide_data);
+        }
+    }
+
+    // Optionally, add assertions here about nuclide_vec_processed if needed
+    // e.g., assert!(!nuclide_vec_processed.is_empty());
+}
 
 // from chat gpt 5, the type that accepts m1 to translate to m 
 //

@@ -361,3 +361,11 @@ pub mod lanthanides_test;
 /// this contains tests for actinides
 #[cfg(test)]
 pub mod actinides_test;
+
+/// this contains tests for the carbon group 
+#[cfg(test)]
+pub mod carbon_group_test;
+
+/// this contains tests for the boron group
+#[cfg(test)]
+pub mod boron_group_test;
