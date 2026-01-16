@@ -198,3 +198,23 @@ pub mod noble_gases_test;
 /// this contains tests for halogens
 #[cfg(test)]
 pub mod halogens_test;
+
+
+/// this contains tests for chalcogens
+#[cfg(test)]
+pub mod chalcogens_test;
+
+
+/// this contains tests for pnictogens
+#[cfg(test)]
+pub mod pnictogens_test;
+
+
+/// this contains tests for lanthanides
+#[cfg(test)]
+pub mod lanthanides_test;
+
+
+/// this contains tests for actinides
+#[cfg(test)]
+pub mod actinides_test;
