@@ -700,3 +700,7 @@ pub mod carbon_group_test;
 /// this contains tests for the boron group
 #[cfg(test)]
 pub mod boron_group_test;
+
+/// this contains tests for heavier than actinides 
+#[cfg(test)]
+pub mod heavier_than_actinides;
