@@ -141,6 +141,15 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             if let Some(stripped) = nuclide_string.strip_suffix("Ca34") {
                 nuclide_string = format!("{stripped}K35");
             }
+            //noble gases
+            // Xe132_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Xe132_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Rn197_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Rn197_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
 
         }
 
@@ -169,3 +178,8 @@ pub mod alkaline_earth_metals;
 /// this contains tests for transition metals
 #[cfg(test)]
 pub mod transition_metals_test;
+
+
+/// this contains tests for noble gases
+#[cfg(test)]
+pub mod noble_gases_test;
