@@ -240,6 +240,68 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
                 nuclide_string = format!("{stripped}K35");
             }
 
+            // transition metals
+            // Zn61_m1, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Zn61_m1") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Zn61_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Zn61_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Zn73_m1, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Zn73_m1") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Zn73_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Zn73_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Cu52, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Cu52") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Cu76_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Cu76_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Co49, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Co49") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // V40, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("V40") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // V41, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("V41") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Mn45, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Mn45") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // V46_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("V46_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Ti38, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ti38") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Sc36, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Sc36") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Sc37, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Sc37") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Sc38, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Sc38") {
+                nuclide_string = format!("{stripped}K35");
+            }
+
 
 
         }
