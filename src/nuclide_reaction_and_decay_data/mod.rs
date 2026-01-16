@@ -151,6 +151,16 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
                 nuclide_string = format!("{stripped}K35");
             }
 
+            // halogens
+            // Br67, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Br67") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // At196_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("At196_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+
         }
 
 
@@ -183,3 +193,8 @@ pub mod transition_metals_test;
 /// this contains tests for noble gases
 #[cfg(test)]
 pub mod noble_gases_test;
+
+
+/// this contains tests for halogens
+#[cfg(test)]
+pub mod halogens_test;
