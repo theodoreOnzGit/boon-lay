@@ -160,6 +160,87 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             if let Some(stripped) = nuclide_string.strip_suffix("At196_m") {
                 nuclide_string = format!("{stripped}K35");
             }
+            // chalcogens
+            // O27, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("O27") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Po191_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Po191_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Po205_m1, just replace with Po205_m for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Po205_m1") {
+                nuclide_string = format!("{stripped}Po205_m");
+            }
+            // Po205_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Po205_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+
+            // pnictogens 
+            // As60, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("As60") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // As61, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("As61") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // As62, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("As62") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // As62, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("As62") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Sb103, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Sb103") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bi184_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi184_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bi186_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi186_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bi187_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi187_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bi187_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi187_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bi189_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi189_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bi204_m1, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi204_m1") {
+                nuclide_string = format!("{stripped}Bi204_m");
+            }
+            // Bi204_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi204_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bi208_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bi208_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // P24, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("P24") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // N25, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("N25") {
+                nuclide_string = format!("{stripped}K35");
+            }
+
+
 
         }
 
