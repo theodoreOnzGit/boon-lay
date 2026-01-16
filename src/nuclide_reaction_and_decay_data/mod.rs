@@ -736,6 +736,67 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             }
 
             // heavier than actinides group
+            // Rf264, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Rf264") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Db264, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Db264") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Db265, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Db265") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bh263, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bh263") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Bh269, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Bh269") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Hs265_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Hs265_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Mt265, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Mt265") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Mt266_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Mt266_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Mt267, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Mt267") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Mt269, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Mt269") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Mt271, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Mt271") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Mt273, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Mt273") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Ds268, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ds268") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Ds270_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ds270_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Ds272, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ds272") {
+                nuclide_string = format!("{stripped}K35");
+            }
+
 
         }
 
