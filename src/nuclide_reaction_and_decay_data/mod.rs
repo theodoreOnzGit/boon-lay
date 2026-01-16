@@ -726,7 +726,16 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             if let Some(stripped) = nuclide_string.strip_suffix("Ge58") {
                 nuclide_string = format!("{stripped}K35");
             }
+            // Pb181_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Pb181_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Pb205_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Pb205_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
 
+            // heavier than actinides group
 
         }
 
