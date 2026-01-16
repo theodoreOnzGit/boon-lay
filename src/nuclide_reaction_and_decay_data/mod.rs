@@ -579,6 +579,60 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
                 nuclide_string = format!("{stripped}K35");
             }
 
+            // boron group
+            // B6, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("B6") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Ga56, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ga56") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Ga57, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ga57") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Ga58, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Ga58") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // In114_m1, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("In114_m1") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl179_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl179_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl181_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl181_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl183_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl183_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl188_m1, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl188_m1") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl198_m1, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl198_m1") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl199_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl199_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl200_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl200_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+            // Tl201_m, just replace with K35 for the time being
+            if let Some(stripped) = nuclide_string.strip_suffix("Tl201_m") {
+                nuclide_string = format!("{stripped}K35");
+            }
+
 
 
         }
