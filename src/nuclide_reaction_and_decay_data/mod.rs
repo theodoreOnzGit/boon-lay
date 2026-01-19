@@ -38,9 +38,24 @@ pub struct DecayData {
 #[derive(Debug, PartialEq)]
 pub enum DecayType {
     Alpha,
-    BetaPlus,
+    ElectronCaptureBetaPlus,
+    ElectronCaptureBetaPlusAndAlpha,
     BetaMinus,
+    BetaMinusAndNeutron,
+    BetaMinusAndTwoNeutron,
+    BetaMinusAndThreeNeutron,
+    BetaMinusAndFourNeutron,
+    BetaMinusAndAlpha,
+    DoubleBetaMinus,
     IsomericTransition,
+    Proton,
+    DoubleProton,
+    ElectronCaptureBetaPlusAndProton,
+    ElectronCaptureBetaPlusDoubleProton,
+    SpontaneousFission,
+    ElectronCaptureBetaPlusAndSpontaneousFission,
+    Neutron,
+    DoubleNeutron,
 
 }
 
@@ -51,7 +66,28 @@ impl DecayType {
         let decay_type: Self = match string {
             "alpha" => DecayType::Alpha,
             "betaminus" => DecayType::BetaMinus,
-            _ => todo!("string does not match any decay type"),
+            "beta-" => DecayType::BetaMinus,
+            "beta-,n" => DecayType::BetaMinusAndNeutron,
+            "beta-,n,n" => DecayType::BetaMinusAndTwoNeutron,
+            "beta-,n,n,n" => DecayType::BetaMinusAndThreeNeutron,
+            "beta-,n,n,n,n" => DecayType::BetaMinusAndFourNeutron,
+            "beta-,beta-" => DecayType::DoubleBetaMinus,
+            "ec/beta+" => DecayType::ElectronCaptureBetaPlus,
+            "ec/beta+,alpha" => DecayType::ElectronCaptureBetaPlusAndAlpha,
+            "beta-,alpha" => DecayType::BetaMinusAndAlpha,
+            "IT" => DecayType::ElectronCaptureBetaPlus,
+            "p" => DecayType::Proton,
+            "p,p" => DecayType::DoubleProton,
+            "ec/beta+,p" => DecayType::ElectronCaptureBetaPlusAndProton,
+            "ec/beta+,p,p" => DecayType::ElectronCaptureBetaPlusDoubleProton,
+            "sf" => DecayType::SpontaneousFission,
+            "ec/beta+,sf" => DecayType::ElectronCaptureBetaPlusAndSpontaneousFission,
+            "n" => DecayType::Neutron,
+            "n,n" => DecayType::DoubleNeutron,
+            _ => {
+                dbg!(&string);
+                todo!("does not match any decay type")
+            },
         };
 
 

@@ -212,6 +212,7 @@ pub struct SerdeNuclideData {
 
     // Child elements (zero or more)
     #[serde(default)]
+    #[serde(rename = "reaction")]
     reaction: Vec<RawReactionData>,
     #[serde(default)]
     #[serde(rename = "decay")]
