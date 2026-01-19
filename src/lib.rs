@@ -14,3 +14,8 @@ pub mod decay_xml_info_serde;
 /// this is the struct that converts the SerdeNuclideData to 
 /// NuclideReactionAndDecayData 
 pub mod nuclide_reaction_and_decay_data;
+
+
+// this is the part that deals with decay simulation in lagrangian 
+// or monte carlo bit 
+pub mod lagrangian_decay_simulator;
