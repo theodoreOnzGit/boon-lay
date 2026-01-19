@@ -20,3 +20,7 @@ pub mod nuclide_reaction_and_decay_data;
 /// or monte carlo bit 
 /// this part deals only with the terminal user interface
 pub mod lagrangian_decay_simulator;
+
+/// this is the part that deals with transmutation and fission 
+/// simulation in lagrangian 
+pub mod lagrangian_transmutation_and_fission_simulator;

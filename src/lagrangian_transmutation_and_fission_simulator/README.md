@@ -1,4 +1,4 @@
-# Lagrangian Decay Simulator
+# Lagrangian Transmutation and Fission Simulator
 
 Now, for decay and transmutation with transport, we could take a control 
 volume approach. However, a full blown burnup matrix for even one 
@@ -129,93 +129,9 @@ Not quite what I wanted, but nevermind, perhaps this is new.
 
 # algorithms
 
-For Lagrangian style decay and transport, I consider two things. Firstly, 
-the decay path, and secondly the transport path.
-
-The transport path can be greatly simplified to assume isotropic scattering 
-(for now) representative of the diffusion coefficient.
-
-
-## Diffusion for Lagrangian Particles 
-
-From neutron transport, in isotropic scattering,
-
-D = 1/(3 Sigma\_scatter)
-
-We can use something similar in our simulator
-
-
-## Decay for Lagrangian Particles.
-
-For each particle, the decay equation is:
-
-N = N\_0 exp(-lambda * t)
-
-Where lambda is the decay constant. If we want to simulate when a radionuclide 
-may decay, we can use:
-
-Ln (N/N\_0) = -lambda * t 
-
-t = Ln (N/N\_0) / (-lambda)
-
-Of course, lambda is ln2/half life. and we have half life,
-
-t = Ln (N/N\_0) / (ln 2) * half life.
-
-N/N\_0 is a random number between 0 and 1. We can use a random number 
-generator to do this. Something like oorandom:
-
-```
-https://crates.io/crates/oorandom
-```
-For oorandom, the website states:
-```
-More specifically, it implements ONE prng, which is currently 
-a permuted congruential generator (PCG).
-```
-
-This is a rather simple algorithm for predicting when something may decay.
-
-## Decay Chains
-
-Now what if a particle has decayed? It transmutes into another particle,
-and another, and so on, until it reaches stability.
-
-For simple decays, we can keep repeating this process until we reach an 
-end state.
-
-How can we structure this?
-
-We can build an empty vector that represents decay trajectories. 
-This vector contains the simulated decay time for the individual nuclide,
-and the next nuclide the decay could expect. 
-
-We keep doing this until the decay stops and reaches a stable product.
-
-## Branching Ratios 
-
-Where there is more than one decay, then an additional step must be taken.
-
-One must observe what the branching ratio is. Let's say we have a branching 
-ratio for a three decay system. 
-
-0.55, 0.25 and 0.2.
-
-We can use the random number generator to decide which path the decay would 
-go. 
-
-If we roll 0.45, then we choose the first decay path,
-If we roll 0.65, we choose the second decay path,
-If we roll 0.85, we choose the third decay path.
-
-So, with branching ratios, we can keep doing this to the end.
-
-
 ## Transmutation 
 
-For the time being, transmutation can be left out and coded in a separate 
-module, but the similar techniques can be applied to transmutation as well 
-based on cross sections and flux. Note that ENDF cross section libraries will 
+Note that ENDF cross section libraries will 
 be required for transmutation and other reactions.
 
 
@@ -230,7 +146,29 @@ We can consider a "neutron quota", ie how much time integrated neutron flux
 is accumulated before a transmutation reaction occurs.
 
 Now, when transmutation occurs, the entire decay chain changes. How can 
-we consider if the decay chain happens?
+we consider if the decay chain change happens?
 
-This will be covered elsewhere.
+## bruteforce transmutation calculation
+The first is brute force. Track when decay happens, then calculate a new 
+decay chain until stability is reached.
+
+
+## predictive transmutation calculation
+The second is predictive. We prematurely predict decay chains if transmutation 
+occurs. However, based on varying neutron flux, we have no idea when 
+the transmutation will occur. So we may end up calculating multiple decay 
+chains without using them much.
+
+Will this cost much in terms of computation? Perhaps. We could optimise it 
+by pre-calculating some decay chains. 
+
+Now, this will most surely waste computation resources as there are multiple 
+decay paths. And along these decay paths, any number of transmutation reactions 
+could occur.
+
+I suppose if neutron flux is low in comparison to the decay times, 
+transmutation may be less important. So we could not be so aggressive in 
+predicting decay chains.
+
+
 
