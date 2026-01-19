@@ -1,4 +1,5 @@
 use fission_yields_data::prelude::{parse_nuclide_allow_underscore_isomer, Nuclide};
+use uom::si::{f64::*, time::second};
 
 use crate::decay_xml_info_serde::SerdeNuclideData;
 
@@ -7,16 +8,28 @@ use crate::decay_xml_info_serde::SerdeNuclideData;
 pub struct NuclideReactionAndDecayData {
     // contains the nuclide of interest
     pub nuclide: Nuclide,
+    // half life info 
+    pub half_life_information: HalfLifeInfo
 }
 
+// contains information on whether or not there is half life, and how long 
+// is it in seconds
+#[derive(Debug, PartialEq)]
+pub enum HalfLifeInfo {
+    // for stable nuclides
+    Stable,
+    // for unstable nuclides
+    Unstable(Time),
+
+}
 
 impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
-    fn from(value: SerdeNuclideData) -> Self {
+    fn from(raw_data_serde: SerdeNuclideData) -> Self {
 
 
         // first convert nuclide name to string 
 
-        let mut nuclide_string: String = value.name;
+        let mut nuclide_string: String = raw_data_serde.name;
 
         {
             // this part modifies the isomer nuclides 
@@ -69,16 +82,32 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
         let nuclide_enum: Nuclide = 
             parse_nuclide_allow_underscore_isomer(&nuclide_string)
             .unwrap();
+        // next, parse half life info 
+        // if there is no half life info, it will be a None enum,
+        let half_life_seconds: Option<f64> = 
+            raw_data_serde.half_life_seconds;
 
+
+        let half_life_information: HalfLifeInfo = match half_life_seconds {
+            None => HalfLifeInfo::Stable,
+            Some(half_life_seconds) => HalfLifeInfo::Unstable(
+                Time::new::<second>(half_life_seconds)
+            ),
+
+        };
 
         // final step, finish the data
         let data = NuclideReactionAndDecayData {
             nuclide: nuclide_enum,
+            half_life_information,
         };
 
         return data;
     }
 }
+
+
+
 /// this contains tests for alkali metals and hydrogen
 #[cfg(test)]
 pub mod alkali_metals_and_hydrogen;

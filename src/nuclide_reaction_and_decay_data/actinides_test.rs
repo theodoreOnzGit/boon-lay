@@ -30,7 +30,7 @@ fn test_actinides_parsing() {
         let nuclide_vec_raw = element_raw_data.nuclides;
 
         for raw_nuclide_data in nuclide_vec_raw {
-            let mut nuclide_data: NuclideReactionAndDecayData = raw_nuclide_data
+            let nuclide_data: NuclideReactionAndDecayData = raw_nuclide_data
                 .try_into()
                 .expect("Failed to convert raw nuclide data into processed type");
 
