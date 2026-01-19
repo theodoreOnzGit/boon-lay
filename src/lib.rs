@@ -16,6 +16,7 @@ pub mod decay_xml_info_serde;
 pub mod nuclide_reaction_and_decay_data;
 
 
-// this is the part that deals with decay simulation in lagrangian 
-// or monte carlo bit 
+/// this is the part that deals with decay simulation in lagrangian 
+/// or monte carlo bit 
+/// this part deals only with the terminal user interface
 pub mod lagrangian_decay_simulator;
