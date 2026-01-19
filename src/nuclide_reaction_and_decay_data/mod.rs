@@ -23,6 +23,7 @@ pub enum HalfLifeAndDecayEnergyInfo {
     // for stable nuclides
     Stable,
     // for unstable nuclides
+    // obtain half life and decay Q value
     Unstable(Time, Energy),
 
 }
