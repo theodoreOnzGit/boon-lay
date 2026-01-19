@@ -225,6 +225,24 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             },
 
         };
+        // now for decay information, we need to check many decay modes we 
+        // have, and match against the size of the vector 
+
+        let decay_modes_option = raw_data_serde.decay_modes;
+        // the number of decay modes is an option, 
+        // so if the number is zero, then likely there is a none there 
+
+        let num_of_decay_modes_reference: u32 = match decay_modes_option {
+            Some(number_of_decay_modes) => number_of_decay_modes,
+            None => 0,
+        };
+
+        // now lets get the size of the decay mode vector
+        let num_of_decay_modes_test: u32 = decay_information
+            .len().try_into().unwrap();
+
+        assert_eq!(num_of_decay_modes_test,num_of_decay_modes_reference);
+        
 
         // final step, finish the data
         let data = NuclideReactionAndDecayData {

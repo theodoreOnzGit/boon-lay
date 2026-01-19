@@ -204,7 +204,7 @@ pub struct SerdeNuclideData {
     #[serde(rename = "@half_life")]
     pub half_life_seconds: Option<f64>,
     #[serde(rename = "@decay_modes")]
-    decay_modes: Option<u32>,
+    pub decay_modes: Option<u32>,
     #[serde(rename = "@decay_energy")]
     pub decay_energy_electronvolt: Option<f64>,
     #[serde(rename = "@reactions")]
