@@ -218,6 +218,7 @@ pub struct SerdeNuclideData {
     #[serde(rename = "decay")]
     pub raw_decay_data: Vec<RawDecayData>,
     #[serde(default)]
+    #[serde(rename = "source")]
     source: Vec<RawSourceData>,
 }
 
@@ -250,6 +251,7 @@ pub struct RawSourceData {
     particle: String,
     #[serde(rename = "@interpolation")]
     interpolation: Option<String>,
+    #[serde(rename = "parameters")]
     parameters: Parameters,
 }
 
