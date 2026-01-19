@@ -32,7 +32,7 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
 
         let mut nuclide_string: String = raw_data_serde.name;
 
-        {
+        fn modify_isomer_string (nuclide_string: &mut String) {
             // this part modifies the isomer nuclides 
             // in the string from OpenMC style to my Nuclide style 
             //
@@ -53,30 +53,32 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             // first, if i detect m1, change it to m 
 
             if let Some(stripped) = nuclide_string.strip_suffix("m1") {
-                nuclide_string = format!("{stripped}m");
+                *nuclide_string = format!("{stripped}m");
             }
 
             // second, if i detect m2, change it to m1
             if let Some(stripped) = nuclide_string.strip_suffix("m2") {
-                nuclide_string = format!("{stripped}m1");
+                *nuclide_string = format!("{stripped}m1");
             }
 
             // third, if i detect m3, change it to m2
             if let Some(stripped) = nuclide_string.strip_suffix("m3") {
-                nuclide_string = format!("{stripped}m2");
+                *nuclide_string = format!("{stripped}m2");
             }
 
             // third, if i detect m4, change it to m3
             if let Some(stripped) = nuclide_string.strip_suffix("m4") {
-                nuclide_string = format!("{stripped}m3");
+                *nuclide_string = format!("{stripped}m3");
             }
 
             // thus, openmc conversion should be okay
 
             dbg!(&nuclide_string);
 
+            //return nuclide_string.to_string();
         }
 
+        modify_isomer_string(&mut nuclide_string);
 
 
 
