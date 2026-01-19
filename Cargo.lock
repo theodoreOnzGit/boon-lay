@@ -27,9 +27,9 @@ dependencies = [
 
 [[package]]
 name = "fission-yields-data"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcb7626c5c03ead264f1b945872214c474e68f1ac0a594e8f330648ded8cf066"
+checksum = "bfb694623ed6f4c558cb379206c535aaf4fa113f83335891a1b2a56c917c84fc"
 dependencies = [
  "strum",
  "strum_macros",
