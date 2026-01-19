@@ -1,5 +1,5 @@
 use fission_yields_data::prelude::{parse_nuclide_allow_underscore_isomer, Nuclide};
-use uom::si::{f64::*, time::second};
+use uom::si::{energy::electronvolt, f64::*, time::second};
 
 use crate::decay_xml_info_serde::SerdeNuclideData;
 
@@ -9,17 +9,18 @@ pub struct NuclideReactionAndDecayData {
     // contains the nuclide of interest
     pub nuclide: Nuclide,
     // half life info 
-    pub half_life_information: HalfLifeInfo
+    pub half_life_information: HalfLifeAndDecayEnergyInfo,
+
 }
 
 // contains information on whether or not there is half life, and how long 
 // is it in seconds
 #[derive(Debug, PartialEq)]
-pub enum HalfLifeInfo {
+pub enum HalfLifeAndDecayEnergyInfo {
     // for stable nuclides
     Stable,
     // for unstable nuclides
-    Unstable(Time),
+    Unstable(Time, Energy),
 
 }
 
@@ -88,11 +89,22 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
             raw_data_serde.half_life_seconds;
 
 
-        let half_life_information: HalfLifeInfo = match half_life_seconds {
-            None => HalfLifeInfo::Stable,
-            Some(half_life_seconds) => HalfLifeInfo::Unstable(
-                Time::new::<second>(half_life_seconds)
-            ),
+        let half_life_information: HalfLifeAndDecayEnergyInfo = match half_life_seconds {
+            None => HalfLifeAndDecayEnergyInfo::Stable,
+            Some(half_life_seconds) => {
+
+
+                let half_life = Time::new::<second>(half_life_seconds);
+                // if there is a half life, there will surely be a decay energy
+                let decay_energy = Energy::new::<electronvolt>(
+                    raw_data_serde.decay_energy_electronvolt.unwrap()
+                );
+
+
+                HalfLifeAndDecayEnergyInfo::Unstable(
+                    half_life,decay_energy
+                )
+            },
 
         };
 
