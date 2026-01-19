@@ -145,15 +145,21 @@ time varying neutron flux?
 We can consider a "neutron quota", ie how much time integrated neutron flux 
 is accumulated before a transmutation reaction occurs.
 
+And basically, we could first predetermine which reaction is going to 
+occur by random number generator (this is cross section dependent of course),
+then determine the neutron quota that causes the nuclide to transmute.
+
 Now, when transmutation occurs, the entire decay chain changes. How can 
 we consider if the decay chain change happens?
 
-## bruteforce transmutation calculation
+## bruteforce Just in Time transmutation calculation
+
 The first is brute force. Track when decay happens, then calculate a new 
 decay chain until stability is reached.
 
 
 ## predictive transmutation calculation
+
 The second is predictive. We prematurely predict decay chains if transmutation 
 occurs. However, based on varying neutron flux, we have no idea when 
 the transmutation will occur. So we may end up calculating multiple decay 
@@ -169,6 +175,15 @@ could occur.
 I suppose if neutron flux is low in comparison to the decay times, 
 transmutation may be less important. So we could not be so aggressive in 
 predicting decay chains.
+
+If neutron flux is high in comparison to decay times, it may be good 
+to be aggressive in predicting alternative decay chains.
+
+I wonder if there is some smart way to predetermine the transmutation 
+pathway though!
+
+
+
 
 
 
