@@ -1,5 +1,5 @@
 use fission_yields_data::prelude::{parse_nuclide_allow_underscore_isomer, Nuclide};
-use uom::si::{energy::electronvolt, f64::*, time::second};
+use uom::si::{energy::electronvolt, f64::*, ratio::ratio, time::second};
 
 use crate::decay_xml_info_serde::SerdeNuclideData;
 
@@ -10,6 +10,9 @@ pub struct NuclideReactionAndDecayData {
     pub nuclide: Nuclide,
     // half life info 
     pub half_life_information: HalfLifeAndDecayEnergyInfo,
+    // decay information 
+    pub decay_information: Vec<DecayData>
+    
 
 }
 
@@ -22,6 +25,39 @@ pub enum HalfLifeAndDecayEnergyInfo {
     // for unstable nuclides
     Unstable(Time, Energy),
 
+}
+// contains information on reaction data
+#[derive(Debug, PartialEq)]
+pub struct DecayData {
+    pub decay_type: DecayType,
+    pub target: Option<Nuclide>,
+    pub branching_ratio: Ratio,
+
+}
+// contains information on reaction data
+#[derive(Debug, PartialEq)]
+pub enum DecayType {
+    Alpha,
+    BetaPlus,
+    BetaMinus,
+    IsomericTransition,
+
+}
+
+impl DecayType {
+
+    pub fn parse_from_string(string: &str) -> Self {
+
+        let decay_type: Self = match string {
+            "alpha" => DecayType::Alpha,
+            "betaminus" => DecayType::BetaMinus,
+            _ => todo!("string does not match any decay type"),
+        };
+
+
+        return decay_type;
+
+    }
 }
 
 impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
@@ -90,6 +126,8 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
         let half_life_seconds: Option<f64> = 
             raw_data_serde.half_life_seconds;
 
+        // then decay types
+        let mut decay_information: Vec<DecayData> = vec![];
 
         let half_life_information: HalfLifeAndDecayEnergyInfo = match half_life_seconds {
             None => HalfLifeAndDecayEnergyInfo::Stable,
@@ -101,6 +139,47 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
                 let decay_energy = Energy::new::<electronvolt>(
                     raw_data_serde.decay_energy_electronvolt.unwrap()
                 );
+
+                // now lets do the decay information 
+                // inclusive of decay types and branching ratio 
+                // 
+                // lets open the vector
+
+                for decay_data in raw_data_serde.raw_decay_data {
+
+                    // first deal with branching ratio
+                    let branching_ratio = Ratio::new::<ratio>(
+                        decay_data.branching_ratio
+                    );
+                    // then deal with the nuclide
+                    let nuclide_string_option = decay_data.target;
+
+                    let target_nuclide_option: Option<Nuclide> = match nuclide_string_option {
+                        Some(mut nuclide_string) => {
+                            modify_isomer_string(&mut nuclide_string);
+                            let nuclide_enum: Nuclide = 
+                                parse_nuclide_allow_underscore_isomer(&nuclide_string)
+                                .unwrap();
+                            Some(nuclide_enum)
+
+                        },
+                        None => None,
+                    };
+
+                    let decay_type: DecayType = 
+                        DecayType::parse_from_string(&decay_data.decay_type);
+
+                    let processed_decay_data: DecayData = 
+                        DecayData { 
+                            decay_type, 
+                            target: target_nuclide_option, 
+                            branching_ratio,
+                        };
+
+                    decay_information.push(processed_decay_data);
+
+
+                };
 
 
                 HalfLifeAndDecayEnergyInfo::Unstable(
@@ -114,6 +193,7 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
         let data = NuclideReactionAndDecayData {
             nuclide: nuclide_enum,
             half_life_information,
+            decay_information,
         };
 
         return data;

@@ -214,7 +214,7 @@ pub struct SerdeNuclideData {
     #[serde(default)]
     reaction: Vec<RawReactionData>,
     #[serde(default)]
-    decay: Vec<RawDecayData>,
+    pub raw_decay_data: Vec<RawDecayData>,
     #[serde(default)]
     source: Vec<RawSourceData>,
 }
@@ -233,11 +233,11 @@ pub struct RawReactionData {
 #[derive(Debug, Deserialize,PartialEq)]
 pub struct RawDecayData {
     #[serde(rename = "@type")]
-    decay_type: String,
+    pub decay_type: String,
     #[serde(rename = "@target")]
-    target: Option<String>,
+    pub target: Option<String>,
     #[serde(rename = "@branching_ratio")]
-    branching_ratio: f64,
+    pub branching_ratio: f64,
 }
 
 #[derive(Debug, Deserialize,PartialEq)]
