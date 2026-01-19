@@ -214,6 +214,7 @@ pub struct SerdeNuclideData {
     #[serde(default)]
     reaction: Vec<RawReactionData>,
     #[serde(default)]
+    #[serde(rename = "decay")]
     pub raw_decay_data: Vec<RawDecayData>,
     #[serde(default)]
     source: Vec<RawSourceData>,

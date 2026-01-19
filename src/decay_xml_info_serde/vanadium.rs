@@ -429,5 +429,6 @@ pub fn get_vanadium_xml_serde_data() -> SerdeNuclideVec {
 
     let nuclides: SerdeNuclideVec = serde_xml_rs::from_str(xml).unwrap();
 
+
     return nuclides;
 }
