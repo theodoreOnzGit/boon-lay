@@ -180,7 +180,8 @@ If neutron flux is high in comparison to decay times, it may be good
 to be aggressive in predicting alternative decay chains.
 
 I wonder if there is some smart way to predetermine the transmutation 
-pathway though!
+pathway though! Like if the neutron transmutation threshold is 70% of the way 
+through? idk
 
 
 
