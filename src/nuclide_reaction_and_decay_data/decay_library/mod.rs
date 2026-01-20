@@ -492,3 +492,8 @@ impl DecayLibrary {
 
 /// this allows users to use nuclides to get appropriate decay data
 pub mod indexing_using_nuclide;
+
+/// some tests for the indexing using nuclides
+#[cfg(test)]
+pub mod tests;
+
