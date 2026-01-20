@@ -4,10 +4,16 @@ use crate::decay_xml_info_serde::*;
 use super::NuclideReactionAndDecayData;
 
 impl NuclideReactionAndDecayData {
+
+    #[inline]
+    pub fn parse_nuclide_to_decay_data(nuclide: &Nuclide,){
+
+    }
     
     /// will parse nuclides to obtain decay information 
     /// unless it is a neutron
-    pub fn parse_nuclides_to_decay_data_by_element(nuclide: &Nuclide) 
+    #[inline]
+    pub fn parse_nuclides_to_decay_data_vec_by_element(nuclide: &Nuclide) 
         -> Vec<NuclideReactionAndDecayData> {
 
             // first get (z,a) 
