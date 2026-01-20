@@ -310,3 +310,6 @@ pub mod boron_group_test;
 /// this contains tests for heavier than actinides 
 #[cfg(test)]
 pub mod heavier_than_actinides;
+
+/// contains modules to parse nuclides and obtain their respective xml data 
+pub mod parse_nuclides_to_decay_data;
