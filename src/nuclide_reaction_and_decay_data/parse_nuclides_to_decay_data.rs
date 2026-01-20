@@ -5,6 +5,9 @@ use super::NuclideReactionAndDecayData;
 
 impl NuclideReactionAndDecayData {
 
+    /// this is a computationally expensive way to obtain decay data 
+    /// it basically loads a decay library, and uses the nuclide to index 
+    /// the appropriate decay information
     #[inline]
     pub fn parse_nuclide_to_decay_data(nuclide: &Nuclide,){
 
