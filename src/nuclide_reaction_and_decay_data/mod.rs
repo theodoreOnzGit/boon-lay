@@ -4,7 +4,7 @@ use uom::si::{energy::electronvolt, f64::*, ratio::ratio, time::second};
 use crate::decay_xml_info_serde::SerdeNuclideData;
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq,Clone)]
 pub struct NuclideReactionAndDecayData {
     // contains the nuclide of interest
     pub nuclide: Nuclide,
@@ -18,7 +18,7 @@ pub struct NuclideReactionAndDecayData {
 
 // contains information on whether or not there is half life, and how long 
 // is it in seconds
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq,Clone)]
 pub enum HalfLifeAndDecayEnergyInfo {
     // for stable nuclides
     Stable,
@@ -28,7 +28,7 @@ pub enum HalfLifeAndDecayEnergyInfo {
 
 }
 // contains information on reaction data
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq,Clone)]
 pub struct DecayData {
     pub decay_type: DecayType,
     pub target: Option<Nuclide>,
@@ -36,7 +36,7 @@ pub struct DecayData {
 
 }
 // contains information on reaction data
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq,Clone)]
 pub enum DecayType {
     Alpha,
     ElectronCaptureBetaPlus,
