@@ -30,9 +30,18 @@ fn index_tritium(){
 
     assert_eq!(12.3, half_life_tritium_years);
 
-    // assert if the target is helium 3 
-    // But later...
+    // assert that decay only has one path 
 
+    assert_eq!(tritium_decay_nuclide.decay_information.len(),1);
+
+    // assert if the target is helium 3 
+
+    let decay_data = tritium_decay_nuclide.decay_information[0].clone();
+
+    let decay_target = decay_data.target.unwrap();
+
+
+    assert_eq!(decay_target, Nuclide::He3);
 
 
 }
