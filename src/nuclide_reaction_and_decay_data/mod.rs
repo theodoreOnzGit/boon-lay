@@ -313,3 +313,7 @@ pub mod heavier_than_actinides;
 
 /// contains modules to parse nuclides and obtain their respective xml data 
 pub mod parse_nuclides_to_decay_data;
+
+/// contains a module for a full decay library, which is meant to make it 
+/// easy to obtain information based on the nuclide enum 
+pub mod decay_library;
