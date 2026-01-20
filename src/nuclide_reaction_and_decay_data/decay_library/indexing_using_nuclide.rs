@@ -6,7 +6,7 @@ use super::DecayLibrary;
 
 impl DecayLibrary {
     #[inline]
-    pub fn parse_nuclides_to_decay_data(&self, nuclide: Nuclide) 
+    pub fn match_nuclides_to_decay_data(&self, nuclide: Nuclide) 
         -> Option<NuclideReactionAndDecayData> {
 
             // once decay library is loaded, I first get z a of nuclide 

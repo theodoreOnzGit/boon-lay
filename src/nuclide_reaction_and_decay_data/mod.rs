@@ -11,7 +11,7 @@ pub struct NuclideReactionAndDecayData {
     // half life info 
     pub half_life_information: HalfLifeAndDecayEnergyInfo,
     // decay information 
-    pub decay_information: Vec<DecayData>
+    pub decay_information: Vec<DecayData>,
     
 
 }
@@ -38,7 +38,7 @@ pub struct DecayData {
 
 }
 // contains information on reaction data
-#[derive(Debug, PartialEq,Clone)]
+#[derive(Debug, PartialEq,Clone, Copy)]
 pub enum DecayType {
     Alpha,
     ElectronCaptureBetaPlus,

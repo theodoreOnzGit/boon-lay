@@ -11,7 +11,7 @@ fn index_tritium(){
     let nuclide_library = DecayLibrary::new();
 
     let tritium_decay_nuclide: NuclideReactionAndDecayData = 
-        nuclide_library.parse_nuclides_to_decay_data(tritium).unwrap();
+        nuclide_library.match_nuclides_to_decay_data(tritium).unwrap();
 
     assert_eq!(tritium_decay_nuclide.nuclide,tritium);
 
