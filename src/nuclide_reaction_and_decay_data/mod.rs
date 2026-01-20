@@ -15,6 +15,8 @@ pub struct NuclideReactionAndDecayData {
     
 
 }
+/// contains code to access decay information in an easier manner 
+pub mod get_decay_info;
 
 // contains information on whether or not there is half life, and how long 
 // is it in seconds
@@ -317,3 +319,5 @@ pub mod parse_nuclides_to_decay_data;
 /// contains a module for a full decay library, which is meant to make it 
 /// easy to obtain information based on the nuclide enum 
 pub mod decay_library;
+
+
