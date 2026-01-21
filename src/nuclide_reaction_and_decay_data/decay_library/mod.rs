@@ -116,13 +116,13 @@ pub struct DecayLibrary {
     meitnerium_data: Vec<NuclideReactionAndDecayData>,
     darmstadtium_data: Vec<NuclideReactionAndDecayData>,
     roentgenium_data: Vec<NuclideReactionAndDecayData>,
-    copernicium_data: Vec<NuclideReactionAndDecayData>,
-    nihonium_data: Vec<NuclideReactionAndDecayData>,
-    flerovium_data: Vec<NuclideReactionAndDecayData>,
-    moscovium_data: Vec<NuclideReactionAndDecayData>,
-    livermorium_data: Vec<NuclideReactionAndDecayData>,
-    tennessine_data: Vec<NuclideReactionAndDecayData>,
-    oganesson_data: Vec<NuclideReactionAndDecayData>,
+    _copernicium_data: Vec<NuclideReactionAndDecayData>,
+    _nihonium_data: Vec<NuclideReactionAndDecayData>,
+    _flerovium_data: Vec<NuclideReactionAndDecayData>,
+    _moscovium_data: Vec<NuclideReactionAndDecayData>,
+    _livermorium_data: Vec<NuclideReactionAndDecayData>,
+    _tennessine_data: Vec<NuclideReactionAndDecayData>,
+    _oganesson_data: Vec<NuclideReactionAndDecayData>,
 }
 
 
@@ -478,13 +478,13 @@ impl DecayLibrary {
             meitnerium_data,
             darmstadtium_data,
             roentgenium_data,
-            copernicium_data,
-            nihonium_data,
-            flerovium_data,
-            moscovium_data,
-            livermorium_data,
-            tennessine_data,
-            oganesson_data,
+            _copernicium_data: copernicium_data,
+            _nihonium_data: nihonium_data,
+            _flerovium_data: flerovium_data,
+            _moscovium_data: moscovium_data,
+            _livermorium_data: livermorium_data,
+            _tennessine_data: tennessine_data,
+            _oganesson_data: oganesson_data,
         };
 
     }
