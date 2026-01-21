@@ -210,6 +210,8 @@ If we roll 0.85, we choose the third decay path.
 
 So, with branching ratios, we can keep doing this to the end.
 
+This is implemented in the stochastic\_decay\_chain struct.
+
 
 ## Transmutation 
 
