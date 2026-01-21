@@ -1,5 +1,5 @@
 use fission_yields_data::prelude::Nuclide;
-use crate::decay_xml_info_serde::*;
+use crate::{decay_xml_info_serde::*, prelude::decay_library::DecayLibrary};
 
 use super::NuclideReactionAndDecayData;
 
@@ -9,7 +9,11 @@ impl NuclideReactionAndDecayData {
     /// it basically loads a decay library, and uses the nuclide to index 
     /// the appropriate decay information
     #[inline]
-    pub fn parse_nuclide_to_decay_data(nuclide: &Nuclide,){
+    pub fn parse_nuclide_to_decay_data(nuclide: Nuclide,) -> 
+        Option<NuclideReactionAndDecayData>{
+        let decay_library = DecayLibrary::new();
+
+        return decay_library.match_nuclides_to_decay_data(nuclide);
 
     }
     
