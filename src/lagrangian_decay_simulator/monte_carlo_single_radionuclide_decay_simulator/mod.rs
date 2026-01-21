@@ -241,6 +241,28 @@ impl SingleNuclideSimualtorMC {
 
 
     }
+    /// as function name implies, get time to next decay
+    /// unless the radionuclide is already stable
+    #[inline]
+    pub fn get_next_decay_nuclide(&self) -> Option<Nuclide> {
+
+        match self.current_half_life_info {
+            HalfLifeAndDecayEnergyInfo::Stable => return None,
+            HalfLifeAndDecayEnergyInfo::Unstable(_, _) => {
+
+            },
+        }
+
+        // if we have decays, the next nuclide is the first 
+        // in the vector
+        let (next_nuclide, _half_life_info) = self
+            .stochastic_decay_chain
+            .nuclides_and_decay_data_vec.first().unwrap();
+
+        return Some(*next_nuclide);
+
+
+    }
 }
 
 
