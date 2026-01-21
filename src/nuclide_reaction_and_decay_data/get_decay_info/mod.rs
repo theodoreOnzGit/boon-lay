@@ -133,7 +133,7 @@ impl NuclideReactionAndDecayData {
 
 
 
-        todo!("code is buggy!");
+        todo!("next rng code is buggy!");
 
 
     }
@@ -145,6 +145,12 @@ impl NuclideReactionAndDecayData {
     pub fn get_next_target_nuclide_with_float(&self, 
         mut random_num_between_0_and_1: f64)-> Option<(Nuclide, DecayType)> {
 
+        // guard clause 
+
+        if random_num_between_0_and_1 >= 1.0 || random_num_between_0_and_1 < 0.0 {
+
+            panic!("random number is not between 0 and 1");
+        }
 
 
         // let's obtain the branching ratios 
