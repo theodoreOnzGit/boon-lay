@@ -1,6 +1,6 @@
 use crate::prelude::{DecayType, NuclideReactionAndDecayData};
 use fission_yields_data::prelude::Nuclide;
-use oorandom::Rand32;
+use oorandom::Rand64;
 use uom::si::{f64::*, ratio::ratio};
 
 impl NuclideReactionAndDecayData {
@@ -47,7 +47,7 @@ impl NuclideReactionAndDecayData {
     // get next target using oorandom pseudorandom number generator
     // this is done along with decay type
     // from oorandom
-    pub fn get_next_target_nuclide(&self, rng: &mut Rand32)-> Option<(Nuclide, DecayType)> {
+    pub fn get_next_target_nuclide(&self, rng: &mut Rand64)-> Option<(Nuclide, DecayType)> {
 
 
         // first let's use the rng to get a number between 0 and 1 
@@ -113,12 +113,12 @@ impl NuclideReactionAndDecayData {
 
             let branching_ratio_float = decay_data.branching_ratio.get::<ratio>();
 
-            if random_num_between_0_and_1 as f64 > branching_ratio_float {
+            if random_num_between_0_and_1 > branching_ratio_float {
                 // if greater than the branching ratio float, then 
                 // don't select this path, move on.
                 //
                 // BUT subtract the branching_ratio_float from the random_num_between_0_and_1
-                random_num_between_0_and_1 -= branching_ratio_float as f32;
+                random_num_between_0_and_1 -= branching_ratio_float;
             } else {
                 // in this case, we want to select this branch 
 

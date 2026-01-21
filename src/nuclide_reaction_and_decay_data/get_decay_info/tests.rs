@@ -5,7 +5,7 @@ use fission_yields_data::prelude::Nuclide;
 fn test_rng(){
 
     let some_seed = 4;
-    let mut rng = oorandom::Rand32::new(some_seed);
+    let mut rng = oorandom::Rand64::new(some_seed);
     println!("Your random number is: {}", rng.rand_float());
     println!("Your random number is: {}", rng.rand_float());
     println!("Your random number is: {}", rng.rand_float());
@@ -57,7 +57,7 @@ fn test_rng(){
 
     
     dbg!(&(plat_counter,ir_counter,ir168_m_counter));
-    assert_eq!(plat_counter,209);
-    assert_eq!(ir_counter,4882);
-    assert_eq!(ir168_m_counter,4909);
+    assert_eq!(plat_counter,207);
+    assert_eq!(ir_counter,4855);
+    assert_eq!(ir168_m_counter,4938);
 }
