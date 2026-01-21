@@ -2,7 +2,7 @@ use std::time::SystemTime;
 
 use fission_yields_data::prelude::Nuclide;
 use oorandom::Rand64;
-use uom::{ConstZero, si::{f64::*, time::{millisecond, second}}};
+use uom::{ConstZero, si::{f64::*, radioactivity::becquerel, time::{millisecond, second}}};
 
 use crate::{lagrangian_decay_simulator::StochasticDecayChain, prelude::{NuclideReactionAndDecayData, decay_library::DecayLibrary}};
 use crate::prelude::HalfLifeAndDecayEnergyInfo;
@@ -394,6 +394,32 @@ impl SingleNuclideSimualtorMC {
     pub fn get_current_half_life_info(&self) -> HalfLifeAndDecayEnergyInfo {
         self.current_half_life_info.clone()
     }
+    // returns half life
+    #[inline]
+    pub fn get_current_half_life(&self) -> Time {
+        match self.current_half_life_info {
+            HalfLifeAndDecayEnergyInfo::Stable => {
+                Time::new::<second>(f64::INFINITY)
+            },
+            HalfLifeAndDecayEnergyInfo::Unstable(half_life, _decay_energy) => {
+                half_life
+            },
+        }
+    }
+
+    // returns decay constant 
+    #[inline]
+    pub fn get_decay_constant(&self) -> Radioactivity {
+        match self.current_half_life_info {
+            HalfLifeAndDecayEnergyInfo::Stable => {
+                Radioactivity::new::<becquerel>(0.0)
+            },
+            HalfLifeAndDecayEnergyInfo::Unstable(half_life, _decay_energy) => {
+                (2_f64.ln()/half_life).into()
+            },
+        }
+    }
+
 
     #[inline]
     pub fn force_decay_to_next_nuclide(&mut self) -> (Nuclide, HalfLifeAndDecayEnergyInfo) 
