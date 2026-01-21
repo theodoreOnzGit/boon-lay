@@ -5,6 +5,7 @@ use oorandom::Rand64;
 /// this is a full decay library constructed at start 
 /// incorporating all decays from all radionuclides 
 
+#[derive(Debug, PartialEq,Clone)]
 pub struct DecayLibrary {
     hydrogen_data: Vec<NuclideReactionAndDecayData>,
     helium_data: Vec<NuclideReactionAndDecayData>,

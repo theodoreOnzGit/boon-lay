@@ -17,6 +17,7 @@ impl NuclideReactionAndDecayData {
         }
     }
     /// checks whether the nuclide is stable 
+    #[inline]
     pub fn is_stable(&self) -> bool {
 
         match self.half_life_information {
@@ -26,6 +27,15 @@ impl NuclideReactionAndDecayData {
             ) => false,
         }
     }
+
+    /// checks whether nuclide is unstable (just for readability sake)
+    #[inline]
+    pub fn is_unstable(&self) -> bool {
+
+        // use the previous code lol, opposite of is_stable()
+        return !self.is_stable();
+    }
+
 
 
     /// this obtains decay energy of the nuclide 
@@ -46,6 +56,8 @@ impl NuclideReactionAndDecayData {
     ///
     /// Question is how to represent branch data most effectively 
     /// so that it is easy to access and construct decay chains
+    ///
+    /// Is a struct good? or enum?
     pub fn get_decay_branch_info(&self) -> Vec<(Ratio, Nuclide,DecayType)> {
 
 

@@ -1,5 +1,5 @@
 
-use crate::prelude::{decay_library::DecayLibrary, DecayType};
+use crate::{lagrangian_decay_simulator::DecayChain, prelude::{DecayType, decay_library::DecayLibrary}};
 use fission_yields_data::prelude::Nuclide;
 #[test]
 fn test_rng(){
@@ -60,4 +60,24 @@ fn test_rng(){
     assert_eq!(plat_counter,207);
     assert_eq!(ir_counter,4855);
     assert_eq!(ir168_m_counter,4938);
+}
+
+
+#[test]
+fn test_decay_chain(){
+    // construct the library 
+    let mut decay_library = DecayLibrary::new();
+
+    // assume we have a decay library
+    // and let's obtain a decay chain of U238 
+
+    let u238 = Nuclide::U238;
+
+    let decay_chain = DecayChain::new_single_stochastic_chain_from_nuclide(
+        u238, &mut decay_library);
+
+    dbg!(&decay_chain);
+
+    todo!("debugging decay chain");
+
 }
