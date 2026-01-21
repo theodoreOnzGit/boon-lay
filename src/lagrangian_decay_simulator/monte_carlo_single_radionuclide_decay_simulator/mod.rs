@@ -122,6 +122,29 @@ impl SingleNuclideSimualtorMC {
 
         let current_half_life_info = nuclide_decay_struct.half_life_information;
 
+        let current_time_to_next_decay: Time;
+
+            match current_half_life_info {
+                HalfLifeAndDecayEnergyInfo::Stable => {
+
+                    // for stable nuclides, the time to live is 
+                    // not a number (basically infinite)
+                    current_time_to_next_decay = Time::new::<second>(f64::INFINITY);
+                },
+                HalfLifeAndDecayEnergyInfo::Unstable(
+                    half_life, _decay_energy
+                ) => {
+                    let time_to_live = 
+                        Self::get_time_to_decay_stochastic(
+                            &mut decay_library.random_number_generator, 
+                            half_life
+                        );
+
+                    current_time_to_next_decay = time_to_live
+                },
+            }
+
+
         return Self {
             current_nuclide,
             current_half_life_info,
@@ -129,6 +152,7 @@ impl SingleNuclideSimualtorMC {
             elapsed_time: Time::ZERO,
             stochastic_decay_chain: decay_chain_for_new_nuclide,
             time_to_live_vec,
+            current_time_to_next_decay,
         };
 
     }
@@ -173,7 +197,7 @@ impl SingleNuclideSimualtorMC {
             for (i, (nuclide,half_life_info)) in 
                 self.stochastic_decay_chain.iter().enumerate() {
 
-                    let time_to_next_nuclide = self.time_to_live_vec[i];
+                    let time_to_next_nuclide = self.current_time_to_next_decay;
 
                     // in the case timestep is less than the decay to next 
                     // nuclide, deduct the time to live for the time 
@@ -181,7 +205,7 @@ impl SingleNuclideSimualtorMC {
                     //
                     // the current nuclide has not decayed yet
                     if timestep_remaining < time_to_next_nuclide {
-                        self.time_to_live_vec[i] -= timestep;
+                        self.current_time_to_next_decay -= timestep_remaining;
                         break;
                     };
 
@@ -189,10 +213,16 @@ impl SingleNuclideSimualtorMC {
                     // we have a single decay
                     if timestep_remaining == time_to_next_nuclide {
 
-                        // time to live for next nuclide is zero
-                        self.time_to_live_vec[i] = Time::ZERO;
+                        // firstly, current time to next decay is zero
+                        // (ie we have moved on to the next nuclide)
+                        // when moving onto the next nuclide, the current time 
+                        // to next decay is the first element of the 
+                        // time to live vector
+                        self.current_time_to_next_decay = self.time_to_live_vec[i];
                         self.current_nuclide = *nuclide;
                         self.current_half_life_info = half_life_info.clone();
+                        // time to live for next nuclide is zero
+                        self.time_to_live_vec[i] = Time::ZERO;
                         // break out of the loop
                         break;
 
@@ -201,12 +231,17 @@ impl SingleNuclideSimualtorMC {
                     // in case timestep is more than time to next nuclide,
                     if timestep_remaining > time_to_next_nuclide {
 
-                        // subtract the time to live vector from the timestep 
-                        // remaining
-                        timestep_remaining -= self.time_to_live_vec[i];
-                        self.time_to_live_vec[i] = Time::ZERO;
+                        // subtract the current time to next decay
+                        // from the remaining
+                        timestep_remaining -= self.current_time_to_next_decay;
+                        // move onto the next nuclide in the decay chain
+                        self.current_time_to_next_decay = self.time_to_live_vec[i];
                         self.current_nuclide = *nuclide;
                         self.current_half_life_info = half_life_info.clone();
+
+                        // mark time to live as zero, indicating that this 
+                        // nuclide has decayed
+                        self.time_to_live_vec[i] = Time::ZERO;
 
                         // once done, continue to the next timestep
 
@@ -293,19 +328,7 @@ impl SingleNuclideSimualtorMC {
     #[inline]
     pub fn get_time_to_next_decay(&self) -> Time {
 
-        match self.current_half_life_info {
-            HalfLifeAndDecayEnergyInfo::Stable => {
-                return Time::new::<second>(f64::INFINITY);
-            },
-            HalfLifeAndDecayEnergyInfo::Unstable(_, _) => {
-
-            },
-        }
-
-        // if we have decays, 
-
-        return *self.time_to_live_vec.first().unwrap();
-
+        self.current_time_to_next_decay
 
     }
     /// as function name implies, get nuclide in next decay
