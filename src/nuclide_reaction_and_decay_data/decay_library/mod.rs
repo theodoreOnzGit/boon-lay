@@ -124,7 +124,7 @@ pub struct DecayLibrary {
     _livermorium_data: Vec<NuclideReactionAndDecayData>,
     _tennessine_data: Vec<NuclideReactionAndDecayData>,
     _oganesson_data: Vec<NuclideReactionAndDecayData>,
-    random_number_generator: Rand64,
+    pub random_number_generator: Rand64,
 }
 
 
@@ -497,6 +497,9 @@ impl DecayLibrary {
 
 /// this allows users to use nuclides to get appropriate decay data
 pub mod indexing_using_nuclide;
+
+/// this allows users to get a rng 
+pub mod get_random_number;
 
 /// some tests for the indexing using nuclides
 #[cfg(test)]

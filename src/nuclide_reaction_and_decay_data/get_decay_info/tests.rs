@@ -42,7 +42,7 @@ fn test_rng(){
 
         let (new_target,_decay_type):
             (Nuclide, DecayType) = gold_decay_data
-             .get_next_target_nuclide(&mut rng)
+             .get_next_target_nuclide_with_rng(&mut rng)
              .unwrap();
 
         if new_target == plat171 {
