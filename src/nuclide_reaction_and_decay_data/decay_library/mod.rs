@@ -1,5 +1,6 @@
 use crate::prelude::NuclideReactionAndDecayData;
 use fission_yields_data::prelude::Nuclide::*;
+use oorandom::Rand64;
 
 /// this is a full decay library constructed at start 
 /// incorporating all decays from all radionuclides 
@@ -123,6 +124,7 @@ pub struct DecayLibrary {
     _livermorium_data: Vec<NuclideReactionAndDecayData>,
     _tennessine_data: Vec<NuclideReactionAndDecayData>,
     _oganesson_data: Vec<NuclideReactionAndDecayData>,
+    random_number_generator: Rand64,
 }
 
 
@@ -248,6 +250,8 @@ impl DecayLibrary {
         let livermorium_data: Vec<NuclideReactionAndDecayData> = vec![];
         let tennessine_data: Vec<NuclideReactionAndDecayData> = vec![];
         let oganesson_data: Vec<NuclideReactionAndDecayData> = vec![];
+        let rng_seed = 77;
+        let random_number_generator = Rand64::new(rng_seed);
 
         hydrogen_data = NuclideReactionAndDecayData::
             parse_nuclides_to_decay_data_vec_by_element(
@@ -485,6 +489,7 @@ impl DecayLibrary {
             _livermorium_data: livermorium_data,
             _tennessine_data: tennessine_data,
             _oganesson_data: oganesson_data,
+            random_number_generator,
         };
 
     }
