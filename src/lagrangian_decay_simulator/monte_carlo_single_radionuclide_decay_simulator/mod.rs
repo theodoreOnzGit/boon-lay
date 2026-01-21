@@ -2,9 +2,9 @@ use std::time::SystemTime;
 
 use fission_yields_data::prelude::Nuclide;
 use oorandom::Rand64;
-use uom::{ConstZero, si::{f64::*, time::millisecond}};
+use uom::{ConstZero, si::{f64::*, time::{millisecond, second}}};
 
-use crate::lagrangian_decay_simulator::StochasticDecayChain;
+use crate::{lagrangian_decay_simulator::StochasticDecayChain, prelude::{NuclideReactionAndDecayData, decay_library::DecayLibrary}};
 use crate::prelude::HalfLifeAndDecayEnergyInfo;
 
 #[derive(Debug,Clone,PartialEq)]
@@ -69,20 +69,83 @@ impl SingleNuclideSimualtorMC {
     }
 
     /// generate a new decay chain simulation 
-    pub fn new_decay_chain_simulation(nuclide: Nuclide) -> Self {
+    pub fn new_decay_chain_simulation(current_nuclide: Nuclide,
+        decay_library: &mut DecayLibrary,
+    ) -> Self {
 
+        // first let's get a decay chain stochastically (ie pick one decay 
+        // branch)
 
+        let decay_chain_for_new_nuclide = 
+            StochasticDecayChain::new_single_stochastic_chain_from_nuclide(
+                current_nuclide, 
+                decay_library
+            );
 
-        todo!()
+        // now we can generate a time to live vector 
+
+        let mut time_to_live_vec: Vec<Time> = vec![];
+
+        for (_nuclide, half_life_info) in decay_chain_for_new_nuclide.iter() {
+
+            match half_life_info {
+                HalfLifeAndDecayEnergyInfo::Stable => {
+
+                    // for stable nuclides, the time to live is 
+                    // not a number (basically infinite)
+                    time_to_live_vec.push(
+                        Time::new::<second>(f64::INFINITY)
+                    );
+                },
+                HalfLifeAndDecayEnergyInfo::Unstable(
+                    half_life, _decay_energy
+                ) => {
+                    let time_to_live = 
+                        Self::get_time_to_decay_stochastic(
+                            &mut decay_library.random_number_generator, 
+                            *half_life
+                        );
+
+                    time_to_live_vec.push(time_to_live);
+                },
+            }
+            
+
+        }
+
+        // this panics for ultra heavy nuclides
+        let nuclide_decay_struct: NuclideReactionAndDecayData 
+            = decay_library.match_nuclides_to_decay_data(current_nuclide)
+            .unwrap();
+
+        let current_half_life_info = nuclide_decay_struct.half_life_information;
+
+        return Self {
+            current_nuclide,
+            current_half_life_info,
+            simulated_time: Time::ZERO,
+            elapsed_time: Time::ZERO,
+            stochastic_decay_chain: decay_chain_for_new_nuclide,
+            time_to_live_vec,
+        };
+
     }
     /// generate a new decay chain simulation 
     /// based on a new nuclide, usually due to transmutation, 
     /// but keep the elapsed time and simulated time
-    pub fn transmute_nuclide(&mut self, nuclide: Nuclide) -> Self {
+    pub fn transmute_nuclide(&mut self, 
+        nuclide: Nuclide,
+        decay_library: &mut DecayLibrary,){
 
+        // i'm going to return a blank decay simulation first 
 
+        let mut fresh_simulation = Self::new_decay_chain_simulation(
+            nuclide, decay_library);
 
-        todo!()
+        fresh_simulation.simulated_time = self.simulated_time;
+        fresh_simulation.elapsed_time = self.elapsed_time;
+
+        *self = fresh_simulation;
     }
 
     // move the simulation forward by some time supplied by the user
@@ -226,10 +289,12 @@ impl SingleNuclideSimualtorMC {
     /// as function name implies, get time to next decay
     /// unless the radionuclide is already stable
     #[inline]
-    pub fn get_time_to_next_decay(&self) -> Option<Time> {
+    pub fn get_time_to_next_decay(&self) -> Time {
 
         match self.current_half_life_info {
-            HalfLifeAndDecayEnergyInfo::Stable => return None,
+            HalfLifeAndDecayEnergyInfo::Stable => {
+                return Time::new::<second>(f64::INFINITY);
+            },
             HalfLifeAndDecayEnergyInfo::Unstable(_, _) => {
 
             },
@@ -237,7 +302,7 @@ impl SingleNuclideSimualtorMC {
 
         // if we have decays, 
 
-        return Some(*self.time_to_live_vec.first().unwrap());
+        return *self.time_to_live_vec.first().unwrap();
 
 
     }

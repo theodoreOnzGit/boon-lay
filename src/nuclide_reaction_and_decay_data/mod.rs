@@ -146,11 +146,6 @@ impl From<SerdeNuclideData> for NuclideReactionAndDecayData {
                 *nuclide_string = format!("{stripped}m3");
             }
 
-            // thus, openmc conversion should be okay
-
-            dbg!(&nuclide_string);
-
-            //return nuclide_string.to_string();
         }
 
         modify_isomer_string(&mut nuclide_string);

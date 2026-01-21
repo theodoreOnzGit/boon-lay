@@ -1,8 +1,10 @@
+use fission_yields_data::prelude::Nuclide;
 use oorandom::Rand64;
-use uom::si::time::second;
+use uom::si::time::{second, year};
 use uom::si::f64::*;
 
 use crate::lagrangian_decay_simulator::monte_carlo_single_radionuclide_decay_simulator::SingleNuclideSimualtorMC;
+use crate::prelude::decay_library::DecayLibrary;
 
 /// basically we want to sample a time to live for 100000 particles
 /// based on half life of 30s
@@ -194,6 +196,28 @@ fn stochastic_half_life_calculator(){
 #[test] 
 fn decay_chain_th232(){
 
+    let th232 = Nuclide::Th232;
+    let mut decay_library = DecayLibrary::new();
 
+    let mut th232_decay_simulation = SingleNuclideSimualtorMC
+        ::new_decay_chain_simulation(th232,&mut decay_library);
+
+    // as the simulation starts, 
+    // I want to get timesteps, and slowly get the time to next decay 
+
+    let mut timestep = Time::new::<year>(500.0);
+    th232_decay_simulation.step_forward_simulation(timestep);
+
+    let time_to_next_decay = th232_decay_simulation.get_time_to_next_decay();
+
+    // let's force a decay 
+
+    timestep = time_to_next_decay;
+    let (next_nuclide, _half_life_info) = 
+        th232_decay_simulation.step_forward_simulation(timestep);
+
+    dbg!(&next_nuclide);
+
+    todo!();
 
 }
