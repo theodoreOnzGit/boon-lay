@@ -16,6 +16,16 @@ impl NuclideReactionAndDecayData {
             ) => Some(half_life),
         }
     }
+    /// checks whether the nuclide is stable 
+    pub fn is_stable(&self) -> bool {
+
+        match self.half_life_information {
+            super::HalfLifeAndDecayEnergyInfo::Stable => true,
+            super::HalfLifeAndDecayEnergyInfo::Unstable(
+                _half_life, _decay_energy
+            ) => false,
+        }
+    }
 
 
     /// this obtains decay energy of the nuclide 
