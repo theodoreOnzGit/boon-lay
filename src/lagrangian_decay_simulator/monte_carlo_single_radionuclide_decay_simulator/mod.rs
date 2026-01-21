@@ -4,7 +4,8 @@ use fission_yields_data::prelude::Nuclide;
 use oorandom::Rand64;
 use uom::{ConstZero, si::{f64::*, time::millisecond}};
 
-use crate::{lagrangian_decay_simulator::StochasticDecayChain, prelude::{DecayType, HalfLifeAndDecayEnergyInfo}};
+use crate::lagrangian_decay_simulator::StochasticDecayChain;
+use crate::prelude::HalfLifeAndDecayEnergyInfo;
 
 #[derive(Debug,Clone,PartialEq)]
 pub struct SingleNuclideSimualtorMC {
