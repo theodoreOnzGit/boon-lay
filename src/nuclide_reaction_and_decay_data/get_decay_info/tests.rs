@@ -1,7 +1,7 @@
 
 use crate::prelude::DecayType;
 use crate::prelude::decay_library::DecayLibrary;
-use crate::lagrangian_decay_simulator::DecayChain;
+use crate::lagrangian_decay_simulator::StochasticDecayChain;
 use fission_yields_data::prelude::Nuclide;
 use uom::si::ratio::ratio;
 use uom::si::time::minute;
@@ -79,7 +79,7 @@ fn test_decay_chain(){
 
     let u238 = Nuclide::U238;
 
-    let decay_chain = DecayChain::new_single_stochastic_chain_from_nuclide(
+    let decay_chain = StochasticDecayChain::new_single_stochastic_chain_from_nuclide(
         u238, &mut decay_library);
 
     dbg!(&decay_chain);

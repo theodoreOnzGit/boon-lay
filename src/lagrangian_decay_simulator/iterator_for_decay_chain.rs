@@ -1,12 +1,12 @@
 use fission_yields_data::prelude::Nuclide;
 
-use crate::{lagrangian_decay_simulator::DecayChain, prelude::HalfLifeAndDecayEnergyInfo};
+use crate::{lagrangian_decay_simulator::StochasticDecayChain, prelude::HalfLifeAndDecayEnergyInfo};
 
 // this part is vibe coded for Convenience
 // Assuming `Nuclide` and `HalfLifeAndDecayEnergyInfo` are defined elsewhere.
 
 // Convenience methods: .iter() and .iter_mut()
-impl DecayChain {
+impl StochasticDecayChain {
     pub fn iter(&self) -> DecayChainIter<'_> {
         self.into_iter()
     }
@@ -36,7 +36,7 @@ impl Iterator for DecayChainIntoIter {
 impl ExactSizeIterator for DecayChainIntoIter {}
 impl std::iter::FusedIterator for DecayChainIntoIter {}
 
-impl IntoIterator for DecayChain {
+impl IntoIterator for StochasticDecayChain {
     type Item = (Nuclide, HalfLifeAndDecayEnergyInfo);
     type IntoIter = DecayChainIntoIter;
 
@@ -67,7 +67,7 @@ impl<'a> Iterator for DecayChainIter<'a> {
 impl<'a> ExactSizeIterator for DecayChainIter<'a> {}
 impl<'a> std::iter::FusedIterator for DecayChainIter<'a> {}
 
-impl<'a> IntoIterator for &'a DecayChain {
+impl<'a> IntoIterator for &'a StochasticDecayChain {
     type Item = &'a (Nuclide, HalfLifeAndDecayEnergyInfo);
     type IntoIter = DecayChainIter<'a>;
 
@@ -98,7 +98,7 @@ impl<'a> Iterator for DecayChainIterMut<'a> {
 impl<'a> ExactSizeIterator for DecayChainIterMut<'a> {}
 impl<'a> std::iter::FusedIterator for DecayChainIterMut<'a> {}
 
-impl<'a> IntoIterator for &'a mut DecayChain {
+impl<'a> IntoIterator for &'a mut StochasticDecayChain {
     type Item = &'a mut (Nuclide, HalfLifeAndDecayEnergyInfo);
     type IntoIter = DecayChainIterMut<'a>;
 

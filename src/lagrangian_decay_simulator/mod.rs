@@ -8,22 +8,23 @@ use crate::prelude::{HalfLifeAndDecayEnergyInfo, NuclideReactionAndDecayData, de
 //
 // 
 #[derive(Debug, PartialEq,Clone)]
-pub struct DecayChain {
+pub struct StochasticDecayChain {
     pub nuclides_and_decay_data: Vec<(Nuclide,HalfLifeAndDecayEnergyInfo)>
 }
 
+/// implements iterator for decay chain
 pub mod iterator_for_decay_chain;
 
 
 // and then I want to implement a method that starts from a single nuclide 
 // stable or unstable 
 
-impl DecayChain {
+impl StochasticDecayChain {
 
     /// this function returns a single decay chain 
     /// randomly picked from the various branching ratios inside 
     pub fn new_single_stochastic_chain_from_nuclide(starting_nuclide: Nuclide,
-        decay_library: &mut DecayLibrary)-> DecayChain {
+        decay_library: &mut DecayLibrary)-> StochasticDecayChain {
 
         let mut nuclides_and_decay_data: Vec<(Nuclide,HalfLifeAndDecayEnergyInfo)> 
             = vec![];
@@ -38,7 +39,7 @@ impl DecayChain {
             HalfLifeAndDecayEnergyInfo::Stable => {
                 // in case its stable, don't add anything to the decay chain
                 // there's nothign to add
-                return DecayChain {
+                return StochasticDecayChain {
                     nuclides_and_decay_data
                 };
             },
@@ -92,7 +93,7 @@ impl DecayChain {
                 HalfLifeAndDecayEnergyInfo::Stable => {
                     // in case its stable, don't add anything to the decay chain
                     // there's nothign to add
-                    return DecayChain {
+                    return StochasticDecayChain {
                         nuclides_and_decay_data
                     };
                 },
@@ -138,7 +139,7 @@ impl DecayChain {
 
 
 
-        return DecayChain {
+        return StochasticDecayChain {
             nuclides_and_decay_data
         };
 
