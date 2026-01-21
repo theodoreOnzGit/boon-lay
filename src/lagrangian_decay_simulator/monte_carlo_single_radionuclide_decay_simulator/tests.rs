@@ -4,8 +4,11 @@ use uom::si::f64::*;
 
 use crate::lagrangian_decay_simulator::monte_carlo_single_radionuclide_decay_simulator::SingleNuclideSimualtorMC;
 
-/// basically we want to sample a time to live for 10000 particles
+/// basically we want to sample a time to live for 100000 particles
 /// based on half life of 30s
+///
+/// See if the surviving_fraction of nuclides over time is 
+/// equal to the analytical solution to within 1%
 #[test]
 fn stochastic_half_life_calculator(){
 
@@ -15,7 +18,7 @@ fn stochastic_half_life_calculator(){
     let mut time_to_live_vec: Vec<Time> = vec![];
 
 
-    // now lets do time to live for 10000 particles 
+    // now lets do time to live for 100000 particles 
     let number_of_particles = 100000;
     // we will also have a survivor counter 
     // that is if the particles live beyond a certain time, then it 
@@ -54,11 +57,6 @@ fn stochastic_half_life_calculator(){
 
     // let's first test at 10 seconds 
 
-    let surviving_fraction_10s = 
-        determine_surviving_fraction(
-            Time::new::<second>(10.0), &time_to_live_vec
-        );
-    dbg!(&time_to_live_vec);
     
     // now do this for all times from 0 to 100 s 
     //
