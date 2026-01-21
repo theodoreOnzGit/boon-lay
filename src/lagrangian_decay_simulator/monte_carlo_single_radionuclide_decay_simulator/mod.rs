@@ -241,8 +241,9 @@ impl SingleNuclideSimualtorMC {
 
 
     }
-    /// as function name implies, get time to next decay
+    /// as function name implies, get nuclide in next decay
     /// unless the radionuclide is already stable
+    /// then returns None
     #[inline]
     pub fn get_next_decay_nuclide(&self) -> Option<Nuclide> {
 
@@ -263,6 +264,24 @@ impl SingleNuclideSimualtorMC {
 
 
     }
+    /// as function name implies, get the time to live vector
+    #[inline]
+    pub fn get_time_to_live_vec(&self) -> Vec<Time> {
+
+        return self.time_to_live_vec.clone();
+    }
+    #[inline]
+    pub fn get_decay_chain_vec(&self) -> Vec<Nuclide> {
+        let mut decay_chain_vec: Vec<Nuclide> = vec![];
+
+        for (nuclide,_half_life_info) in &self.stochastic_decay_chain {
+            decay_chain_vec.push(*nuclide);
+        }
+
+
+        return decay_chain_vec;
+    }
+
 }
 
 

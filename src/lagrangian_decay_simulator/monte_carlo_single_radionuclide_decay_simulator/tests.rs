@@ -188,3 +188,12 @@ fn stochastic_half_life_calculator(){
 
 
 }
+
+// in this case, thorium 232 goes via a series of decays, well known 
+// to Pb208
+#[test] 
+fn decay_chain_th232(){
+
+
+
+}
