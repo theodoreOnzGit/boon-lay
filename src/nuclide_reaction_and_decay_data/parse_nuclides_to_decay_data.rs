@@ -9,7 +9,8 @@ impl NuclideReactionAndDecayData {
     /// it basically loads a decay library, and uses the nuclide to index 
     /// the appropriate decay information
     ///
-    /// it is, however, here so that it is more convenient
+    /// it is, however, here so that it is more convenient syntax wise 
+    /// so I leave it to you what you want to use
     #[inline]
     pub fn computationally_expensive_parse_nuclide_to_decay_data(
         nuclide: Nuclide,

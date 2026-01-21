@@ -113,8 +113,8 @@ fn test_decay_chain(){
 
         match half_life_information {
             crate::prelude::HalfLifeAndDecayEnergyInfo::Stable => {
-                // if it's stable, push NAN
-                test_decay_half_lives.push(Time::new::<second>(f64::NAN));
+                // if it's stable, push INFINITY
+                test_decay_half_lives.push(Time::new::<second>(f64::INFINITY));
             },
             crate::prelude::HalfLifeAndDecayEnergyInfo::Unstable(
                 half_life, _decay_energy
@@ -143,7 +143,7 @@ fn test_decay_chain(){
         Time::new::<year>(22.3),        // Pb-210
         Time::new::<day>(5.012),        // Bi-210
         Time::new::<day>(138.376),      // Po-210
-        Time::new::<second>(f64::NAN),  // Pb-206 (stable)
+        Time::new::<second>(f64::INFINITY),  // Pb-206 (stable)
     ];
 
     // for half lives, we need to do some rounding.
@@ -152,7 +152,7 @@ fn test_decay_chain(){
         let test_half_life: Time = test_decay_half_lives[i];
 
         // for stable nuclides, skip
-        if reference_half_life.value.is_nan() {
+        if reference_half_life.value.is_infinite() {
             return;
         }
 
