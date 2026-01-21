@@ -204,11 +204,14 @@ fn decay_chain_th232(){
 
     // as the simulation starts, 
     // I want to get timesteps, and slowly get the time to next decay 
+    dbg!(&th232_decay_simulation);
 
     let mut timestep = Time::new::<year>(500.0);
     th232_decay_simulation.step_forward_simulation(timestep);
+    dbg!(&th232_decay_simulation);
 
     let time_to_next_decay = th232_decay_simulation.get_time_to_next_decay();
+    
 
     // let's force a decay 
 

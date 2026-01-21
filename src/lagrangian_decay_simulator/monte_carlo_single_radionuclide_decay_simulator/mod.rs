@@ -14,6 +14,8 @@ pub struct SingleNuclideSimualtorMC {
     pub current_nuclide: Nuclide,
     /// current half life information for current nuclide 
     pub current_half_life_info: HalfLifeAndDecayEnergyInfo,
+    /// current time to next decay 
+    pub current_time_to_next_decay: Time,
     /// time passed in the simulation
     pub simulated_time: Time,
     /// time passed in real-life
