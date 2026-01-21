@@ -46,10 +46,14 @@ impl SingleNuclideSimualtorMC {
 
             let n_by_n0 = rng.rand_float();
 
-            let half_life_coeff: f64 = n_by_n0.ln() / (2.0_f64.ln());
+            let half_life_coeff: f64 = n_by_n0.ln().abs() / (2.0_f64.ln());
 
             return half_life_coeff * half_life;
 
     }
 }
+
+
+#[cfg(test)]
+pub mod tests;
 
