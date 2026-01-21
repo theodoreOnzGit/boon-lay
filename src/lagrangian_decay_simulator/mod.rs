@@ -18,5 +18,6 @@ pub use stochastic_decay_chain::*;
 /// The simulator, can of course, determine the radiation as well 
 /// released, but that is another time.
 ///
-/// this is NOT vibe coded
+/// this is not really vibe coded (still used chatgpt 5 advise on 
+/// some algorithms)
 pub mod monte_carlo_single_radionuclide_decay_simulator;

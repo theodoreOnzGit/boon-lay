@@ -42,7 +42,7 @@ impl IntoIterator for StochasticDecayChain {
 
     fn into_iter(self) -> Self::IntoIter {
         DecayChainIntoIter {
-            inner: self.nuclides_and_decay_data.into_iter(),
+            inner: self.nuclides_and_decay_data_vec.into_iter(),
         }
     }
 }
@@ -73,7 +73,7 @@ impl<'a> IntoIterator for &'a StochasticDecayChain {
 
     fn into_iter(self) -> Self::IntoIter {
         DecayChainIter {
-            inner: self.nuclides_and_decay_data.iter(),
+            inner: self.nuclides_and_decay_data_vec.iter(),
         }
     }
 }
@@ -104,7 +104,7 @@ impl<'a> IntoIterator for &'a mut StochasticDecayChain {
 
     fn into_iter(self) -> Self::IntoIter {
         DecayChainIterMut {
-            inner: self.nuclides_and_decay_data.iter_mut(),
+            inner: self.nuclides_and_decay_data_vec.iter_mut(),
         }
     }
 }

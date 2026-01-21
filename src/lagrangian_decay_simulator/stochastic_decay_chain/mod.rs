@@ -5,7 +5,7 @@ use crate::prelude::{HalfLifeAndDecayEnergyInfo, NuclideReactionAndDecayData, de
 /// based on random number generator
 #[derive(Debug, PartialEq,Clone)]
 pub struct StochasticDecayChain {
-    pub nuclides_and_decay_data: Vec<(Nuclide,HalfLifeAndDecayEnergyInfo)>
+    pub nuclides_and_decay_data_vec: Vec<(Nuclide,HalfLifeAndDecayEnergyInfo)>
 }
 
 /// implements iterator for decay chain
@@ -36,7 +36,7 @@ impl StochasticDecayChain {
                 // in case its stable, don't add anything to the decay chain
                 // there's nothign to add
                 return StochasticDecayChain {
-                    nuclides_and_decay_data
+                    nuclides_and_decay_data_vec: nuclides_and_decay_data
                 };
             },
             HalfLifeAndDecayEnergyInfo::Unstable(_half_life, _decay_energy) => {
@@ -90,7 +90,7 @@ impl StochasticDecayChain {
                     // in case its stable, don't add anything to the decay chain
                     // there's nothign to add
                     return StochasticDecayChain {
-                        nuclides_and_decay_data
+                        nuclides_and_decay_data_vec: nuclides_and_decay_data
                     };
                 },
                 HalfLifeAndDecayEnergyInfo::Unstable(_half_life, _decay_energy) => {
@@ -136,7 +136,7 @@ impl StochasticDecayChain {
 
 
         return StochasticDecayChain {
-            nuclides_and_decay_data
+            nuclides_and_decay_data_vec: nuclides_and_decay_data
         };
 
 
