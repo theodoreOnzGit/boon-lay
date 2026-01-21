@@ -2,9 +2,14 @@ use std::time::SystemTime;
 
 use fission_yields_data::prelude::Nuclide;
 use oorandom::Rand64;
-use uom::{ConstZero, si::{f64::*, radioactivity::becquerel, time::{millisecond, second}}};
+use uom::{ConstZero, si::f64::*};
+use uom::si::time::second;
+use uom::si::time::millisecond;
+use uom::si::radioactivity::becquerel;
 
-use crate::{lagrangian_decay_simulator::StochasticDecayChain, prelude::{NuclideReactionAndDecayData, decay_library::DecayLibrary}};
+use crate::prelude::decay_library::DecayLibrary;
+use crate::prelude::NuclideReactionAndDecayData;
+use crate::lagrangian_decay_simulator::StochasticDecayChain;
 use crate::prelude::HalfLifeAndDecayEnergyInfo;
 
 #[derive(Debug,Clone,PartialEq)]
