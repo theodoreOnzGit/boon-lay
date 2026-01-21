@@ -8,12 +8,15 @@ impl NuclideReactionAndDecayData {
     /// this is a computationally expensive way to obtain decay data 
     /// it basically loads a decay library, and uses the nuclide to index 
     /// the appropriate decay information
+    ///
+    /// it is, however, here so that it is more convenient
     #[inline]
-    pub fn parse_nuclide_to_decay_data(nuclide: Nuclide,) -> 
-        Option<NuclideReactionAndDecayData>{
-        let decay_library = DecayLibrary::new();
+    pub fn computationally_expensive_parse_nuclide_to_decay_data(
+        nuclide: Nuclide,
+    ) -> Option<NuclideReactionAndDecayData>{
+            let decay_library = DecayLibrary::new();
 
-        return decay_library.match_nuclides_to_decay_data(nuclide);
+            return decay_library.match_nuclides_to_decay_data(nuclide);
 
     }
     
