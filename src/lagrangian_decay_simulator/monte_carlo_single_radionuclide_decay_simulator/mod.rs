@@ -11,15 +11,15 @@ use crate::prelude::HalfLifeAndDecayEnergyInfo;
 pub struct SingleNuclideSimualtorMC {
     /// the current nuclide the simulator is simulating
     /// it can change over time
-    pub current_nuclide: Nuclide,
+    current_nuclide: Nuclide,
     /// current half life information for current nuclide 
-    pub current_half_life_info: HalfLifeAndDecayEnergyInfo,
+    current_half_life_info: HalfLifeAndDecayEnergyInfo,
     /// current time to next decay 
-    pub current_time_to_next_decay: Time,
+    current_time_to_next_decay: Time,
     /// time passed in the simulation
-    pub simulated_time: Time,
+    simulated_time: Time,
     /// time passed in real-life
-    pub elapsed_time: Time,
+    elapsed_time: Time,
 
     /// the decay chain in equation 
     stochastic_decay_chain: StochasticDecayChain,
@@ -331,6 +331,13 @@ impl SingleNuclideSimualtorMC {
         self.current_time_to_next_decay
 
     }
+    /// as name implies, gets current nuclide
+    #[inline]
+    pub fn get_current_nuclide(&self) -> Nuclide {
+
+        self.current_nuclide
+
+    }
     /// as function name implies, get nuclide in next decay
     /// unless the radionuclide is already stable
     /// then returns None
@@ -370,6 +377,21 @@ impl SingleNuclideSimualtorMC {
 
 
         return decay_chain_vec;
+    }
+    /// gets current simulated time
+    #[inline]
+    pub fn get_current_simulated_time(&self) -> Time {
+        return self.simulated_time;
+    }
+    /// gets current elapsed time
+    #[inline]
+    pub fn get_current_elapsed_time(&self) -> Time {
+        return self.elapsed_time;
+    }
+
+    #[inline]
+    pub fn get_current_half_life_info(&self) -> HalfLifeAndDecayEnergyInfo {
+        self.current_half_life_info.clone()
     }
 
 }

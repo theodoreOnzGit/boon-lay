@@ -204,22 +204,32 @@ fn decay_chain_th232(){
 
     // as the simulation starts, 
     // I want to get timesteps, and slowly get the time to next decay 
-    dbg!(&th232_decay_simulation);
 
     let mut timestep = Time::new::<year>(500.0);
     th232_decay_simulation.step_forward_simulation(timestep);
-    dbg!(&th232_decay_simulation);
+
+    // current nuclide is still Th232 
+    assert_eq!(th232_decay_simulation.get_current_nuclide(), 
+        th232);
 
     let time_to_next_decay = th232_decay_simulation.get_time_to_next_decay();
-    
 
     // let's force a decay 
-
+    //
+    // we should get Radium 228
     timestep = time_to_next_decay;
-    let (next_nuclide, _half_life_info) = 
+    let (ra228, _half_life_info) = 
         th232_decay_simulation.step_forward_simulation(timestep);
+    assert_eq!(ra228, 
+        Nuclide::Ra228);
 
-    dbg!(&next_nuclide);
+    // the next nuclide in the decay chain is Ra228 
+    // this is the other way to get the current nuclide
+    assert_eq!(th232_decay_simulation.current_nuclide, 
+        Nuclide::Ra228);
+    
+
+    dbg!(&th232_decay_simulation);
 
     todo!();
 
