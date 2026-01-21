@@ -12,6 +12,9 @@ pub struct DecayChain {
     pub nuclides_and_decay_data: Vec<(Nuclide,HalfLifeAndDecayEnergyInfo)>
 }
 
+pub mod iterator_for_decay_chain;
+
+
 // and then I want to implement a method that starts from a single nuclide 
 // stable or unstable 
 
