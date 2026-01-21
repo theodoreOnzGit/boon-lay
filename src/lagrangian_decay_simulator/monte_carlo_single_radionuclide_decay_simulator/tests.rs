@@ -227,10 +227,61 @@ fn decay_chain_th232(){
     // this is the other way to get the current nuclide
     assert_eq!(th232_decay_simulation.current_nuclide, 
         Nuclide::Ra228);
-    
 
     dbg!(&th232_decay_simulation);
+    
+    
+    
+    
+    // now suppose I wanted to skip the simulation to thorium 228
+    // this should be around 11 yrs
+    timestep = Time::new::<year>(11.0);
+    
+    let (current_nuclide, _half_life_info) = 
+        th232_decay_simulation.step_forward_simulation(timestep);
 
-    todo!();
+    assert_eq!(current_nuclide, Nuclide::Th228);
+
+    // let's do 12 yrs, should still be Th228
+
+    timestep = Time::new::<year>(1.0);
+    let (current_nuclide, _half_life_info) = 
+        th232_decay_simulation.step_forward_simulation(timestep);
+    assert_eq!(current_nuclide, Nuclide::Th228);
+
+    // let's force the decay to the next nuclide, Ra224 
+    let (current_nuclide, _half_life_info) = 
+        th232_decay_simulation.force_decay_to_next_nuclide();
+    
+    assert_eq!(current_nuclide, Nuclide::Ra224);
+
+    // now let's fast fwd decay to Pb212 (I used libreoffice calc to 
+    // calculate the time required)
+    //
+    timestep = Time::new::<second>(327190.978);
+    let (current_nuclide, _half_life_info) = 
+        th232_decay_simulation.step_forward_simulation(timestep);
+    assert_eq!(current_nuclide, Nuclide::Pb212);
+
+    // now let's decay for 2 yrs, we should get lead
+
+    timestep = Time::new::<year>(2.0);
+    let (current_nuclide, _half_life_info) = 
+        th232_decay_simulation.step_forward_simulation(timestep);
+    assert_eq!(current_nuclide, Nuclide::Pb208);
+
+
+    // regression test, 
+    // current simulation time 
+    let simulated_time: Time = th232_decay_simulation.get_current_simulated_time();
+
+    approx::assert_relative_eq!(
+        simulated_time.get::<year>(),
+        1102958115.25,
+        max_relative=1e-8,
+    );
+    
+
+
 
 }
