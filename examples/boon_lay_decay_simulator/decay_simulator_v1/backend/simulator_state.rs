@@ -82,5 +82,17 @@ impl SimulatorState {
     pub fn reset_simulated_time(&mut self){
         self.simulated_time = Time::ZERO;
     }
+
+
+    // for getting and setting nuclide 
+    pub fn set_user_selected_nuclide(&mut self, user_selected_nuclide: Nuclide){
+        self.user_selected_nuclide = user_selected_nuclide;
+    }
+
+    pub fn get_user_selected_nuclide(&self) -> Nuclide {
+        self.user_selected_nuclide
+    }
+
+
 }
 

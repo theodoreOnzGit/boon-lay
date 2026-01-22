@@ -1,3 +1,4 @@
+use boon_lay::Nuclide;
 use egui::Ui;
 use uom::si::{f64::Time, time::{day, millisecond, second, year}};
 
@@ -56,6 +57,7 @@ impl DecaySimApp {
         ui.label(timestep_string);
         ui.label(" ");
 
+        ui.separator();
 
         // timestep settings
 
@@ -71,6 +73,28 @@ impl DecaySimApp {
         ui.add(timestep_slider_seconds);
         let timestep = Time::new::<second>(user_set_timestep_seconds);
         self.simulator_state.lock().unwrap().set_timestep(timestep);
+        ui.separator();
+
+
+        ui.label("Select nuclide mode:");
+
+        let mut nuclide = simulator_state_clone.get_user_selected_nuclide();
+
+        egui::ComboBox::from_label("Nuclide")
+            .selected_text(format!("Nuclide: {:?}", nuclide))
+            .show_ui(ui, |ui| {
+                ui.selectable_value(&mut nuclide, Nuclide::U238, "U238");
+                ui.selectable_value(&mut nuclide, Nuclide::U235, "U235");
+                ui.selectable_value(&mut nuclide, Nuclide::Cs137, "Cs137");
+            });
+
+        ui.separator();
+        ui.label(format!("Current Nuclide: {:?}", nuclide));
+
+        self.simulator_state.lock().unwrap().set_user_selected_nuclide(
+            nuclide
+        );
+
 
 
 
