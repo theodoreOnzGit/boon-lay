@@ -2,6 +2,8 @@ use std::{sync::Arc, thread, time::Duration};
 
 use std::sync::Mutex;
 
+use crate::decay_simulator_v1::panels_and_pages::Panel;
+
 pub fn decay_simulator_v1() -> eframe::Result<()> {
 
 
@@ -34,7 +36,7 @@ pub struct DecaySimApp {
     #[serde(skip)] // This how you opt-out of serialization of a field
     value: f64,
 
-    //open_panel: Panel,
+    open_panel: Panel,
     //#[serde(skip)]
     //ciet_state: Arc<Mutex<CIETState>>,
 
@@ -117,9 +119,9 @@ impl Default for DecaySimApp {
 
         Self {
             // Example stuff:
-            label: "CIET simulator v1".to_owned(),
+            label: "Boon Lay Decay Simulator v1".to_owned(),
             value: 3.6,
-            //open_panel: Panel::MainPage,
+            open_panel: Panel::MainPage,
             //ciet_state,
             //ciet_plot_data_mutex_ptr_for_parallel_data_transfer: ciet_plot_data,
             //ciet_plot_data: PagePlotData::default(),
@@ -262,7 +264,7 @@ impl eframe::App for DecaySimApp {
             //}
 
             ui.add(egui::github_link_file!(
-                    "https://github.com/theodoreOnzGit/boon-lay/",
+                    "https://github.com/theodoreOnzGit/boon-lay/blob/develop/",
                     "Boon Lay Github Repo"
             ));
 
@@ -362,4 +364,10 @@ fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
         ui.label(".");
     });
 }
+
+
+
+/// code for panels and pages in the simulator
+pub mod panels_and_pages;
+
 
