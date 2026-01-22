@@ -116,19 +116,32 @@ impl DecaySimApp {
             new_decay_sim_app.decay_sim_thread_3_ptr.clone();
         let decay_sim_thread_4_ptr = 
             new_decay_sim_app.decay_sim_thread_4_ptr.clone();
+
+        let simulator_state_thread_1_ptr: Arc<Mutex<SimulatorState>> = 
+            new_decay_sim_app.simulator_state.clone();
+        let simulator_state_thread_2_ptr: Arc<Mutex<SimulatorState>> = 
+            new_decay_sim_app.simulator_state.clone();
+        let simulator_state_thread_3_ptr: Arc<Mutex<SimulatorState>> = 
+            new_decay_sim_app.simulator_state.clone();
+        let simulator_state_thread_4_ptr: Arc<Mutex<SimulatorState>> = 
+            new_decay_sim_app.simulator_state.clone();
         //// now spawn a thread moving in the pointer 
         //
         thread::spawn(move ||{
-            decay_sim_thread_1_ptr
+            decay_sim_thread_1_ptr;
+            simulator_state_thread_1_ptr;
         });
         thread::spawn(move ||{
-            decay_sim_thread_2_ptr
+            decay_sim_thread_2_ptr;
+            simulator_state_thread_2_ptr;
         });
         thread::spawn(move ||{
-            decay_sim_thread_3_ptr
+            decay_sim_thread_3_ptr;
+            simulator_state_thread_3_ptr;
         });
         thread::spawn(move ||{
-            decay_sim_thread_4_ptr
+            decay_sim_thread_4_ptr;
+            simulator_state_thread_4_ptr;
         });
 
         // spawn a thread to update the plotting bits
