@@ -21,7 +21,7 @@ impl Default for SimulatorState {
         let is_running = true;
         let restart_button_pressed = false;
         let change_nuclide_button_pressed = false;
-        let user_selected_timestep = Time::new::<second>(1.0);
+        let user_selected_timestep = Time::new::<second>(0.3);
         let elapsed_time = Time::ZERO;
         let simulated_time = Time::ZERO;
         Self {
@@ -70,6 +70,9 @@ impl SimulatorState {
     }
     pub fn get_simulated_time(&self) -> Time {
         self.simulated_time
+    }
+    pub fn get_simulated_time_seconds_2dp(&self) -> f64 {
+        return (self.get_simulated_time().get::<second>()*100_f64).round()/100.0;
     }
     pub fn reset_simulated_time(&mut self){
         self.simulated_time = Time::ZERO;

@@ -287,7 +287,7 @@ impl eframe::App for DecaySimApp {
             match self.open_panel {
                 Panel::MainPage => {
                     egui::ScrollArea::both().show(ui, |ui| {
-                        //self.ciet_main_page_side_panel(ui);
+                        self.side_panel(ui);
                         self.citation_disclaimer_and_acknowledgements(ui);
                     });
                 },
