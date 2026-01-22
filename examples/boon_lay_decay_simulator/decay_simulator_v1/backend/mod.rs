@@ -26,12 +26,6 @@ impl DecaySimApp {
                     (v,decay_library)
             ));
     }
-    // at each simulation, the simulator will run in the background 
-    pub fn run_decay_chain_simulation(
-        thread_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>
-        ){
-
-    }
     
 }
 
@@ -39,3 +33,5 @@ impl DecaySimApp {
 /// contains information for the user to communicate between the UI and the 
 /// threads doing the computation work
 pub mod simulator_state;
+
+pub mod run;

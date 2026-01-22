@@ -128,20 +128,28 @@ impl DecaySimApp {
         //// now spawn a thread moving in the pointer 
         //
         thread::spawn(move ||{
-            decay_sim_thread_1_ptr;
-            simulator_state_thread_1_ptr;
+            Self::run_decay_chain_simulation(
+                decay_sim_thread_1_ptr,
+                simulator_state_thread_1_ptr,
+            );
         });
         thread::spawn(move ||{
-            decay_sim_thread_2_ptr;
-            simulator_state_thread_2_ptr;
+            Self::run_decay_chain_simulation(
+                decay_sim_thread_2_ptr,
+                simulator_state_thread_2_ptr,
+            );
         });
         thread::spawn(move ||{
-            decay_sim_thread_3_ptr;
-            simulator_state_thread_3_ptr;
+            Self::run_decay_chain_simulation(
+                decay_sim_thread_3_ptr,
+                simulator_state_thread_3_ptr,
+            );
         });
         thread::spawn(move ||{
-            decay_sim_thread_4_ptr;
-            simulator_state_thread_4_ptr;
+            Self::run_decay_chain_simulation(
+                decay_sim_thread_4_ptr,
+                simulator_state_thread_4_ptr,
+            );
         });
 
         // spawn a thread to update the plotting bits
