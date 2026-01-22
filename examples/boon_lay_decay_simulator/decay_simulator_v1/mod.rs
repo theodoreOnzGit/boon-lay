@@ -160,30 +160,30 @@ impl eframe::App for DecaySimApp {
             ui.heading("Boon Lay Decay Simulator v1");
             ui.separator();
             // allow user to select which panel is open
-            //ui.horizontal( 
-            //    |ui| {
-            //        ui.selectable_value(&mut self.open_panel, Panel::MainPage, "Main Page"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::Heater, "Heater"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::CTAH, "CTAH"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::CTAHPump, "CTAH Pump"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::TCHX, "TCHX"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::DHX, "DHX STHE"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::FrequencyResponseAndTransients, "Frequency Response and Transients"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::OnlineCalibration, "Online Calibration"); 
-            //        ui.selectable_value(&mut self.open_panel, Panel::NodalisedDiagram, "CIET Nodalised Diagram"); 
-            //}
-            //);
+            ui.horizontal( 
+                |ui| {
+                    ui.selectable_value(&mut self.open_panel, Panel::MainPage, "Main Page"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::Heater, "Heater"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::CTAH, "CTAH"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::CTAHPump, "CTAH Pump"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::TCHX, "TCHX"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::DHX, "DHX STHE"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::FrequencyResponseAndTransients, "Frequency Response and Transients"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::OnlineCalibration, "Online Calibration"); 
+                    //ui.selectable_value(&mut self.open_panel, Panel::NodalisedDiagram, "CIET Nodalised Diagram"); 
+            }
+            );
             ui.separator();
         });
 
         egui::SidePanel::right("Supplementary Info").show(ctx, |ui|{
-            //match self.open_panel {
-            //    Panel::MainPage => {
-            //        egui::ScrollArea::both().show(ui, |ui| {
-            //            self.ciet_main_page_side_panel(ui);
-            //            self.citation_disclaimer_and_acknowledgements(ui);
-            //        });
-            //    },
+            match self.open_panel {
+                Panel::MainPage => {
+                    egui::ScrollArea::both().show(ui, |ui| {
+                        //self.ciet_main_page_side_panel(ui);
+                        self.citation_disclaimer_and_acknowledgements(ui);
+                    });
+                },
             //    Panel::CTAHPump => {
             //        self.ciet_sim_ctah_pump_page_csv(ui);
             //    },
@@ -209,7 +209,7 @@ impl eframe::App for DecaySimApp {
             //    Panel::NodalisedDiagram => {},
             //    Panel::OnlineCalibration => {},
 
-            //}
+            }
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
