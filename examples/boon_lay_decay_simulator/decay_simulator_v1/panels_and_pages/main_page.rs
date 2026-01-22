@@ -1,4 +1,5 @@
-use egui::{Rect, Ui};
+use boon_lay::Nuclide;
+use egui::{Color32, Rect, Ui};
 
 use crate::decay_simulator_v1::DecaySimApp;
 
@@ -45,5 +46,64 @@ impl DecaySimApp {
             }
         }
 
+    }
+
+
+    /// this is a vibe coded colour scheme for elements in the periodic table
+    pub fn element_color(nuclide: Nuclide) -> Color32 {
+        // Define palette for categories (pick your own colors if you prefer)
+        const HYDROGEN: Color32 = Color32::from_rgb(255, 255, 255);      // White
+        const ALKALI: Color32 = Color32::from_rgb(255, 128, 0);          // Orange
+        const ALKALINE_EARTH: Color32 = Color32::from_rgb(255, 215, 0);  // Gold
+        const TRANSITION: Color32 = Color32::from_rgb(70, 130, 180);     // Steel blue
+        const LANTHANOID: Color32 = Color32::from_rgb(123, 104, 238);    // Medium slate blue
+        const ACTINOID: Color32 = Color32::from_rgb(199, 21, 133);       // Medium violet red
+        const POST_TRANSITION: Color32 = Color32::from_rgb(176, 196, 222); // Light steel blue
+        const METALLOID: Color32 = Color32::from_rgb(0, 128, 0);         // Green
+        const OTHER_NONMETAL: Color32 = Color32::from_rgb(34, 139, 34);  // Forest green
+        const HALOGEN: Color32 = Color32::from_rgb(0, 255, 255);         // Cyan
+        const NOBLE_GAS: Color32 = Color32::from_rgb(135, 206, 235);     // Sky blue
+        const UNKNOWN: Color32 = Color32::from_rgb(128, 128, 128);       // Gray
+                                                                         //
+
+        let (z,_a) = nuclide.get_z_a();
+
+        match z {
+            // Special case
+            1 => HYDROGEN,
+
+            // Noble gases
+            2 | 10 | 18 | 36 | 54 | 86 | 118 => NOBLE_GAS,
+
+            // Alkali metals
+            3 | 11 | 19 | 37 | 55 | 87 => ALKALI,
+
+            // Alkaline earth metals
+            4 | 12 | 20 | 38 | 56 | 88 => ALKALINE_EARTH,
+
+            // Transition metals
+            21..=30 | 39..=48 | 72..=80 | 104..=112 => TRANSITION,
+
+            // Lanthanoids
+            57..=71 => LANTHANOID,
+
+            // Actinoids
+            89..=103 => ACTINOID,
+
+            // Post-transition metals (poor metals)
+            13 | 31 | 49 | 50 | 81 | 82 | 83 | 84 | 113 | 114 | 115 | 116 => POST_TRANSITION,
+
+            // Metalloids (semimetals)
+            5 | 14 | 32 | 33 | 51 | 52 => METALLOID,
+
+            // Other nonmetals
+            6 | 7 | 8 | 15 | 16 | 34 => OTHER_NONMETAL,
+
+            // Halogens
+            9 | 17 | 35 | 53 | 85 | 117 => HALOGEN,
+
+            // If out of range or unclassified
+            _ => UNKNOWN,
+        }
     }
 }
