@@ -1,4 +1,4 @@
-use std::sync::{Arc, Mutex};
+use std::{sync::{Arc, Mutex}, thread, time::Duration};
 
 use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimualtorMC}, Nuclide};
 
@@ -23,6 +23,7 @@ impl DecaySimApp {
             // check if the pause button is on 
             // if pause button on, skip all contents in current iteration
             if simulator_state_clone.is_paused() {
+                
                 continue;
             }
 
@@ -50,7 +51,11 @@ impl DecaySimApp {
 
 
 
+            // just sleep for 50 ms each time, default
+            let time_to_sleep: Duration = 
+                Duration::from_millis(50);
 
+            thread::sleep(time_to_sleep);
 
 
 
