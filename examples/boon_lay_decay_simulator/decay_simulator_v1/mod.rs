@@ -262,7 +262,7 @@ impl eframe::App for DecaySimApp {
             //}
 
             ui.add(egui::github_link_file!(
-                    "https://github.com/theodoreOnzGit/boon-lay",
+                    "https://github.com/theodoreOnzGit/boon-lay/",
                     "Boon Lay Github Repo"
             ));
 
