@@ -76,12 +76,12 @@ impl DecaySimApp {
         ui.separator();
 
 
-        ui.label("Select nuclide mode:");
+        ui.label("Select nuclide :");
 
         let mut nuclide = simulator_state_clone.get_user_selected_nuclide();
 
-        egui::ComboBox::from_label("Nuclide")
-            .selected_text(format!("Nuclide: {:?}", nuclide))
+        egui::ComboBox::from_label("User Selected Nuclide")
+            .selected_text(format!("{:?}", nuclide))
             .show_ui(ui, |ui| {
                 ui.selectable_value(&mut nuclide, Nuclide::U238, "U238");
                 ui.selectable_value(&mut nuclide, Nuclide::U235, "U235");
@@ -89,8 +89,8 @@ impl DecaySimApp {
                 ui.selectable_value(&mut nuclide, Nuclide::I131, "I131");
             });
 
+        ui.label(format!("User Selected Nuclide: {:?}", nuclide));
         ui.separator();
-        ui.label(format!("Current Nuclide: {:?}", nuclide));
 
         self.simulator_state.lock().unwrap().set_user_selected_nuclide(
             nuclide
