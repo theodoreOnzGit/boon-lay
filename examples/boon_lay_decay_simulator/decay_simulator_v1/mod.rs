@@ -128,27 +128,35 @@ impl DecaySimApp {
         //// now spawn a thread moving in the pointer 
         //
         thread::spawn(move ||{
+            let thread_number = 1;
             Self::run_decay_chain_simulation(
                 decay_sim_thread_1_ptr,
                 simulator_state_thread_1_ptr,
+                thread_number
             );
         });
         thread::spawn(move ||{
+            let thread_number = 2;
             Self::run_decay_chain_simulation(
                 decay_sim_thread_2_ptr,
                 simulator_state_thread_2_ptr,
+                thread_number
             );
         });
         thread::spawn(move ||{
+            let thread_number = 3;
             Self::run_decay_chain_simulation(
                 decay_sim_thread_3_ptr,
                 simulator_state_thread_3_ptr,
+                thread_number
             );
         });
         thread::spawn(move ||{
+            let thread_number = 4;
             Self::run_decay_chain_simulation(
                 decay_sim_thread_4_ptr,
                 simulator_state_thread_4_ptr,
+                thread_number
             );
         });
 
