@@ -1,7 +1,7 @@
 use std::{sync::{Arc, Barrier, Mutex}, thread, time::{Duration, SystemTime}};
 
 use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimualtorMC}, Nuclide};
-use uom::si::{f64::Time, time::second};
+use uom::si::{f64::Time, time::{millisecond, second}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
 
@@ -91,12 +91,21 @@ impl DecaySimApp {
             // and return the simulation vector
             *thread_ptr.lock().unwrap() = (simulation_vector, decay_library);
 
-            // now let's keep things in time
+            // now let's keep things in time 
+            // this is for real-time simulation
+            let loop_time_end = loop_time.elapsed().unwrap();
+            let time_taken_for_calculation_loop_milliseconds: f64 = 
+                (loop_time_end - loop_time_start)
+                .as_millis() as f64;
 
+            let time_to_sleep_milliseconds: u64 = 
+                (timestep.get::<millisecond>() - 
+                 time_taken_for_calculation_loop_milliseconds)
+                .round().abs() as u64;
 
-            // just sleep for 50 ms each time, default
             let time_to_sleep: Duration = 
-                Duration::from_millis(500);
+                Duration::from_millis(time_to_sleep_milliseconds - 1);
+            // time to sleep for real-time (default)
 
             thread::sleep(time_to_sleep);
 
@@ -106,6 +115,8 @@ impl DecaySimApp {
             // other threads don't touch
 
             if thread_number == 1 {
+
+                simulator_state_ptr.lock().unwrap().add_to_simulated_time(timestep);
 
                 let elapsed_time_seconds = 
                     (loop_time.elapsed().unwrap().as_secs_f64() * 100.0).round()/100.0;
