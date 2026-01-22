@@ -93,23 +93,23 @@ impl DecaySimApp {
 
             // now let's keep things in time 
             // this is for real-time simulation
-            let loop_time_end = loop_time.elapsed().unwrap();
-            let time_taken_for_calculation_loop_milliseconds: f64 = 
-                (loop_time_end - loop_time_start)
-                .as_millis() as f64;
-
-            let time_to_sleep_milliseconds: u64 = 
-                (timestep.get::<millisecond>() - 
-                 time_taken_for_calculation_loop_milliseconds)
-                .round().abs() as u64;
-
-            let time_to_sleep_realtime: Duration = 
-                Duration::from_millis(time_to_sleep_milliseconds - 1);
-            // time to sleep for real-time (default)
 
             let realtime = false; 
 
             if realtime {
+                let loop_time_end = loop_time.elapsed().unwrap();
+                let time_taken_for_calculation_loop_milliseconds: f64 = 
+                    (loop_time_end - loop_time_start)
+                    .as_millis() as f64;
+
+                let time_to_sleep_milliseconds: u64 = 
+                    (timestep.get::<millisecond>() - 
+                     time_taken_for_calculation_loop_milliseconds)
+                    .round().abs() as u64;
+
+                let time_to_sleep_realtime: Duration = 
+                    Duration::from_millis(time_to_sleep_milliseconds - 1);
+                // time to sleep for real-time (default)
                 thread::sleep(time_to_sleep_realtime);
             } else {
                 let time_to_sleep_milliseconds: u64 = 

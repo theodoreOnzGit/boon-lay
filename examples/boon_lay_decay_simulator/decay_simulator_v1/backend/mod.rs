@@ -10,7 +10,7 @@ impl DecaySimApp {
     /// this basically constructs a simulation for a single thread to run 
     pub fn construct_new_single_thread_multi_particle_simulation(num_of_nuclides: u64,
         nuclide: Nuclide,
-        rng_seed: usize)-> 
+        rng_seed: u64)-> 
         Arc<Mutex<(Vec<SingleNuclideSimulatorMC>, DecayLibrary)>>{
 
             let mut decay_library = DecayLibrary::new();
