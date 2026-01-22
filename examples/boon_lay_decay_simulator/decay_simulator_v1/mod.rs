@@ -195,25 +195,34 @@ impl Default for DecaySimApp {
 
         let num_of_nuclides = 62_500;
         let nuclide = Nuclide::U238;
+
+        let rng_seed_1 = 550;
+        let rng_seed_2 = 47;
+        let rng_seed_3 = 58;
+        let rng_seed_4 = 1414;
         let decay_sim_thread_1_ptr = 
             Self::construct_new_single_thread_multi_particle_simulation(
                 num_of_nuclides, 
-                nuclide
+                nuclide,
+                rng_seed_1,
             );
         let decay_sim_thread_2_ptr = 
             Self::construct_new_single_thread_multi_particle_simulation(
                 num_of_nuclides, 
-                nuclide
+                nuclide,
+                rng_seed_2,
             );
         let decay_sim_thread_3_ptr = 
             Self::construct_new_single_thread_multi_particle_simulation(
                 num_of_nuclides, 
-                nuclide
+                nuclide,
+                rng_seed_3,
             );
         let decay_sim_thread_4_ptr = 
             Self::construct_new_single_thread_multi_particle_simulation(
                 num_of_nuclides, 
-                nuclide
+                nuclide,
+                rng_seed_4,
             );
 
         let simulator_state = Arc::new(Mutex::new(SimulatorState::default()));
