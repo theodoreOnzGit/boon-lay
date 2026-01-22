@@ -64,7 +64,7 @@ impl DecaySimApp {
 
         let timestep_slider_seconds = egui::Slider::new(
             &mut user_set_timestep_seconds, 
-            0.00001..=1e8
+            0.00001..=1e10
         ) .logarithmic(true) .text("Timestep Control (s)") .drag_value_speed(0.001);
 
         // set timestep 
