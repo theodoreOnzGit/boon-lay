@@ -51,4 +51,14 @@ impl SimulatorState {
     pub fn get_timestep(&self) -> Time {
         return self.user_selected_timestep;
     }
+
+
+    pub fn set_elapsed_time(&mut self, elapsed_time: Time){
+        self.elapsed_time = elapsed_time;
+    }
+
+    pub fn get_elapsed_time(&self) -> Time {
+        self.elapsed_time
+    }
 }
+

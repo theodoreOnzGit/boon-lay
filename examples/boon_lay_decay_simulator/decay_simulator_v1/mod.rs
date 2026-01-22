@@ -1,6 +1,6 @@
 use std::{sync::Arc, thread, time::Duration};
 
-use std::sync::Mutex;
+use std::sync::{Barrier, Mutex};
 
 use boon_lay::prelude::decay_library::DecayLibrary;
 use boon_lay::prelude::SingleNuclideSimualtorMC;
@@ -125,6 +125,16 @@ impl DecaySimApp {
             new_decay_sim_app.simulator_state.clone();
         let simulator_state_thread_4_ptr: Arc<Mutex<SimulatorState>> = 
             new_decay_sim_app.simulator_state.clone();
+
+        // the barrier keeps each thread running in sync, so that 
+        // no one thread outruns another
+        let num_threads = 4;
+        let barrier: Arc<Barrier> = Arc::new(Barrier::new(num_threads));
+        let barrier_1 = Arc::clone(&barrier);
+        let barrier_2 = Arc::clone(&barrier);
+        let barrier_3 = Arc::clone(&barrier);
+        let barrier_4 = Arc::clone(&barrier);
+
         //// now spawn a thread moving in the pointer 
         //
         thread::spawn(move ||{
@@ -132,7 +142,8 @@ impl DecaySimApp {
             Self::run_decay_chain_simulation(
                 decay_sim_thread_1_ptr,
                 simulator_state_thread_1_ptr,
-                thread_number
+                thread_number,
+                barrier_1,
             );
         });
         thread::spawn(move ||{
@@ -140,7 +151,8 @@ impl DecaySimApp {
             Self::run_decay_chain_simulation(
                 decay_sim_thread_2_ptr,
                 simulator_state_thread_2_ptr,
-                thread_number
+                thread_number,
+                barrier_2,
             );
         });
         thread::spawn(move ||{
@@ -148,7 +160,8 @@ impl DecaySimApp {
             Self::run_decay_chain_simulation(
                 decay_sim_thread_3_ptr,
                 simulator_state_thread_3_ptr,
-                thread_number
+                thread_number,
+                barrier_3,
             );
         });
         thread::spawn(move ||{
@@ -156,7 +169,8 @@ impl DecaySimApp {
             Self::run_decay_chain_simulation(
                 decay_sim_thread_4_ptr,
                 simulator_state_thread_4_ptr,
-                thread_number
+                thread_number,
+                barrier_4,
             );
         });
 
