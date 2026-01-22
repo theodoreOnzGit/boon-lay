@@ -6,6 +6,7 @@ use boon_lay::prelude::decay_library::DecayLibrary;
 use boon_lay::prelude::SingleNuclideSimualtorMC;
 use boon_lay::Nuclide;
 
+use crate::decay_simulator_v1::backend::simulator_state::SimulatorState;
 use crate::decay_simulator_v1::panels_and_pages::Panel;
 
 pub fn decay_simulator_v1() -> eframe::Result<()> {
@@ -55,10 +56,10 @@ pub struct DecaySimApp {
     #[serde(skip)]
     decay_sim_thread_4_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
 
-    //// we also need plot data here 
-    //// this is for the data to be transferred between threads
-    //#[serde(skip)]
-    //ciet_plot_data_mutex_ptr_for_parallel_data_transfer: Arc<Mutex<PagePlotData>>,
+    // we also need plot data here 
+    // this is for the data to be transferred between threads
+    #[serde(skip)]
+    simulator_state: Arc<Mutex<SimulatorState>>,
 
     //// this is for direct use in plots 
     //#[serde(skip)]
@@ -172,6 +173,8 @@ impl Default for DecaySimApp {
                 nuclide
             );
 
+        let simulator_state = Arc::new(Mutex::new(SimulatorState::default()));
+
         Self {
             // Example stuff:
             label: "Boon Lay Decay Simulator v1".to_owned(),
@@ -187,6 +190,7 @@ impl Default for DecaySimApp {
             decay_sim_thread_2_ptr,
             decay_sim_thread_3_ptr,
             decay_sim_thread_4_ptr,
+            simulator_state,
             //user_desired_heater_type: HeaterType::InsulatedHeaterV1Fine15Mesh,
 
         }
