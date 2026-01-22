@@ -2,6 +2,10 @@ use std::{sync::Arc, thread, time::Duration};
 
 use std::sync::Mutex;
 
+use boon_lay::prelude::decay_library::DecayLibrary;
+use boon_lay::prelude::SingleNuclideSimualtorMC;
+use boon_lay::Nuclide;
+
 use crate::decay_simulator_v1::panels_and_pages::Panel;
 
 pub fn decay_simulator_v1() -> eframe::Result<()> {
@@ -37,8 +41,19 @@ pub struct DecaySimApp {
     value: f64,
 
     open_panel: Panel,
-    //#[serde(skip)]
-    //ciet_state: Arc<Mutex<CIETState>>,
+
+    /// these are pointers for the each decay simulation
+    #[serde(skip)]
+    decay_sim_thread_1_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+    /// these are pointers for the each decay simulation
+    #[serde(skip)]
+    decay_sim_thread_2_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+    /// these are pointers for the each decay simulation
+    #[serde(skip)]
+    decay_sim_thread_3_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+    /// these are pointers for the each decay simulation
+    #[serde(skip)]
+    decay_sim_thread_4_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
 
     //// we also need plot data here 
     //// this is for the data to be transferred between threads
@@ -75,7 +90,7 @@ impl DecaySimApp {
         //    return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         //}
 
-        let new_ciet_app: DecaySimApp = Default::default();
+        let new_decay_sim_app: DecaySimApp = Default::default();
 
         //// I'll clone the pointer and start a thread 
 
@@ -92,10 +107,27 @@ impl DecaySimApp {
         //let ciet_plot_ptr: Arc<Mutex<PagePlotData>> = 
         //    new_ciet_app.ciet_plot_data_mutex_ptr_for_parallel_data_transfer.clone();
 
+        let decay_sim_thread_1_ptr = 
+            new_decay_sim_app.decay_sim_thread_1_ptr.clone();
+        let decay_sim_thread_2_ptr = 
+            new_decay_sim_app.decay_sim_thread_2_ptr.clone();
+        let decay_sim_thread_3_ptr = 
+            new_decay_sim_app.decay_sim_thread_3_ptr.clone();
+        let decay_sim_thread_4_ptr = 
+            new_decay_sim_app.decay_sim_thread_4_ptr.clone();
         //// now spawn a thread moving in the pointer 
         //
         thread::spawn(move ||{
-            //educational_ciet_loop_version_4(ciet_state_ptr);
+            decay_sim_thread_1_ptr
+        });
+        thread::spawn(move ||{
+            decay_sim_thread_2_ptr
+        });
+        thread::spawn(move ||{
+            decay_sim_thread_3_ptr
+        });
+        thread::spawn(move ||{
+            decay_sim_thread_4_ptr
         });
 
         // spawn a thread to update the plotting bits
@@ -105,7 +137,7 @@ impl DecaySimApp {
             //    ciet_plot_ptr);
         });
 
-        new_ciet_app
+        new_decay_sim_app
     }
 
     
@@ -116,6 +148,29 @@ impl Default for DecaySimApp {
 
         //let ciet_state = Arc::new(Mutex::new(CIETState::default()));
         //let ciet_plot_data = Arc::new(Mutex::new(PagePlotData::default()));
+
+        let num_of_nuclides = 62_500;
+        let nuclide = Nuclide::U238;
+        let decay_sim_thread_1_ptr = 
+            Self::construct_new_single_thread_multi_particle_simulation(
+                num_of_nuclides, 
+                nuclide
+            );
+        let decay_sim_thread_2_ptr = 
+            Self::construct_new_single_thread_multi_particle_simulation(
+                num_of_nuclides, 
+                nuclide
+            );
+        let decay_sim_thread_3_ptr = 
+            Self::construct_new_single_thread_multi_particle_simulation(
+                num_of_nuclides, 
+                nuclide
+            );
+        let decay_sim_thread_4_ptr = 
+            Self::construct_new_single_thread_multi_particle_simulation(
+                num_of_nuclides, 
+                nuclide
+            );
 
         Self {
             // Example stuff:
@@ -128,6 +183,10 @@ impl Default for DecaySimApp {
             //frequency_response_settings: FreqResponseAndTransientSettings::default(),
             user_wants_fast_fwd_on: false,
             user_wants_slow_motion_on: false,
+            decay_sim_thread_1_ptr,
+            decay_sim_thread_2_ptr,
+            decay_sim_thread_3_ptr,
+            decay_sim_thread_4_ptr,
             //user_desired_heater_type: HeaterType::InsulatedHeaterV1Fine15Mesh,
 
         }
