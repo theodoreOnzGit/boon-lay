@@ -40,6 +40,12 @@ impl DecaySimApp {
         ui.label(simulated_time_string);
         ui.label(" ");
 
+        let simulated_time = simulator_state_clone.get_simulated_time();
+        let mut simulated_time_string: String = "Simulated Time (billion years):".to_string();
+        simulated_time_string += &(simulated_time.get::<year>()/1e9 as f64).to_string();
+        ui.label(simulated_time_string);
+        ui.label(" ");
+
 
         // display timestep
         ui.label(" ");
