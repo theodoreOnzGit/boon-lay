@@ -368,6 +368,9 @@ fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
 
 
 /// code for panels and pages in the simulator
+/// this is basically like the frontend
 pub mod panels_and_pages;
 
 
+/// this is the backend code 
+pub mod backend;

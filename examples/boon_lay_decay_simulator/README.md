@@ -105,6 +105,7 @@ display it to the user.
 
 At the frontend, it will need some information 
 
-1. What nuclide is represented (name and a certain colour)
+1. What nuclide is represented (name and a certain colour for each element)
 2. Where the nuclides are (this is based on the x,y,z coordinates)
+
 
