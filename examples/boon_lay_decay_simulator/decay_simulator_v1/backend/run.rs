@@ -103,11 +103,21 @@ impl DecaySimApp {
                  time_taken_for_calculation_loop_milliseconds)
                 .round().abs() as u64;
 
-            let time_to_sleep: Duration = 
+            let time_to_sleep_realtime: Duration = 
                 Duration::from_millis(time_to_sleep_milliseconds - 1);
             // time to sleep for real-time (default)
 
-            thread::sleep(time_to_sleep);
+            let realtime = false; 
+
+            if realtime {
+                thread::sleep(time_to_sleep_realtime);
+            } else {
+                let time_to_sleep_milliseconds: u64 = 
+                    200;
+                let time_to_sleep_non_realtime: Duration = 
+                    Duration::from_millis(time_to_sleep_milliseconds);
+                thread::sleep(time_to_sleep_non_realtime);
+            }
 
             barrier.wait();
 
