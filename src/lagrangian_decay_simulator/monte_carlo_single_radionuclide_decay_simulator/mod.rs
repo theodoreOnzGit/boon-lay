@@ -13,7 +13,7 @@ use crate::lagrangian_decay_simulator::StochasticDecayChain;
 use crate::prelude::HalfLifeAndDecayEnergyInfo;
 
 #[derive(Debug,Clone,PartialEq)]
-pub struct SingleNuclideSimualtorMC {
+pub struct SingleNuclideSimulatorMC {
     /// the current nuclide the simulator is simulating
     /// it can change over time
     current_nuclide: Nuclide,
@@ -56,7 +56,7 @@ pub struct SingleNuclideSimualtorMC {
 //
 //
 
-impl SingleNuclideSimualtorMC {
+impl SingleNuclideSimulatorMC {
 
     /// this obtains a time to live stochastically for the decay chain using 
     /// half life 

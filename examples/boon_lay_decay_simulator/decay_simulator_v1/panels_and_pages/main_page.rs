@@ -29,6 +29,9 @@ impl DecaySimApp {
 
         let origin = rect.min; // top-left of the allocated 1600x1600 area
 
+        // let me obtain the four vectors of nuclides 
+        
+
         for row in 0..ROWS {
             for col in 0..COLS {
                 // Center each circle in its cell

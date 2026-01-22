@@ -3,7 +3,7 @@ use std::{sync::Arc, thread, time::Duration};
 use std::sync::{Barrier, Mutex};
 
 use boon_lay::prelude::decay_library::DecayLibrary;
-use boon_lay::prelude::SingleNuclideSimualtorMC;
+use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::Nuclide;
 
 use crate::decay_simulator_v1::backend::simulator_state::SimulatorState;
@@ -45,16 +45,16 @@ pub struct DecaySimApp {
 
     /// these are pointers for the each decay simulation
     #[serde(skip)]
-    decay_sim_thread_1_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+    decay_sim_thread_1_ptr: Arc<Mutex<(Vec<SingleNuclideSimulatorMC>,DecayLibrary)>>,
     /// these are pointers for the each decay simulation
     #[serde(skip)]
-    decay_sim_thread_2_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+    decay_sim_thread_2_ptr: Arc<Mutex<(Vec<SingleNuclideSimulatorMC>,DecayLibrary)>>,
     /// these are pointers for the each decay simulation
     #[serde(skip)]
-    decay_sim_thread_3_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+    decay_sim_thread_3_ptr: Arc<Mutex<(Vec<SingleNuclideSimulatorMC>,DecayLibrary)>>,
     /// these are pointers for the each decay simulation
     #[serde(skip)]
-    decay_sim_thread_4_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+    decay_sim_thread_4_ptr: Arc<Mutex<(Vec<SingleNuclideSimulatorMC>,DecayLibrary)>>,
 
     // we also need plot data here 
     // this is for the data to be transferred between threads

@@ -3,7 +3,7 @@ use oorandom::Rand64;
 use uom::si::time::{second, year};
 use uom::si::f64::*;
 
-use crate::lagrangian_decay_simulator::monte_carlo_single_radionuclide_decay_simulator::SingleNuclideSimualtorMC;
+use crate::lagrangian_decay_simulator::monte_carlo_single_radionuclide_decay_simulator::SingleNuclideSimulatorMC;
 use crate::prelude::decay_library::DecayLibrary;
 
 /// basically we want to sample a time to live for 100000 particles
@@ -28,7 +28,7 @@ fn stochastic_half_life_calculator(){
 
     for _i in 1..number_of_particles {
         let time_to_live = 
-            SingleNuclideSimualtorMC::get_time_to_decay_stochastic(
+            SingleNuclideSimulatorMC::get_time_to_decay_stochastic(
                 &mut rng, half_life
             );
 
@@ -201,7 +201,7 @@ fn decay_chain_th232(){
     let th232 = Nuclide::Th232;
     let mut decay_library = DecayLibrary::new();
 
-    let mut th232_decay_simulation = SingleNuclideSimualtorMC
+    let mut th232_decay_simulation = SingleNuclideSimulatorMC
         ::new_decay_chain_simulation(th232,&mut decay_library);
 
     // as the simulation starts, 

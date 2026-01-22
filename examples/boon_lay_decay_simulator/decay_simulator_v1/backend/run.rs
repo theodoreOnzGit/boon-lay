@@ -1,6 +1,6 @@
 use std::{sync::{Arc, Barrier, Mutex}, thread, time::{Duration, SystemTime}};
 
-use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimualtorMC}, Nuclide};
+use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
 use uom::si::{f64::Time, time::{millisecond, second}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
@@ -17,7 +17,7 @@ impl DecaySimApp {
     /// the way to do it, according to ChatGPT5, is to use Arc barrier
     /// 
     pub fn run_decay_chain_simulation(
-        thread_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
+        thread_ptr: Arc<Mutex<(Vec<SingleNuclideSimulatorMC>,DecayLibrary)>>,
         simulator_state_ptr: Arc<Mutex<SimulatorState>>,
         thread_number: u8,
         barrier: Arc<Barrier>,
@@ -75,7 +75,7 @@ impl DecaySimApp {
             // making a clone of the simulation vector and library
 
             let (mut simulation_vector, decay_library): 
-                (Vec<SingleNuclideSimualtorMC>, DecayLibrary) = 
+                (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
                  thread_ptr.lock().unwrap().clone();
 
             // technically decay libraries are not needed here
