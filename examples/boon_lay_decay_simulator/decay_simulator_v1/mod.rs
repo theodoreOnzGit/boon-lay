@@ -275,25 +275,27 @@ impl eframe::App for DecaySimApp {
                 egui::widgets::global_theme_preference_buttons(ui);
             });
 
+            egui::ScrollArea::both().show(ui, |ui| {
 
-            ui.heading("Boon Lay Decay Simulator v1");
-            ui.separator();
-            // allow user to select which panel is open
-            ui.horizontal( 
-                |ui| {
-                    ui.selectable_value(&mut self.open_panel, Panel::MainPage, "Main Page"); 
-                    ui.selectable_value(&mut self.open_panel, Panel::GraphPage, "Graph Page"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::Heater, "Heater"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::CTAH, "CTAH"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::CTAHPump, "CTAH Pump"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::TCHX, "TCHX"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::DHX, "DHX STHE"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::FrequencyResponseAndTransients, "Frequency Response and Transients"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::OnlineCalibration, "Online Calibration"); 
-                    //ui.selectable_value(&mut self.open_panel, Panel::NodalisedDiagram, "CIET Nodalised Diagram"); 
-            }
-            );
-            ui.separator();
+                ui.heading("Boon Lay Decay Simulator v1");
+                ui.separator();
+                // allow user to select which panel is open
+                ui.horizontal( 
+                    |ui| {
+                        ui.selectable_value(&mut self.open_panel, Panel::MainPage, "Main Page"); 
+                        ui.selectable_value(&mut self.open_panel, Panel::GraphPage, "Graph Page"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::Heater, "Heater"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::CTAH, "CTAH"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::CTAHPump, "CTAH Pump"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::TCHX, "TCHX"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::DHX, "DHX STHE"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::FrequencyResponseAndTransients, "Frequency Response and Transients"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::OnlineCalibration, "Online Calibration"); 
+                        //ui.selectable_value(&mut self.open_panel, Panel::NodalisedDiagram, "CIET Nodalised Diagram"); 
+                    }
+                );
+                ui.separator();
+            });
         });
 
         egui::SidePanel::right("Supplementary Info").show(ctx, |ui|{
@@ -349,7 +351,9 @@ impl eframe::App for DecaySimApp {
 
             match self.open_panel {
                 Panel::MainPage => {
-                    self.main_page(ui);
+                    egui::ScrollArea::both().show(ui, |ui| {
+                        self.main_page(ui);
+                    });
                 },
                 Panel::GraphPage => {
                     // nothing yet
