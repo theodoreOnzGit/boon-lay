@@ -334,6 +334,15 @@ impl eframe::App for DecaySimApp {
 
             // show correct panel or page based on user selection
 
+            match self.open_panel {
+                Panel::MainPage => {
+                    self.main_page(ui);
+                },
+                Panel::GraphPage => {
+                    // nothing yet
+                },
+            }
+
             //match self.open_panel {
             //    Panel::FrequencyResponseAndTransients => {
             //        // enables scrolling within the image
