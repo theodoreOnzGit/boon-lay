@@ -9,4 +9,5 @@ pub(crate) enum Panel {
 pub mod citation_disclaimer_and_acknowledgements;
 
 pub mod main_page;
+
 pub mod graph_page;
