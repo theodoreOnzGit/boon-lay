@@ -32,7 +32,14 @@ impl DecaySimApp {
         let mut simulated_time_string: String = "Simulated Time (seconds):".to_string();
         simulated_time_string += &simulated_time.to_string();
         ui.label(simulated_time_string);
+
+
+        let simulated_time = simulator_state_clone.get_simulated_time();
+        let mut simulated_time_string: String = "Simulated Time (years):".to_string();
+        simulated_time_string += &simulated_time.get::<year>().to_string();
+        ui.label(simulated_time_string);
         ui.label(" ");
+
 
         // display timestep
         ui.label(" ");
@@ -66,7 +73,7 @@ impl DecaySimApp {
 
         let timestep_slider_seconds = egui::Slider::new(
             &mut user_set_timestep_seconds, 
-            0.00001..=1e10
+            0.00001..=1e20
         ) .logarithmic(true) .text("Timestep Control (s)") .drag_value_speed(0.001);
 
         // set timestep 

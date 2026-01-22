@@ -1,4 +1,4 @@
-use boon_lay::Nuclide;
+use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
 use egui::{Color32, Rect, Ui};
 
 use crate::decay_simulator_v1::DecaySimApp;
@@ -31,6 +31,57 @@ impl DecaySimApp {
 
         // let me obtain the four vectors of nuclides 
         
+        // Convert a Vec<SingleNuclideSimualtorMC> into Vec<Nuclide>
+        // using the provided getter.
+
+        // also vibe coded
+        fn to_nuclides(simulators: &[SingleNuclideSimulatorMC]) -> Vec<Nuclide> {
+            simulators.iter().map(|s| s.get_current_nuclide()).collect()
+        }
+
+        // If you have four vectors:
+        fn convert_all(
+            v0: &[SingleNuclideSimulatorMC],
+            v1: &[SingleNuclideSimulatorMC],
+            v2: &[SingleNuclideSimulatorMC],
+            v3: &[SingleNuclideSimulatorMC],
+        ) -> (Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>) {
+            (
+                to_nuclides(v0),
+                to_nuclides(v1),
+                to_nuclides(v2),
+                to_nuclides(v3),
+            )
+        }
+
+        // collect all nuclides and then display them
+        let (nuclide_sim_vec_1,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+            self.decay_sim_thread_1_ptr.lock().unwrap().clone();
+        let (nuclide_sim_vec_2,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+            self.decay_sim_thread_2_ptr.lock().unwrap().clone();
+        let (nuclide_sim_vec_3,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+            self.decay_sim_thread_3_ptr.lock().unwrap().clone();
+        let (nuclide_sim_vec_4,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+            self.decay_sim_thread_4_ptr.lock().unwrap().clone();
+
+        let (nuclide_vec_1, nuclide_vec_2, nuclide_vec_3, nuclide_vec_4): 
+            (Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>) 
+             = convert_all(
+                 &nuclide_sim_vec_1, 
+                 &nuclide_sim_vec_2, 
+                 &nuclide_sim_vec_3, 
+                 &nuclide_sim_vec_4,
+             );
+
+        let full_nuclide_vector: Vec<Nuclide> = 
+            nuclide_vec_1.into_iter()
+            .chain(nuclide_vec_2)
+            .chain(nuclide_vec_3)
+            .chain(nuclide_vec_4)
+            .collect();
+
+        let mut nuclide_index = 0;
+
 
         for row in 0..ROWS {
             for col in 0..COLS {
@@ -40,10 +91,15 @@ impl DecaySimApp {
                 let center = egui::pos2(x, y);
 
                 // Example color gradient by position (any palette can be used)
-                let r = (col * 255 / (COLS - 1)) as u8;
-                let g = (row * 255 / (ROWS - 1)) as u8;
-                let b = 160u8;
-                let color = egui::Color32::from_rgb(r, g, b);
+                //let r = (col * 255 / (COLS - 1)) as u8;
+                //let g = (row * 255 / (ROWS - 1)) as u8;
+                //let b = 160u8;
+                // not vibe coded:
+                // now to obtain colour, we get the nuclide index
+                // 
+                let nuclide = full_nuclide_vector[nuclide_index];
+                let color = Self::element_color(nuclide);
+                nuclide_index += 1;
 
                 painter.circle_filled(center, radius, color);
             }
