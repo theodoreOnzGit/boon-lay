@@ -34,6 +34,10 @@ pub struct SingleNuclideSimualtorMC {
     ///
     /// basically, time remaining to next decay
     time_to_live_vec: Vec<Time>,
+
+    /// a position vector representing the position of the nuclide 
+    /// this is based on cartesian coordinates
+    pub position: (Length, Length, Length)
 }
 
 // basically the idea of this simulator is to take a current nuclide,
@@ -129,26 +133,28 @@ impl SingleNuclideSimualtorMC {
 
         let current_time_to_next_decay: Time;
 
-            match current_half_life_info {
-                HalfLifeAndDecayEnergyInfo::Stable => {
+        match current_half_life_info {
+            HalfLifeAndDecayEnergyInfo::Stable => {
 
-                    // for stable nuclides, the time to live is 
-                    // not a number (basically infinite)
-                    current_time_to_next_decay = Time::new::<second>(f64::INFINITY);
-                },
-                HalfLifeAndDecayEnergyInfo::Unstable(
-                    half_life, _decay_energy
-                ) => {
-                    let time_to_live = 
-                        Self::get_time_to_decay_stochastic(
-                            &mut decay_library.random_number_generator, 
-                            half_life
-                        );
+                // for stable nuclides, the time to live is 
+                // not a number (basically infinite)
+                current_time_to_next_decay = Time::new::<second>(f64::INFINITY);
+            },
+            HalfLifeAndDecayEnergyInfo::Unstable(
+                half_life, _decay_energy
+            ) => {
+                let time_to_live = 
+                    Self::get_time_to_decay_stochastic(
+                        &mut decay_library.random_number_generator, 
+                        half_life
+                    );
 
-                    current_time_to_next_decay = time_to_live
-                },
-            }
+                current_time_to_next_decay = time_to_live
+            },
+        }
 
+
+        let position = (Length::ZERO, Length::ZERO, Length::ZERO);
 
         return Self {
             current_nuclide,
@@ -158,6 +164,7 @@ impl SingleNuclideSimualtorMC {
             stochastic_decay_chain: decay_chain_for_new_nuclide,
             time_to_live_vec,
             current_time_to_next_decay,
+            position,
         };
 
     }

@@ -14,7 +14,7 @@ Typical nuclides can be given
 and so on.
 
 
-# how the app should run 
+# how the app should run from user perspective
 
 ## Main Page
 As the user enters the interface, the user should see a main display 
@@ -28,9 +28,9 @@ The default particle is U238.
 The nuclides should start decaying in real-time.
 The user will be able to 
 
-1. speed up the time 
+1. speed up the time, start/stop and pause, reset buttons as well
 2. force decays
-3. select nuclides of interest
+3. select nuclides of interest to perform decay simulation
 4. select any nuclide to perform a decay simulation
 
 
@@ -39,6 +39,7 @@ as well as a fast forward slider.
 
 
 Fast forward slider should be on the right hand side.
+
 
 ## Graph and Data Page
 
@@ -67,4 +68,43 @@ not now).
 
 It is a good outreach tool though, but I'll do it for later.
 
+
+
+# How app may run at backend 
+
+
+## Backend threads and Frontend display Separation of responsibility
+
+The Egui app is meant to display information. I cannot have code meant for 
+the backend be based on the frontend display. 
+
+Hence, the backend side is solely responsible for calculation. Whereas 
+the frontend side is responsible for infromation display ONLY.
+
+## Backend
+
+For the backend, the backend threads will be separate from the frontend display.
+I will have 4 threads managing the 250,000 particles. 62,500 particles each,
+to track decay and such.
+
+This will be handled using Arc-Mutex locks to enable parallelism.
+
+At the beginning, the particle decay trajectories are calculated stochastically 
+during the construction phase.
+
+At each timestep, the responsibility of the thread is just to forward the 
+timestep.
+
+Moreover, at the backend, a representative position must be given for the 
+nuclide of interest.
+
+## Frontend 
+
+The job of the frontend is just to obtain the state of the particles to 
+display it to the user.
+
+At the frontend, it will need some information 
+
+1. What nuclide is represented (name and a certain colour)
+2. Where the nuclides are (this is based on the x,y,z coordinates)
 
