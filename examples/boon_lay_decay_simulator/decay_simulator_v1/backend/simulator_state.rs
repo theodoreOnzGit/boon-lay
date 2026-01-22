@@ -1,5 +1,5 @@
 use boon_lay::Nuclide;
-use uom::si::{f64::Time, time::second};
+use uom::{si::{f64::Time, time::second}, ConstZero};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SimulatorState {
@@ -8,6 +8,8 @@ pub struct SimulatorState {
     change_nuclide_button_pressed: bool,
     user_selected_nuclide: Nuclide,
     user_selected_timestep: Time,
+    elapsed_time: Time, 
+    simulated_time: Time,
 
 
 }
@@ -20,12 +22,16 @@ impl Default for SimulatorState {
         let restart_button_pressed = false;
         let change_nuclide_button_pressed = false;
         let user_selected_timestep = Time::new::<second>(1.0);
+        let elapsed_time = Time::ZERO;
+        let simulated_time = Time::ZERO;
         Self {
             is_running,
             restart_button_pressed,
             user_selected_nuclide: Nuclide::U238,
             change_nuclide_button_pressed,
             user_selected_timestep,
+            elapsed_time,
+            simulated_time,
         }
     }
 }
