@@ -163,6 +163,7 @@ impl eframe::App for DecaySimApp {
             ui.horizontal( 
                 |ui| {
                     ui.selectable_value(&mut self.open_panel, Panel::MainPage, "Main Page"); 
+                    ui.selectable_value(&mut self.open_panel, Panel::GraphPage, "Graph Page"); 
                     //ui.selectable_value(&mut self.open_panel, Panel::Heater, "Heater"); 
                     //ui.selectable_value(&mut self.open_panel, Panel::CTAH, "CTAH"); 
                     //ui.selectable_value(&mut self.open_panel, Panel::CTAHPump, "CTAH Pump"); 
@@ -179,6 +180,12 @@ impl eframe::App for DecaySimApp {
         egui::SidePanel::right("Supplementary Info").show(ctx, |ui|{
             match self.open_panel {
                 Panel::MainPage => {
+                    egui::ScrollArea::both().show(ui, |ui| {
+                        //self.ciet_main_page_side_panel(ui);
+                        self.citation_disclaimer_and_acknowledgements(ui);
+                    });
+                },
+                Panel::GraphPage => {
                     egui::ScrollArea::both().show(ui, |ui| {
                         //self.ciet_main_page_side_panel(ui);
                         self.citation_disclaimer_and_acknowledgements(ui);
