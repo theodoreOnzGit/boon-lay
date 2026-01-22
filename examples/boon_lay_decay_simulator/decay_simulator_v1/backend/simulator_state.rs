@@ -48,8 +48,13 @@ impl SimulatorState {
     pub fn is_change_nuclide_button_pressed(&self) -> bool {
         return self.change_nuclide_button_pressed;
     }
+
+    // timestep settings
     pub fn get_timestep(&self) -> Time {
         return self.user_selected_timestep;
+    }
+    pub fn set_timestep(&mut self, timestep: Time){
+        self.user_selected_timestep = timestep;
     }
 
     // these are for elapsed time

@@ -1,5 +1,5 @@
 use egui::Ui;
-use uom::si::time::second;
+use uom::si::{f64::Time, time::{day, millisecond, second, year}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
 
@@ -40,6 +40,39 @@ impl DecaySimApp {
         timestep_string += &timestep.get::<second>().to_string();
         ui.label(timestep_string);
         ui.label(" ");
+
+        // I also want to display this in milliseconds, days, years
+        let mut timestep_string: String = "Timestep (milliseconds):".to_string();
+        timestep_string += &timestep.get::<millisecond>().to_string();
+        ui.label(timestep_string);
+        ui.label(" ");
+
+        let mut timestep_string: String = "Timestep (days):".to_string();
+        timestep_string += &timestep.get::<day>().to_string();
+        ui.label(timestep_string);
+        ui.label(" ");
+        let mut timestep_string: String = "Timestep (years):".to_string();
+        timestep_string += &timestep.get::<year>().to_string();
+        ui.label(timestep_string);
+        ui.label(" ");
+
+
+        // timestep settings
+
+        let mut user_set_timestep_seconds 
+            = simulator_state_clone.get_timestep().get::<second>();
+
+        let timestep_slider_seconds = egui::Slider::new(
+            &mut user_set_timestep_seconds, 
+            0.00001..=1e8
+        ) .logarithmic(true) .text("Timestep Control (s)") .drag_value_speed(0.001);
+
+        // set timestep 
+        ui.add(timestep_slider_seconds);
+        let timestep = Time::new::<second>(user_set_timestep_seconds);
+        self.simulator_state.lock().unwrap().set_timestep(timestep);
+
+
 
     }
 
