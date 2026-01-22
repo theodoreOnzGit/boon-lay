@@ -14,3 +14,57 @@ Typical nuclides can be given
 and so on.
 
 
+# how the app should run 
+
+## Main Page
+As the user enters the interface, the user should see a main display 
+panel. There should be a lattice of radioactive nuclides, maybe about 
+100 by 100 (10000), or 500 by 500 (250,000 particles). 
+
+This should be drag-able.
+
+The default particle is U238. 
+
+The nuclides should start decaying in real-time.
+The user will be able to 
+
+1. speed up the time 
+2. force decays
+3. select nuclides of interest
+4. select any nuclide to perform a decay simulation
+
+
+As usual, there must be an elapsed time counter and simulation time counter 
+as well as a fast forward slider.
+
+
+Fast forward slider should be on the right hand side.
+
+## Graph and Data Page
+
+A second page should have the decay data for various nuclides.
+
+The most important is the population of the parent product over time. 
+
+There should be a graph and periodic sampling of the population over time.
+
+For daughter products, there may be some challenge, because there are many 
+daughter products to consider.
+
+However, I could have the user select up to 3 daughter products over time. 
+And during display, the user can select which daughter product is which 
+nuclide through a drop down menu of sorts.
+
+This is custom selectable. 
+
+And the UI can also display all the daughter products on hand.
+
+
+## Radioactivity Page 
+
+This should be a page to determine dose (but is planned for future releases,
+not now).
+
+It is a good outreach tool though, but I'll do it for later.
+
+
