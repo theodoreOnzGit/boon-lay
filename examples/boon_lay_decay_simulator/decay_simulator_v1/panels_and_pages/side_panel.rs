@@ -86,6 +86,7 @@ impl DecaySimApp {
                 ui.selectable_value(&mut nuclide, Nuclide::U238, "U238");
                 ui.selectable_value(&mut nuclide, Nuclide::U235, "U235");
                 ui.selectable_value(&mut nuclide, Nuclide::Cs137, "Cs137");
+                ui.selectable_value(&mut nuclide, Nuclide::I131, "I131");
             });
 
         ui.separator();
