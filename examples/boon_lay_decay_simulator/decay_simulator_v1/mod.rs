@@ -1,3 +1,4 @@
+use std::time::SystemTime;
 use std::{sync::Arc, thread, time::Duration};
 
 use std::sync::{Barrier, Mutex};
@@ -190,8 +191,7 @@ impl DecaySimApp {
 impl Default for DecaySimApp {
     fn default() -> Self {
 
-        //let ciet_state = Arc::new(Mutex::new(CIETState::default()));
-        //let ciet_plot_data = Arc::new(Mutex::new(PagePlotData::default()));
+        let time_start = SystemTime::now();
 
         let num_of_nuclides = 62_500;
         let nuclide = Nuclide::U238;
@@ -217,6 +217,10 @@ impl Default for DecaySimApp {
             );
 
         let simulator_state = Arc::new(Mutex::new(SimulatorState::default()));
+
+        let initiation_time_secs = time_start.elapsed().unwrap().as_secs();
+
+        dbg!(&initiation_time_secs);
 
         Self {
             // Example stuff:

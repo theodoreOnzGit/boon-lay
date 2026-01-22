@@ -101,6 +101,10 @@ impl DecaySimApp {
                 let color = Self::element_color(nuclide);
                 nuclide_index += 1;
 
+                // just assert to be printing different nuclides, 
+                // this works correct 
+                // dbg!(&nuclide_index);
+
                 painter.circle_filled(center, radius, color);
             }
         }

@@ -17,9 +17,24 @@ impl DecaySimApp {
                 = SingleNuclideSimulatorMC::new_decay_chain_simulation(
                     nuclide, &mut decay_library
                 );
-            let v: Vec<SingleNuclideSimulatorMC> = vec![
+            let mut v: Vec<SingleNuclideSimulatorMC> = vec![
                 new_simulation; num_of_nuclides.try_into().unwrap()
             ];
+
+            // basically I should not be repeating the same nuclide simulation,
+            // I need to be individually constructing them
+
+            for simulation in v.iter_mut() {
+                let new_simulation 
+                    = SingleNuclideSimulatorMC::new_decay_chain_simulation(
+                        nuclide, &mut decay_library
+                    );
+
+
+                *simulation = new_simulation;
+
+
+            }
 
 
             return Arc::new(Mutex::new(
