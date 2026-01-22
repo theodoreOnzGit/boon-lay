@@ -24,7 +24,7 @@ pub struct SingleNuclideSimualtorMC {
     /// time passed in the simulation
     simulated_time: Time,
     /// time passed in real-life
-    elapsed_time: Time,
+    calculation_time: Time,
 
     /// the decay chain in equation 
     stochastic_decay_chain: StochasticDecayChain,
@@ -160,7 +160,7 @@ impl SingleNuclideSimualtorMC {
             current_nuclide,
             current_half_life_info,
             simulated_time: Time::ZERO,
-            elapsed_time: Time::ZERO,
+            calculation_time: Time::ZERO,
             stochastic_decay_chain: decay_chain_for_new_nuclide,
             time_to_live_vec,
             current_time_to_next_decay,
@@ -181,7 +181,7 @@ impl SingleNuclideSimualtorMC {
             nuclide, decay_library);
 
         fresh_simulation.simulated_time = self.simulated_time;
-        fresh_simulation.elapsed_time = self.elapsed_time;
+        fresh_simulation.calculation_time = self.calculation_time;
 
         *self = fresh_simulation;
     }
@@ -328,7 +328,7 @@ impl SingleNuclideSimualtorMC {
             (loop_time_end - loop_time_start)
             .as_millis() as f64;
 
-        self.elapsed_time += Time::new::<millisecond>(
+        self.calculation_time += Time::new::<millisecond>(
             time_taken_for_calculation_loop_milliseconds
         );
 
@@ -399,7 +399,7 @@ impl SingleNuclideSimualtorMC {
     /// gets current elapsed time
     #[inline]
     pub fn get_current_elapsed_time(&self) -> Time {
-        return self.elapsed_time;
+        return self.calculation_time;
     }
 
     #[inline]

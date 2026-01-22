@@ -8,6 +8,10 @@ use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecayS
 impl DecaySimApp {
 
     /// at each simulation, the simulator will run in the background 
+    ///
+    /// now, challenge is, each simulator may run too fast, or slow 
+    /// depending on thread speed.
+    /// 
     pub fn run_decay_chain_simulation(
         thread_ptr: Arc<Mutex<(Vec<SingleNuclideSimualtorMC>,DecayLibrary)>>,
         simulator_state_ptr: Arc<Mutex<SimulatorState>>,
