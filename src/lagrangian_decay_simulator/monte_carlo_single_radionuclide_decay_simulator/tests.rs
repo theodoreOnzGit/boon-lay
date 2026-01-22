@@ -28,7 +28,9 @@ fn stochastic_half_life_calculator(){
 
     for _i in 1..number_of_particles {
         let time_to_live = 
-            SingleNuclideSimualtorMC::get_time_to_decay_stochastic(&mut rng, half_life);
+            SingleNuclideSimualtorMC::get_time_to_decay_stochastic(
+                &mut rng, half_life
+            );
 
         time_to_live_vec.push(time_to_live);
     }
