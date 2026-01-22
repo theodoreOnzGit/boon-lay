@@ -48,6 +48,22 @@ impl DecaySimApp {
                 // I will deal with this part later
             }
             
+            // so all the conditions for running are met 
+            // now we just run
+
+            // firstly, we lock the pointer 
+            // making a clone of the simulation vector and library
+
+            let (simulation_vector, mut decay_library): 
+                (Vec<SingleNuclideSimualtorMC>, DecayLibrary) = 
+                 thread_ptr.lock().unwrap().clone();
+
+            let timestep = simulator_state_clone.get_timestep();
+            
+            // all we are doing here is to advance_timestep
+            for mut decay_simulation in simulation_vector {
+                decay_simulation.advance_timestep(timestep);
+            };
 
 
 

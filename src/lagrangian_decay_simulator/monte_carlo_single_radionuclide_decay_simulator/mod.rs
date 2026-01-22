@@ -189,7 +189,7 @@ impl SingleNuclideSimualtorMC {
     // move the simulation forward by some time supplied by the user
     // also provides the nuclide of interest currently
     #[inline]
-    pub fn step_forward_simulation(&mut self, timestep: Time) -> 
+    pub fn advance_timestep(&mut self, timestep: Time) -> 
         (Nuclide, HalfLifeAndDecayEnergyInfo){
         // we do loop timing
         let loop_time = SystemTime::now();
@@ -438,7 +438,7 @@ impl SingleNuclideSimualtorMC {
     {
         let timestep = self.get_time_to_next_decay();
 
-        self.step_forward_simulation(timestep)
+        self.advance_timestep(timestep)
 
     }
 

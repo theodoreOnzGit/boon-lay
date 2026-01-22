@@ -208,7 +208,7 @@ fn decay_chain_th232(){
     // I want to get timesteps, and slowly get the time to next decay 
 
     let mut timestep = Time::new::<year>(500.0);
-    th232_decay_simulation.step_forward_simulation(timestep);
+    th232_decay_simulation.advance_timestep(timestep);
 
     // current nuclide is still Th232 
     assert_eq!(th232_decay_simulation.get_current_nuclide(), 
@@ -221,7 +221,7 @@ fn decay_chain_th232(){
     // we should get Radium 228
     timestep = time_to_next_decay;
     let (ra228, _half_life_info) = 
-        th232_decay_simulation.step_forward_simulation(timestep);
+        th232_decay_simulation.advance_timestep(timestep);
     assert_eq!(ra228, 
         Nuclide::Ra228);
 
@@ -240,7 +240,7 @@ fn decay_chain_th232(){
     timestep = Time::new::<year>(11.0);
     
     let (current_nuclide, _half_life_info) = 
-        th232_decay_simulation.step_forward_simulation(timestep);
+        th232_decay_simulation.advance_timestep(timestep);
 
     assert_eq!(current_nuclide, Nuclide::Th228);
 
@@ -248,7 +248,7 @@ fn decay_chain_th232(){
 
     timestep = Time::new::<year>(1.0);
     let (current_nuclide, _half_life_info) = 
-        th232_decay_simulation.step_forward_simulation(timestep);
+        th232_decay_simulation.advance_timestep(timestep);
     assert_eq!(current_nuclide, Nuclide::Th228);
 
     // let's force the decay to the next nuclide, Ra224 
@@ -262,14 +262,14 @@ fn decay_chain_th232(){
     //
     timestep = Time::new::<second>(327190.978);
     let (current_nuclide, _half_life_info) = 
-        th232_decay_simulation.step_forward_simulation(timestep);
+        th232_decay_simulation.advance_timestep(timestep);
     assert_eq!(current_nuclide, Nuclide::Pb212);
 
     // now let's decay for 2 yrs, we should get lead
 
     timestep = Time::new::<year>(2.0);
     let (current_nuclide, _half_life_info) = 
-        th232_decay_simulation.step_forward_simulation(timestep);
+        th232_decay_simulation.advance_timestep(timestep);
     assert_eq!(current_nuclide, Nuclide::Pb208);
 
 
