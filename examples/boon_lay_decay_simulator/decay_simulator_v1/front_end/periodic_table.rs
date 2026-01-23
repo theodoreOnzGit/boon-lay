@@ -245,9 +245,7 @@ impl DecaySimApp {
         // Choose a box size; adjust as needed
         let size = Vec2::new(80.0, 80.0);
         let pos = Pos2::new(x_pixel, y_pixel);
-        let (z,_a) = nuclide.get_z_a();
-        let element_string: &str = Self::symbol_from_z(z);
-        Self::draw_element_box_at(ui, nuclide, element_string, pos, size);
+        Self::draw_element_box_at(ui, nuclide, pos, size);
     }
 
     /// Draw a single element box at a specific UI coordinate.
@@ -258,7 +256,6 @@ impl DecaySimApp {
     pub fn draw_element_box_at(
         ui: &mut egui::Ui,
         nuclide: Nuclide,
-        symbol: &str,
         pos: Pos2,
         size: Vec2,
     ) {
@@ -347,7 +344,7 @@ impl Widget for ElementBox {
         let (rect, response) = ui.allocate_exact_size(desired_size, Sense::click());
 
         let color = DecaySimApp::element_color(self.nuclide);
-        let (z, a) = self.nuclide.get_z_a();
+        let (z, _a) = self.nuclide.get_z_a();
         
         let rounding = Rounding::same(8.0);
 
