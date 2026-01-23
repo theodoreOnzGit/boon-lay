@@ -21,6 +21,37 @@ impl DecaySimApp {
         let elapsed_time = simulator_state_clone.get_elapsed_time();
         let mut elapsed_time_string: String = "Elapsed Time (seconds):".to_string();
         elapsed_time_string += &elapsed_time.get::<second>().to_string();
+        // vibe coded for extra speed
+        // Restart toggle button
+        let label = if self.simulator_state.lock().unwrap().is_restart_button_pressed() 
+        { "Restart (pending...)" } else { "Restart (OFF)" };
+        if ui.button(label).clicked() {
+            self.simulator_state.lock().unwrap().turn_on_restart_button();
+        }
+
+        // Change nuclide toggle button
+        let label = if self.simulator_state.lock().unwrap().is_change_nuclide_button_pressed() 
+        { "Change Nuclide (pending...)" } else { "Change Nuclide (OFF)" };
+        if ui.button(label).clicked() {
+            self.simulator_state.lock().unwrap().turn_on_change_nuclide_button();
+        }
+        ui.separator();
+
+        // timestep settings
+
+        let mut user_set_timestep_seconds 
+            = simulator_state_clone.get_timestep().get::<second>();
+
+        let timestep_slider_seconds = egui::Slider::new(
+            &mut user_set_timestep_seconds, 
+            0.00001..=1e20
+        ) .logarithmic(true) .text("Timestep Control (s)") .drag_value_speed(0.001);
+
+        // set timestep 
+        ui.add(timestep_slider_seconds);
+        let timestep = Time::new::<second>(user_set_timestep_seconds);
+        self.simulator_state.lock().unwrap().set_timestep(timestep);
+        ui.separator();
 
         ui.label(elapsed_time_string);
         ui.label(" ");
@@ -76,21 +107,6 @@ impl DecaySimApp {
 
 
 
-        // timestep settings
-
-        let mut user_set_timestep_seconds 
-            = simulator_state_clone.get_timestep().get::<second>();
-
-        let timestep_slider_seconds = egui::Slider::new(
-            &mut user_set_timestep_seconds, 
-            0.00001..=1e20
-        ) .logarithmic(true) .text("Timestep Control (s)") .drag_value_speed(0.001);
-
-        // set timestep 
-        ui.add(timestep_slider_seconds);
-        let timestep = Time::new::<second>(user_set_timestep_seconds);
-        self.simulator_state.lock().unwrap().set_timestep(timestep);
-        ui.separator();
 
 
         ui.label("Select nuclide :");
@@ -207,21 +223,6 @@ impl DecaySimApp {
             nuclide
         );
 
-        ui.separator();
-        // vibe coded for extra speed
-        // Restart toggle button
-        let label = if self.simulator_state.lock().unwrap().is_restart_button_pressed() 
-        { "Restart (pending...)" } else { "Restart (OFF)" };
-        if ui.button(label).clicked() {
-            self.simulator_state.lock().unwrap().turn_on_restart_button();
-        }
-
-        // Change nuclide toggle button
-        let label = if self.simulator_state.lock().unwrap().is_change_nuclide_button_pressed() 
-        { "Change Nuclide (pending...)" } else { "Change Nuclide (OFF)" };
-        if ui.button(label).clicked() {
-            self.simulator_state.lock().unwrap().turn_on_change_nuclide_button();
-        }
         ui.separator();
 
 
