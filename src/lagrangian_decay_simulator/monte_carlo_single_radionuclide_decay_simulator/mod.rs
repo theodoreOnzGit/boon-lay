@@ -454,6 +454,7 @@ impl SingleNuclideSimulatorMC {
 
 }
 
+pub mod postprocessing;
 
 #[cfg(test)]
 pub mod tests;
