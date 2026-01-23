@@ -1,17 +1,12 @@
 use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
-use egui::{Color32, Rect, Ui};
+use egui::{Color32, Ui};
 
 use crate::decay_simulator_v1::DecaySimApp;
-use rayon::prelude::*;
 
 impl DecaySimApp {
 
     pub fn main_page(&mut self, ui: &mut Ui) {
 
-        let ui_rectangle: Rect = ui.min_rect();
-
-        let _left_most_side = ui_rectangle.left();
-        let _top_most_side = ui_rectangle.top();
 
         // this part is vibe coded
         // Fixed drawing area: 1600 x 1600 pixels
@@ -21,7 +16,6 @@ impl DecaySimApp {
 
         // Reserve exactly 1600x1600 px in the UI (won't resize with the panel)
         let (rect, _response) = ui.allocate_exact_size(egui::vec2(SIZE, SIZE), egui::Sense::hover());
-        let painter = ui.painter_at(rect);
 
         // Grid cell size (fixed, independent of the UI rectangle size)
         let dx = SIZE / COLS as f32; // 3.2 px
@@ -118,42 +112,63 @@ impl DecaySimApp {
             color: egui::Color32,
         }
 
-        fn draw_grid_parallel(
+        pub fn draw_grid_culled(
             ui: &mut egui::Ui,
-            origin: egui::Pos2,
-            dx: f32,
-            dy: f32,
+            viewport: egui::Rect,          // visible rect captured by the caller
+            origin: egui::Pos2,            // top-left of the grid
+            dx: f32,                       // column width
+            dy: f32,                       // row height (fixed)
             radius: f32,
             full_nuclide_vector: &[Nuclide],
             rows: usize,
             cols: usize,
         ) {
-            // Parallel precompute
-            let circles: Vec<CircleInst> = (0..rows * cols)
-                .into_par_iter()
-                .map(|idx| {
-                    let row = idx / cols;
-                    let col = idx % cols;
+            // Compute visible row/col range from the viewport.
+            // Convert viewport edges to indices, then clamp.
 
+            let vis_min_col = (((viewport.min.x - origin.x) / dx) - 0.5).floor() as isize;
+            let vis_max_col = (((viewport.max.x - origin.x) / dx) - 0.5).ceil() as isize;
+
+            let vis_min_row = (((viewport.min.y - origin.y) / dy) - 0.5).floor() as isize;
+            let vis_max_row = (((viewport.max.y - origin.y) / dy) - 0.5).ceil() as isize;
+
+            let min_col = vis_min_col.max(0) as usize;
+            let max_col = vis_max_col.min(cols as isize - 1).max(0) as usize;
+
+            let min_row = vis_min_row.max(0) as usize;
+            let max_row = vis_max_row.min(rows as isize - 1).max(0) as usize;
+
+
+            for row in min_row..=max_row {
+                // Allocate the row’s rect so egui clips properly and interaction works
+                let (row_rect, _) = ui.allocate_exact_size(
+                    egui::vec2(ui.available_width(), dy),
+                    egui::Sense::hover(),
+                );
+
+                // Row center y (use row_rect for precise placement within the scroll area)
+                let y = row_rect.min.y + 0.5 * dy;
+
+                for col in min_col..=max_col {
                     let x = origin.x + (col as f32 + 0.5) * dx;
-                    let y = origin.y + (row as f32 + 0.5) * dy;
                     let center = egui::pos2(x, y);
+
+                    let idx = row * cols + col;
+                    if idx >= full_nuclide_vector.len() {
+                        break;
+                    }
 
                     let nuclide = full_nuclide_vector[idx];
                     let color = DecaySimApp::element_color(nuclide);
-
-                    CircleInst { center, radius, color }
-                })
-            .collect();
-
-            // Single-threaded draw (UI thread)
-            let painter = ui.painter();
-            for c in &circles {
-                painter.circle_filled(c.center, c.radius, c.color);
+                    let painter = ui.painter();
+                    painter.circle_filled(center, radius, color);
+                }
             }
         }
+        // this is to prevent overdrawing - drain cpu resouces
+        let viewport = ui.clip_rect();
 
-        draw_grid_parallel(ui, origin, dx, dy, radius, 
+        draw_grid_culled(ui, viewport, origin, dx, dy, radius, 
             &full_nuclide_vector, ROWS, COLS);
 
     }
