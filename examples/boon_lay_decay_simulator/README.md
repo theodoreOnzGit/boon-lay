@@ -126,3 +126,16 @@ keeping a maximum of 5000 data points. These graphs will then
 be (TBC, my brain is burning)
 
 
+# Acknowledgements 
+
+```bibtex 
+
+@online{openai_chatgpt,
+  author    = {OpenAI},
+  title     = {ChatGPT5},
+  year      = {2026},
+  url       = {https://chat.openai.com},
+  note      = {Large language model. Optional: Prompt: "…"},
+  urldate   = {2026-01-23}
+}
+```
