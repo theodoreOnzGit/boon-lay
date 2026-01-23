@@ -109,6 +109,20 @@ impl DecaySimApp {
             nuclide
         );
 
+        ui.separator();
+        // Restart toggle button
+        let label = if self.simulator_state.lock().unwrap().is_restart_button_pressed() { "Restart (ON)" } else { "Restart (OFF)" };
+        if ui.button(label).clicked() {
+            self.simulator_state.lock().unwrap().turn_on_restart_button();
+        }
+
+        // Change nuclide toggle button
+        let label = if self.simulator_state.lock().unwrap().is_change_nuclide_button_pressed() { "Change Nuclide (ON)" } else { "Change Nuclide (OFF)" };
+        if ui.button(label).clicked() {
+            self.simulator_state.lock().unwrap().turn_on_change_nuclide_button();
+        }
+        ui.separator();
+
 
 
 

@@ -42,12 +42,6 @@ impl SimulatorState {
         return !self.is_running;
     }
 
-    pub fn is_restart_button_pressed(&self) -> bool {
-        return self.restart_button_pressed;
-    }
-    pub fn is_change_nuclide_button_pressed(&self) -> bool {
-        return self.change_nuclide_button_pressed;
-    }
 
     // timestep settings
     pub fn get_timestep(&self) -> Time {
@@ -107,10 +101,10 @@ impl SimulatorState {
     pub fn turn_off_change_nuclide_button(&mut self){
         self.change_nuclide_button_pressed = false;
     }
-    pub fn get_state_of_restart_button(&self) -> bool{
+    pub fn is_restart_button_pressed(&self) -> bool{
         return self.restart_button_pressed;
     }
-    pub fn get_state_of_change_nuclide_button(&self) -> bool{
+    pub fn is_change_nuclide_button_pressed(&self) -> bool{
         return self.change_nuclide_button_pressed;
     }
 
