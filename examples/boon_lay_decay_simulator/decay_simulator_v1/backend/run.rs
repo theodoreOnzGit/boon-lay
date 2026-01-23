@@ -76,6 +76,19 @@ impl DecaySimApp {
                     *simulation = new_simulation;
 
                 }
+                // for convenience, i want to get the half life of this 
+                // nuclide 
+                let nuclide_info: boon_lay::prelude::NuclideReactionAndDecayData = 
+                    decay_library.try_match_nuclides_to_decay_data(user_set_nuclide)
+                    .unwrap();
+
+                // get half life 
+                let nuclide_half_life: Time = 
+                    nuclide_info.try_get_half_life().unwrap();
+
+                // set timestep to 0.01% half life 
+                let timestep_based_on_hl: Time = 1e-5 * nuclide_half_life;
+
 
 
                 // once done 
@@ -86,6 +99,8 @@ impl DecaySimApp {
                     simulator_state_ptr.lock().unwrap().turn_off_restart_button();
                     simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
                     simulator_state_ptr.lock().unwrap().reset_simulated_time();
+                    simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_hl);
+
 
                 }
 
@@ -117,14 +132,27 @@ impl DecaySimApp {
                 }
                 // once done 
                 *thread_ptr.lock().unwrap() = 
-                    (simulation_vector, decay_library);
+                    (simulation_vector, decay_library.clone());
 
 
+                // for convenience, i want to get the half life of this 
+                // nuclide 
+                let nuclide_info: boon_lay::prelude::NuclideReactionAndDecayData = 
+                    decay_library.try_match_nuclides_to_decay_data(user_set_nuclide)
+                    .unwrap();
+
+                // get half life 
+                let nuclide_half_life: Time = 
+                    nuclide_info.try_get_half_life().unwrap();
+
+                // set timestep to 0.01% half life 
+                let timestep_based_on_hl: Time = 1e-5 * nuclide_half_life;
 
                 if thread_number == 1 {
 
                     simulator_state_ptr.lock().unwrap().turn_off_restart_button();
                     simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
+                    simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_hl);
 
                 }
 

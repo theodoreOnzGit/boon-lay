@@ -168,13 +168,15 @@ impl DecaySimApp {
 
         ui.label(format!("User Selected Nuclide: {:?}", nuclide));
 
+        // just for convenience
+
 
         // i want half life as well 
 
         let (_,nuclide_library) = 
             self.decay_sim_thread_1_ptr.lock().unwrap().clone();
         let nuclide_data: NuclideReactionAndDecayData 
-            = nuclide_library.match_nuclides_to_decay_data(
+            = nuclide_library.try_match_nuclides_to_decay_data(
                 nuclide
             ).unwrap();
 
@@ -198,6 +200,8 @@ impl DecaySimApp {
         ui.label(format!("Half-life (billion years): {:.5}", hl_gyr));
 
         ui.separator();
+
+        
 
         self.simulator_state.lock().unwrap().set_user_selected_nuclide(
             nuclide

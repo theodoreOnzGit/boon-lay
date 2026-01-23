@@ -126,7 +126,7 @@ impl SingleNuclideSimulatorMC {
 
         // this panics for ultra heavy nuclides
         let nuclide_decay_struct: NuclideReactionAndDecayData 
-            = decay_library.match_nuclides_to_decay_data(current_nuclide)
+            = decay_library.try_match_nuclides_to_decay_data(current_nuclide)
             .unwrap();
 
         let current_half_life_info = nuclide_decay_struct.half_life_information;

@@ -17,7 +17,7 @@ impl NuclideReactionAndDecayData {
     ) -> Option<NuclideReactionAndDecayData>{
             let decay_library = DecayLibrary::new();
 
-            return decay_library.match_nuclides_to_decay_data(nuclide);
+            return decay_library.try_match_nuclides_to_decay_data(nuclide);
 
     }
     

@@ -40,7 +40,7 @@ fn test_rng(){
     let mut ir168_m_counter = 0;
     // construct the library 
     let decay_library = DecayLibrary::new();
-    let gold_decay_data = decay_library.match_nuclides_to_decay_data(gold172).unwrap();
+    let gold_decay_data = decay_library.try_match_nuclides_to_decay_data(gold172).unwrap();
 
     // let me perform about 1000 decays 
 

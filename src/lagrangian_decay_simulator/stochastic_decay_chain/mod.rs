@@ -29,7 +29,7 @@ impl StochasticDecayChain {
         // data 
 
         let starting_nuclide_data: NuclideReactionAndDecayData 
-            = decay_library.match_nuclides_to_decay_data(starting_nuclide).unwrap();
+            = decay_library.try_match_nuclides_to_decay_data(starting_nuclide).unwrap();
 
         match starting_nuclide_data.half_life_information {
             HalfLifeAndDecayEnergyInfo::Stable => {
@@ -56,7 +56,7 @@ impl StochasticDecayChain {
 
                 let next_nuclide_data: NuclideReactionAndDecayData 
                     = decay_library
-                    .match_nuclides_to_decay_data(next_nuclide)
+                    .try_match_nuclides_to_decay_data(next_nuclide)
                     .unwrap();
 
                 // if unstable, we push the next decay information up
@@ -79,7 +79,7 @@ impl StochasticDecayChain {
             = latest_nuclide_decay_info.clone();
 
         let mut subsequent_nuclide_data: NuclideReactionAndDecayData 
-            = decay_library.match_nuclides_to_decay_data(
+            = decay_library.try_match_nuclides_to_decay_data(
                 subsequent_nuclide
             ).unwrap();
 
@@ -110,7 +110,7 @@ impl StochasticDecayChain {
 
                     let next_nuclide_data: NuclideReactionAndDecayData 
                         = decay_library
-                        .match_nuclides_to_decay_data(next_nuclide)
+                        .try_match_nuclides_to_decay_data(next_nuclide)
                         .unwrap();
 
                     subsequent_nuclide_decay_info = 
