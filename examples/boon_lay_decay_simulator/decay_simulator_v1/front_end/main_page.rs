@@ -152,13 +152,12 @@ impl DecaySimApp {
             let content_origin: Pos2 = ui.min_rect().min;
             let content_origin_rect: Rect = ui.min_rect();
 
-            let content_origin_left = content_origin_rect.left();
-            let content_origin_top = content_origin_rect.top();
+            let left_limit = content_origin_rect.left();
+            let top_limit = content_origin_rect.top();
 
-            let content_origin_right = content_origin_left + viewport.right();
-            let content_origin_bottom = content_origin_top + viewport.bottom();
+            let right_limit = left_limit + viewport.right();
+            let bottom_limit = top_limit + viewport.bottom();
 
-            dbg!(&(content_origin_right, content_origin_bottom));
             
             // so basically, i need to get the position relative to the content origin 
             
@@ -170,11 +169,11 @@ impl DecaySimApp {
                 let circle_abs_pos_x: f32 = content_origin.x + c.center.x;
                 let circle_abs_pos_y: f32 = content_origin.y + c.center.y;
 
-                if circle_abs_pos_x < content_origin_left || circle_abs_pos_x > content_origin_right   {
+                if circle_abs_pos_x < left_limit || circle_abs_pos_x > right_limit   {
                     skipped_circles_counter += 1;
                     continue;
                 };
-                if circle_abs_pos_y < content_origin_top || circle_abs_pos_y > content_origin_bottom   {
+                if circle_abs_pos_y < top_limit || circle_abs_pos_y > bottom_limit   {
                     skipped_circles_counter += 1;
                     continue;
                 };
