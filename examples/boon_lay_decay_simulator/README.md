@@ -112,7 +112,16 @@ At the frontend, it will need some information
 
 ## to do list 
 
-1. create periodic table legend 
-2. create graphs
-3. create reset button and change nuclide button 
-4. reduce lag for drawing 250,000 particles
+1. create periodic table legend (in progress)
+2. create graphs (in progress)
+3. create reset button and change nuclide button (done)
+4. reduce lag for drawing 250,000 particles (in progress)
+
+For the graphs part, at the start/restart or change of any 
+simulation, I need to get a list of unique nuclides.
+
+We will then keep track of this unique list of nuclides over time,
+keeping a maximum of 5000 data points. These graphs will then 
+be (TBC, my brain is burning)
+
+
