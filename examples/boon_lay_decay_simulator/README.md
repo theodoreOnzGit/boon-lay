@@ -112,7 +112,7 @@ At the frontend, it will need some information
 
 ## to do list 
 
-1. create periodic table legend (in progress)
+1. create periodic table legend (done)
 2. create graphs (in progress)
 3. create reset button and change nuclide button (done)
 4. reduce lag for drawing 250,000 particles (done)

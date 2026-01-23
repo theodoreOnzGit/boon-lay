@@ -16,9 +16,10 @@ impl DecaySimApp {
     /// displays a periodic table of elements
     pub fn periodic_table(&mut self, ui: &mut Ui) {
 
-        let periodic_table_size: f32 = 2000.0;
+        let periodic_table_size_x: f32 = 1700.0;
+        let periodic_table_size_y: f32 = 1000.0;
         let (rect, _response) = ui.allocate_exact_size(
-            egui::vec2(periodic_table_size, periodic_table_size), 
+            egui::vec2(periodic_table_size_x, periodic_table_size_y), 
             egui::Sense::hover()
         );
 
