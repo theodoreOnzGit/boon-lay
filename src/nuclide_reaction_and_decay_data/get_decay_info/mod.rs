@@ -7,7 +7,7 @@ impl NuclideReactionAndDecayData {
     /// this obtains half life of the nuclide 
     ///
     /// if stable, this returns none
-    pub fn get_half_life(&self) -> Option<Time> {
+    pub fn try_get_half_life(&self) -> Option<Time> {
 
         match self.half_life_information {
             super::HalfLifeAndDecayEnergyInfo::Stable => None,

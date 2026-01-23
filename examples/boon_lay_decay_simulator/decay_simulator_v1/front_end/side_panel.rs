@@ -1,4 +1,4 @@
-use boon_lay::Nuclide;
+use boon_lay::{Nuclide, prelude::{NuclideReactionAndDecayData, decay_library::DecayLibrary}};
 use egui::Ui;
 use uom::si::{f64::Time, ratio::ratio, time::{day, millisecond, second, year}};
 
@@ -176,6 +176,39 @@ impl DecaySimApp {
             });
 
         ui.label(format!("User Selected Nuclide: {:?}", nuclide));
+
+
+        // i want half life as well 
+
+        let (_,nuclide_library) = 
+            self.decay_sim_thread_1_ptr.lock().unwrap().clone();
+        let nuclide_data: NuclideReactionAndDecayData 
+            = nuclide_library.match_nuclides_to_decay_data(
+                nuclide
+            ).unwrap();
+
+        ui.label(" ");
+
+        let half_life: Time = nuclide_data.try_get_half_life().unwrap();
+        // Read in different units
+        let hl_ms   = half_life.get::<millisecond>();
+        let hl_s    = half_life.get::<second>();
+        let hl_days = half_life.get::<day>();
+        let hl_years = half_life.get::<year>();
+
+        // Convert to years and billion years (Ga) from days
+        let hl_gyr   = hl_years / 1.0e9;
+
+        // Show with 5 decimal places
+        ui.label(format!("Half-life (milliseconds): {:.5}", hl_ms));
+        ui.label(format!("Half-life (seconds): {:.5}", hl_s));
+        ui.label(format!("Half-life (days): {:.5}", hl_days));
+        ui.label(format!("Half-life (years): {:.5}", hl_years));
+        ui.label(format!("Half-life (billion years): {:.5}", hl_gyr));
+
+
+
+
         ui.separator();
 
         self.simulator_state.lock().unwrap().set_user_selected_nuclide(
