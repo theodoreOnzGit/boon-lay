@@ -1,6 +1,6 @@
 use std::{sync::{Arc, Barrier, Mutex}, thread, time::{Duration, SystemTime}};
 
-use boon_lay::prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC};
+use boon_lay::{Nuclide, prelude::{SingleNuclideSimulatorMC, decay_library::DecayLibrary}};
 use uom::si::{f64::Time, time::{millisecond, second}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
@@ -56,7 +56,40 @@ impl DecaySimApp {
                 // if restart button is pressed, then reset the simulator 
                 // with the nuclide supplied by the user but all times set to zero 
 
-                // I will deal with this part later
+                let (mut simulation_vector, mut decay_library): 
+                    (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+                     thread_ptr.lock().unwrap().clone();
+
+                // let me get the nuclide of interest first 
+
+                let user_set_nuclide: Nuclide = 
+                    simulator_state_ptr.lock().unwrap().get_user_selected_nuclide();
+
+                for simulation in simulation_vector.iter_mut() {
+
+                    let new_simulation 
+                        = SingleNuclideSimulatorMC::new_decay_chain_simulation(
+                            user_set_nuclide, &mut decay_library
+                        );
+
+
+                    *simulation = new_simulation;
+
+                }
+
+
+                // once done 
+                *thread_ptr.lock().unwrap() = 
+                    (simulation_vector, decay_library);
+                if thread_number == 1 {
+
+                    simulator_state_ptr.lock().unwrap().turn_off_restart_button();
+                    simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
+
+                }
+
+                // make sure all threads in sync 
+                barrier.wait();
                 
             }
 
@@ -65,7 +98,37 @@ impl DecaySimApp {
                 // if so, change the nuclide button, but do not reset 
                 // all the time to zero
 
-                // I will deal with this part later
+                // first if this is thread 1, then we change 
+                // all the restart and change nuclide off
+
+                let (mut simulation_vector, mut decay_library): 
+                    (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+                     thread_ptr.lock().unwrap().clone();
+
+                // let me get the nuclide of interest first 
+
+                let user_set_nuclide: Nuclide = 
+                    simulator_state_ptr.lock().unwrap().get_user_selected_nuclide();
+
+                for simulation in simulation_vector.iter_mut() {
+                    simulation.transmute_nuclide(user_set_nuclide, &mut decay_library);
+
+                }
+                // once done 
+                *thread_ptr.lock().unwrap() = 
+                    (simulation_vector, decay_library);
+
+
+
+                if thread_number == 1 {
+
+                    simulator_state_ptr.lock().unwrap().turn_off_restart_button();
+                    simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
+
+                }
+
+                // make sure all threads in sync 
+                barrier.wait();
             }
             
             // so all the conditions for running are met 
