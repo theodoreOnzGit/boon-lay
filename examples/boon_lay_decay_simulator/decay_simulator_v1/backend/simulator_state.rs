@@ -94,5 +94,25 @@ impl SimulatorState {
     }
 
 
+    /// for restart button 
+    pub fn turn_on_restart_button(&mut self){
+        self.restart_button_pressed = true;
+    }
+    pub fn turn_on_change_nuclide_button(&mut self){
+        self.change_nuclide_button_pressed = true;
+    }
+    pub fn turn_off_restart_button(&mut self){
+        self.restart_button_pressed = false;
+    }
+    pub fn turn_off_change_nuclide_button(&mut self){
+        self.change_nuclide_button_pressed = false;
+    }
+    pub fn get_state_of_restart_button(&self) -> bool{
+        return self.restart_button_pressed;
+    }
+    pub fn get_state_of_change_nuclide_button(&self) -> bool{
+        return self.change_nuclide_button_pressed;
+    }
+
 }
 

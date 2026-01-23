@@ -1,6 +1,6 @@
 use std::{sync::{Arc, Barrier, Mutex}, thread, time::{Duration, SystemTime}};
 
-use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
+use boon_lay::prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC};
 use uom::si::{f64::Time, time::{millisecond, second}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
