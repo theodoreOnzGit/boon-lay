@@ -8,7 +8,7 @@ use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::Nuclide;
 
 use crate::decay_simulator_v1::backend::simulator_state::SimulatorState;
-use crate::decay_simulator_v1::panels_and_pages::Panel;
+use crate::decay_simulator_v1::front_end::Panel;
 
 pub fn decay_simulator_v1() -> eframe::Result<()> {
 
@@ -508,7 +508,7 @@ fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
 
 /// code for panels and pages in the simulator
 /// this is basically like the frontend
-pub mod panels_and_pages;
+pub mod front_end;
 
 
 /// this is the backend code 

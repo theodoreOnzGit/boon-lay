@@ -109,3 +109,10 @@ At the frontend, it will need some information
 2. Where the nuclides are (this is based on the x,y,z coordinates)
 
 
+
+## to do list 
+
+1. create periodic table legend 
+2. create graphs
+3. create reset button and change nuclide button 
+4. reduce lag for drawing 250,000 particles
