@@ -6,6 +6,7 @@ use std::sync::{Barrier, Mutex};
 use boon_lay::prelude::decay_library::DecayLibrary;
 use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::Nuclide;
+use rayon::prelude::*;
 
 use crate::decay_simulator_v1::backend::simulator_state::SimulatorState;
 use crate::decay_simulator_v1::front_end::Panel;
@@ -196,34 +197,40 @@ impl Default for DecaySimApp {
         let num_of_nuclides = 62_500;
         let nuclide = Nuclide::U238;
 
-        let rng_seed_1 = 550;
-        let rng_seed_2 = 47;
-        let rng_seed_3 = 58;
-        let rng_seed_4 = 1414;
-        let decay_sim_thread_1_ptr = 
-            Self::construct_new_single_thread_multi_particle_simulation(
-                num_of_nuclides, 
-                nuclide,
-                rng_seed_1,
-            );
-        let decay_sim_thread_2_ptr = 
-            Self::construct_new_single_thread_multi_particle_simulation(
-                num_of_nuclides, 
-                nuclide,
-                rng_seed_2,
-            );
-        let decay_sim_thread_3_ptr = 
-            Self::construct_new_single_thread_multi_particle_simulation(
-                num_of_nuclides, 
-                nuclide,
-                rng_seed_3,
-            );
-        let decay_sim_thread_4_ptr = 
-            Self::construct_new_single_thread_multi_particle_simulation(
-                num_of_nuclides, 
-                nuclide,
-                rng_seed_4,
-            );
+        fn build_four_vec(
+            num_of_nuclides: usize,
+            nuclide: Nuclide,
+        ) -> (Arc<Mutex<(Vec<SingleNuclideSimulatorMC>, DecayLibrary)>>, 
+        Arc<Mutex<(Vec<SingleNuclideSimulatorMC>, DecayLibrary)>>, 
+        Arc<Mutex<(Vec<SingleNuclideSimulatorMC>, DecayLibrary)>>, 
+        Arc<Mutex<(Vec<SingleNuclideSimulatorMC>, DecayLibrary)>>) {
+            let seeds = [550_u64, 47, 58, 1414];
+
+            let sims: Vec<Arc<Mutex<(Vec<SingleNuclideSimulatorMC>, DecayLibrary)>>> = seeds
+                .par_iter()
+                .map(|&seed| {
+                    DecaySimApp::construct_new_single_thread_multi_particle_simulation(
+                        num_of_nuclides.try_into().unwrap(),
+                        nuclide,
+                        seed,
+                    )
+                })
+            .collect();
+
+            // Convert Vec<SimPtr> -> 4-tuple, preserving order of seeds
+            let mut it = sims.into_iter();
+            (
+                it.next().unwrap(),
+                it.next().unwrap(),
+                it.next().unwrap(),
+                it.next().unwrap(),
+            )
+        }
+        let (decay_sim_thread_1_ptr , 
+            decay_sim_thread_2_ptr , 
+            decay_sim_thread_3_ptr , 
+            decay_sim_thread_4_ptr , ) 
+            = build_four_vec(num_of_nuclides.try_into().unwrap(), nuclide);
 
         let simulator_state = Arc::new(Mutex::new(SimulatorState::default()));
 

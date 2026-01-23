@@ -588,6 +588,7 @@ dependencies = [
  "image",
  "log",
  "oorandom",
+ "rayon",
  "serde",
  "serde-xml-rs",
  "uom",

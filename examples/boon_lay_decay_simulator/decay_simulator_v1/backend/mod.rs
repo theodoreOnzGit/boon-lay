@@ -31,6 +31,8 @@ impl DecaySimApp {
             // basically I should not be repeating the same nuclide simulation,
             // I need to be individually constructing them
 
+            // i tried rayon here, can't really do this because the 
+            // decay library
             for simulation in v.iter_mut() {
                 let new_simulation 
                     = SingleNuclideSimulatorMC::new_decay_chain_simulation(
