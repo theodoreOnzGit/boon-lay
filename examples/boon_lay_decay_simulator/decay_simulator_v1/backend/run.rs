@@ -1,7 +1,7 @@
 use std::{sync::{Arc, Barrier, Mutex}, thread, time::{Duration, SystemTime}};
 
 use boon_lay::{Nuclide, prelude::{SingleNuclideSimulatorMC, decay_library::DecayLibrary}};
-use uom::si::{f64::Time, time::{millisecond, second}};
+use uom::{ConstZero, si::{f64::Time, time::{millisecond, second}}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
 
@@ -85,6 +85,7 @@ impl DecaySimApp {
 
                     simulator_state_ptr.lock().unwrap().turn_off_restart_button();
                     simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
+                    simulator_state_ptr.lock().unwrap().reset_simulated_time();
 
                 }
 
