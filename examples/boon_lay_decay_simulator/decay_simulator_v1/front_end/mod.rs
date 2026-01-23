@@ -3,6 +3,7 @@
 pub(crate) enum Panel {
     MainPage,
     GraphPage,
+    PeriodicTable,
 }
 
 
@@ -13,3 +14,6 @@ pub mod main_page;
 pub mod graph_page;
 
 pub mod side_panel;
+
+/// this provides a legend as to what elements are what colour
+pub mod periodic_table;
