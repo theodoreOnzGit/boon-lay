@@ -33,14 +33,17 @@ impl DecaySimApp {
         simulated_time_string += &simulated_time.to_string();
         ui.label(simulated_time_string);
 
-
         let simulated_time = simulator_state_clone.get_simulated_time();
+        let mut simulated_time_string: String = "Simulated Time (days):".to_string();
+        simulated_time_string += &simulated_time.get::<day>().to_string();
+        ui.label(simulated_time_string);
+        ui.label(" ");
+
         let mut simulated_time_string: String = "Simulated Time (years):".to_string();
         simulated_time_string += &simulated_time.get::<year>().to_string();
         ui.label(simulated_time_string);
         ui.label(" ");
 
-        let simulated_time = simulator_state_clone.get_simulated_time();
         let mut simulated_time_string: String = "Simulated Time (billion years):".to_string();
         simulated_time_string += &(simulated_time.get::<year>()/1e9 as f64).to_string();
         ui.label(simulated_time_string);
