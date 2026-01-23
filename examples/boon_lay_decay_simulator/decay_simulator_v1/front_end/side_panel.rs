@@ -73,11 +73,11 @@ impl DecaySimApp {
         let mut nuclide_fraction_remaining: f64 = 
             simulator_state_clone.get_nuclide_fraction().get::<ratio>();
 
-        // round to 3dp
+        // round to 5dp
 
         nuclide_fraction_remaining = 
-            (nuclide_fraction_remaining *1000.0).round() /
-            1000.0;
+            (nuclide_fraction_remaining * 1e5_f64).round() /
+            1e5_f64;
         let mut surviving_fraction_string: String = "Surviving Fraction:".to_string();
         surviving_fraction_string += &nuclide_fraction_remaining.to_string();
         ui.label(surviving_fraction_string);
