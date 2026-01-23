@@ -252,7 +252,7 @@ impl DecaySimApp {
         // Apply darkness based on atomic number:
         // factor = 1.0 at Z=1 (no darkening) down to `min_factor` at Z=118.
         // Tune `min_factor` to control max darkening.
-        let min_factor = 0.55_f32; // darkest multiplier for the heaviest elements
+        let min_factor = 0.01_f32; // darkest multiplier for the heaviest elements
         let z_clamped = z.clamp(1, 118);
         let t = (z_clamped - 1) as f32 / (118 - 1) as f32; // 0.0..1.0
         let factor = 1.0 - t * (1.0 - min_factor);
