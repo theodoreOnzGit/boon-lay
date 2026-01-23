@@ -257,7 +257,7 @@ impl DecaySimApp {
 
             for (n, frac) in items.iter() {
                 ui.label(format!(
-                        "{} fraction remaining: {:.5}",
+                        "{} fraction : {:.5}",
                         nuclide_to_string(*n),
                         frac
                 ));
