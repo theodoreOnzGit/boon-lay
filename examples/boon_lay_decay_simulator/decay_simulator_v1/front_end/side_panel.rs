@@ -37,12 +37,10 @@ impl DecaySimApp {
         let mut simulated_time_string: String = "Simulated Time (days):".to_string();
         simulated_time_string += &simulated_time.get::<day>().to_string();
         ui.label(simulated_time_string);
-        ui.label(" ");
 
         let mut simulated_time_string: String = "Simulated Time (years):".to_string();
         simulated_time_string += &simulated_time.get::<year>().to_string();
         ui.label(simulated_time_string);
-        ui.label(" ");
 
         let mut simulated_time_string: String = "Simulated Time (billion years):".to_string();
         simulated_time_string += &(simulated_time.get::<year>()/1e9 as f64).to_string();
@@ -56,24 +54,22 @@ impl DecaySimApp {
         let mut timestep_string: String = "Timestep (seconds):".to_string();
         timestep_string += &timestep.get::<second>().to_string();
         ui.label(timestep_string);
-        ui.label(" ");
 
         // I also want to display this in milliseconds, days, years
         let mut timestep_string: String = "Timestep (milliseconds):".to_string();
         timestep_string += &timestep.get::<millisecond>().to_string();
         ui.label(timestep_string);
-        ui.label(" ");
 
         let mut timestep_string: String = "Timestep (days):".to_string();
         timestep_string += &timestep.get::<day>().to_string();
         ui.label(timestep_string);
-        ui.label(" ");
         let mut timestep_string: String = "Timestep (years):".to_string();
         timestep_string += &timestep.get::<year>().to_string();
         ui.label(timestep_string);
         ui.label(" ");
 
         // nuclide fraction remaining
+        ui.heading("Fraction of Nuclides yet to Decay");
         let mut nuclide_fraction_remaining: f64 = 
             simulator_state_clone.get_nuclide_fraction().get::<ratio>();
 
