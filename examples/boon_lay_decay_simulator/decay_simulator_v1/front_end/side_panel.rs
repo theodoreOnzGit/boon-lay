@@ -22,6 +22,7 @@ impl DecaySimApp {
         let mut elapsed_time_string: String = "Elapsed Time (seconds):".to_string();
         elapsed_time_string += &elapsed_time.get::<second>().to_string();
 
+        ui.label(elapsed_time_string);
         // timestep settings
 
         let mut user_set_timestep_seconds 
@@ -36,7 +37,6 @@ impl DecaySimApp {
         ui.add(timestep_slider_seconds);
         let timestep = Time::new::<second>(user_set_timestep_seconds);
         self.simulator_state.lock().unwrap().set_timestep(timestep);
-        ui.label(elapsed_time_string);
         ui.separator();
 
         ui.label(" ");
