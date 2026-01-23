@@ -2,6 +2,7 @@ use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC},
 use egui::{Color32, Rect, Ui};
 
 use crate::decay_simulator_v1::DecaySimApp;
+use rayon::prelude::*;
 
 impl DecaySimApp {
 
@@ -80,34 +81,80 @@ impl DecaySimApp {
             .chain(nuclide_vec_4)
             .collect();
 
-        let mut nuclide_index = 0;
+        //let mut nuclide_index = 0;
 
 
-        for row in 0..ROWS {
-            for col in 0..COLS {
-                // Center each circle in its cell
-                let x = origin.x + (col as f32 + 0.5) * dx;
-                let y = origin.y + (row as f32 + 0.5) * dy;
-                let center = egui::pos2(x, y);
+        //for row in 0..ROWS {
+        //    for col in 0..COLS {
+        //        // Center each circle in its cell
+        //        let x = origin.x + (col as f32 + 0.5) * dx;
+        //        let y = origin.y + (row as f32 + 0.5) * dy;
+        //        let center = egui::pos2(x, y);
 
-                // Example color gradient by position (any palette can be used)
-                //let r = (col * 255 / (COLS - 1)) as u8;
-                //let g = (row * 255 / (ROWS - 1)) as u8;
-                //let b = 160u8;
-                // not vibe coded:
-                // now to obtain colour, we get the nuclide index
-                // 
-                let nuclide = full_nuclide_vector[nuclide_index];
-                let color = Self::element_color(nuclide);
-                nuclide_index += 1;
+        //        // Example color gradient by position (any palette can be used)
+        //        //let r = (col * 255 / (COLS - 1)) as u8;
+        //        //let g = (row * 255 / (ROWS - 1)) as u8;
+        //        //let b = 160u8;
+        //        // not vibe coded:
+        //        // now to obtain colour, we get the nuclide index
+        //        // 
+        //        let nuclide = full_nuclide_vector[nuclide_index];
+        //        let color = Self::element_color(nuclide);
+        //        nuclide_index += 1;
 
-                // just assert to be printing different nuclides, 
-                // this works correct 
-                // dbg!(&nuclide_index);
+        //        // just assert to be printing different nuclides, 
+        //        // this works correct 
+        //        // dbg!(&nuclide_index);
 
-                painter.circle_filled(center, radius, color);
+        //        painter.circle_filled(center, radius, color);
+        //    }
+        //}
+
+        // refactored using vibe coding to increase smoothness
+        #[derive(Clone, Copy)]
+        struct CircleInst {
+            center: egui::Pos2,
+            radius: f32,
+            color: egui::Color32,
+        }
+
+        fn draw_grid_parallel(
+            ui: &mut egui::Ui,
+            origin: egui::Pos2,
+            dx: f32,
+            dy: f32,
+            radius: f32,
+            full_nuclide_vector: &[Nuclide],
+            rows: usize,
+            cols: usize,
+        ) {
+            // Parallel precompute
+            let circles: Vec<CircleInst> = (0..rows * cols)
+                .into_par_iter()
+                .map(|idx| {
+                    let row = idx / cols;
+                    let col = idx % cols;
+
+                    let x = origin.x + (col as f32 + 0.5) * dx;
+                    let y = origin.y + (row as f32 + 0.5) * dy;
+                    let center = egui::pos2(x, y);
+
+                    let nuclide = full_nuclide_vector[idx];
+                    let color = DecaySimApp::element_color(nuclide);
+
+                    CircleInst { center, radius, color }
+                })
+            .collect();
+
+            // Single-threaded draw (UI thread)
+            let painter = ui.painter();
+            for c in &circles {
+                painter.circle_filled(c.center, c.radius, c.color);
             }
         }
+
+        draw_grid_parallel(ui, origin, dx, dy, radius, 
+            &full_nuclide_vector, ROWS, COLS);
 
     }
 
