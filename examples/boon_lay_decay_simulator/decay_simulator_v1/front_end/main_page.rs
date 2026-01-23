@@ -1,5 +1,5 @@
 use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
-use egui::{Color32, Rect, Ui};
+use egui::{Color32, Pos2, Rect, Ui};
 
 use crate::decay_simulator_v1::DecaySimApp;
 use rayon::prelude::*;
@@ -9,17 +9,18 @@ impl DecaySimApp {
     pub fn main_page(&mut self, ui: &mut Ui) {
 
         let ui_rectangle: Rect = ui.min_rect();
+        let viewport = ui.clip_rect();
 
         let _left_most_side = ui_rectangle.left();
         let _top_most_side = ui_rectangle.top();
 
         // this part is vibe coded
-        // Fixed drawing area: 1600 x 1600 pixels
-        const SIZE: f32 = 1600.0;
+        // Fixed drawing area: 2500 x 2500 pixels
+        const SIZE: f32 = 2500.0;
         const COLS: usize = 500;
         const ROWS: usize = 500;
 
-        // Reserve exactly 1600x1600 px in the UI (won't resize with the panel)
+        // Reserve exactly 2500x2500 px in the UI (won't resize with the panel)
         let (rect, _response) = ui.allocate_exact_size(egui::vec2(SIZE, SIZE), egui::Sense::hover());
 
         // Grid cell size (fixed, independent of the UI rectangle size)
@@ -27,7 +28,7 @@ impl DecaySimApp {
         let dy = SIZE / ROWS as f32; // 3.2 px
         let radius = 0.45 * dx.min(dy); // ~1.44 px
 
-        let origin = rect.min; // top-left of the allocated 1600x1600 area
+        let origin = rect.min; // top-left of the allocated 2500x2500 area
 
         // let me obtain the four vectors of nuclides 
         
@@ -126,6 +127,7 @@ impl DecaySimApp {
             full_nuclide_vector: &[Nuclide],
             rows: usize,
             cols: usize,
+            viewport: Rect,
         ) {
             // Parallel precompute
             let circles: Vec<CircleInst> = (0..rows * cols)
@@ -147,13 +149,48 @@ impl DecaySimApp {
 
             // Single-threaded draw (UI thread)
             let painter = ui.painter();
+            let content_origin: Pos2 = ui.min_rect().min;
+            let content_origin_rect: Rect = ui.min_rect();
+
+            let content_origin_left = content_origin_rect.left();
+            let content_origin_top = content_origin_rect.top();
+
+            let content_origin_right = content_origin_left + viewport.right();
+            let content_origin_bottom = content_origin_top + viewport.bottom();
+
+            dbg!(&(content_origin_right, content_origin_bottom));
+            
+            // so basically, i need to get the position relative to the content origin 
+            
+            let mut skipped_circles_counter = 0;
+
             for c in &circles {
+
+
+                let circle_abs_pos_x: f32 = content_origin.x + c.center.x;
+                let circle_abs_pos_y: f32 = content_origin.y + c.center.y;
+
+                if circle_abs_pos_x < content_origin_left || circle_abs_pos_x > content_origin_right   {
+                    skipped_circles_counter += 1;
+                    continue;
+                };
+                if circle_abs_pos_y < content_origin_top || circle_abs_pos_y > content_origin_bottom   {
+                    skipped_circles_counter += 1;
+                    continue;
+                };
+
+                
+
                 painter.circle_filled(c.center, c.radius, c.color);
             }
+
+            dbg!(&skipped_circles_counter);
+
         }
 
         draw_grid_parallel(ui, origin, dx, dy, radius, 
-            &full_nuclide_vector, ROWS, COLS);
+            &full_nuclide_vector, ROWS, COLS,
+            viewport);
 
     }
 
