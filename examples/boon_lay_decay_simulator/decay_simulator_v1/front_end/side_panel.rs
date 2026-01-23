@@ -1,4 +1,5 @@
-use boon_lay::{Nuclide, prelude::{NuclideReactionAndDecayData, decay_library::DecayLibrary}};
+use boon_lay::prelude::NuclideReactionAndDecayData;
+use boon_lay::Nuclide;
 use egui::Ui;
 use uom::si::{f64::Time, ratio::ratio, time::{day, millisecond, second, year}};
 

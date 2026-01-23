@@ -191,8 +191,12 @@ impl DecaySimApp {
 
 
     /// this is a vibe coded colour scheme for elements in the periodic table
+    /// Vibe-coded colour scheme for elements, with heavier elements shaded darker.
+    /// Darkness scales smoothly with atomic number Z: lightest at H (Z=1), darkest at Og (Z=118).
     pub fn element_color(nuclide: Nuclide) -> Color32 {
-        // Define palette for categories (pick your own colors if you prefer)
+        use egui::Color32;
+
+        // Base palette by category
         const HYDROGEN: Color32 = Color32::from_rgb(255, 255, 255);      // White
         const ALKALI: Color32 = Color32::from_rgb(255, 128, 0);          // Orange
         const ALKALINE_EARTH: Color32 = Color32::from_rgb(255, 215, 0);  // Gold
@@ -205,13 +209,12 @@ impl DecaySimApp {
         const HALOGEN: Color32 = Color32::from_rgb(0, 255, 255);         // Cyan
         const NOBLE_GAS: Color32 = Color32::from_rgb(135, 206, 235);     // Sky blue
         const UNKNOWN: Color32 = Color32::from_rgb(128, 128, 128);       // Gray
-                                                                         //
 
-        let (z,_a) = nuclide.get_z_a();
+        let (z, _a) = nuclide.get_z_a();
 
-        match z {
-            // Special case
-            1 => HYDROGEN,
+        // Pick base color by category
+        let base = match z {
+            1 => HYDROGEN,                                 // Special case
 
             // Noble gases
             2 | 10 | 18 | 36 | 54 | 86 | 118 => NOBLE_GAS,
@@ -243,8 +246,22 @@ impl DecaySimApp {
             // Halogens
             9 | 17 | 35 | 53 | 85 | 117 => HALOGEN,
 
-            // If out of range or unclassified
             _ => UNKNOWN,
+        };
+
+        // Apply darkness based on atomic number:
+        // factor = 1.0 at Z=1 (no darkening) down to `min_factor` at Z=118.
+        // Tune `min_factor` to control max darkening.
+        let min_factor = 0.55_f32; // darkest multiplier for the heaviest elements
+        let z_clamped = z.clamp(1, 118);
+        let t = (z_clamped - 1) as f32 / (118 - 1) as f32; // 0.0..1.0
+        let factor = 1.0 - t * (1.0 - min_factor);
+
+        // For hydrogen, keep pure white (optional: you can remove this if you want it shaded too)
+        if z == 1 {
+            base
+        } else {
+            base.gamma_multiply(factor)
         }
     }
 }
