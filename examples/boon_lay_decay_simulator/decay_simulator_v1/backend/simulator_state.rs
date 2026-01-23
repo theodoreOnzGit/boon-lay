@@ -21,7 +21,7 @@ impl Default for SimulatorState {
         let is_running = true;
         let restart_button_pressed = false;
         let change_nuclide_button_pressed = false;
-        let user_selected_timestep = Time::new::<second>(0.9);
+        let user_selected_timestep = Time::new::<second>(2500.0);
         let elapsed_time = Time::ZERO;
         let simulated_time = Time::ZERO;
         let nuclide_fraction_remaining = Ratio::new::<ratio>(1.0);
@@ -30,7 +30,7 @@ impl Default for SimulatorState {
         Self {
             is_running,
             restart_button_pressed,
-            user_selected_nuclide: Nuclide::U238,
+            user_selected_nuclide: Nuclide::Sr90,
             change_nuclide_button_pressed,
             user_selected_timestep,
             elapsed_time,

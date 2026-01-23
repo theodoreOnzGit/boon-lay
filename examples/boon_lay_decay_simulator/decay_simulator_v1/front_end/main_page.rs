@@ -161,7 +161,6 @@ impl DecaySimApp {
             
             // so basically, i need to get the position relative to the content origin 
             
-            let mut skipped_circles_counter = 0;
 
             for c in &circles {
 
@@ -170,11 +169,9 @@ impl DecaySimApp {
                 let circle_abs_pos_y: f32 = content_origin.y + c.center.y;
 
                 if circle_abs_pos_x < left_limit || circle_abs_pos_x > right_limit   {
-                    skipped_circles_counter += 1;
                     continue;
                 };
                 if circle_abs_pos_y < top_limit || circle_abs_pos_y > bottom_limit   {
-                    skipped_circles_counter += 1;
                     continue;
                 };
 
@@ -183,7 +180,6 @@ impl DecaySimApp {
                 painter.circle_filled(c.center, c.radius, c.color);
             }
 
-            dbg!(&skipped_circles_counter);
 
         }
 

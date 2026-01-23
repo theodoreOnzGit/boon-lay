@@ -195,7 +195,7 @@ impl Default for DecaySimApp {
         let time_start = SystemTime::now();
 
         let num_of_nuclides = 62_500;
-        let nuclide = Nuclide::U238;
+        let nuclide = Nuclide::Sr90;
 
         fn build_four_vec(
             num_of_nuclides: usize,
