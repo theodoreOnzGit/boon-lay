@@ -1,7 +1,7 @@
 use boon_lay::Nuclide;
 use uom::{ConstZero, si::{f64::{Ratio, Time}, ratio::ratio, time::second}};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SimulatorState {
     is_running: bool,
     restart_button_pressed: bool,
@@ -11,7 +11,7 @@ pub struct SimulatorState {
     elapsed_time: Time, 
     simulated_time: Time,
     nuclide_fraction_remaining: Ratio,
-
+    nuclide_fraction_vector: Vec<(Nuclide, f64)>,
 }
 
 impl Default for SimulatorState {
@@ -25,6 +25,8 @@ impl Default for SimulatorState {
         let elapsed_time = Time::ZERO;
         let simulated_time = Time::ZERO;
         let nuclide_fraction_remaining = Ratio::new::<ratio>(1.0);
+        let nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
+            vec![];
         Self {
             is_running,
             restart_button_pressed,
@@ -34,6 +36,7 @@ impl Default for SimulatorState {
             elapsed_time,
             simulated_time,
             nuclide_fraction_remaining,
+            nuclide_fraction_vector,
         }
     }
 }
@@ -118,5 +121,15 @@ impl SimulatorState {
     pub fn get_nuclide_fraction(&self) -> Ratio{
         self.nuclide_fraction_remaining
     }
+
+    // nuclide fraction vector 
+    pub fn get_nuclide_fraction_vector(&self) -> Vec<(Nuclide, f64)>{
+        self.nuclide_fraction_vector.clone()
+    }
+
+    pub fn set_nuclide_fraction_vector(&mut self, nuclide_fraction_vector: Vec<(Nuclide, f64)>){
+        self.nuclide_fraction_vector = nuclide_fraction_vector;
+    }
+
 }
 

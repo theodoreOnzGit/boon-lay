@@ -224,6 +224,34 @@ impl DecaySimApp {
                 simulator_state_ptr.lock().unwrap().set_elapsed_time(elapsed_time);
 
             }
+
+
+            // thread 2 will be responsible for constructing the nuclide fraction 
+            // vector 
+            if thread_number == 2 {
+
+
+                let (simulation_vector, _decay_library): 
+                    (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+                     thread_ptr.lock().unwrap().clone();
+
+
+                let mut nuclide_vector: Vec<Nuclide> = vec![];
+
+                for simulation in simulation_vector {
+                    let nuclide = simulation.get_current_nuclide();
+                    nuclide_vector.push(nuclide);
+                }
+
+                let nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
+                    DecaySimApp::fractions_vec_map(&nuclide_vector);
+
+                simulator_state_ptr.lock().unwrap().set_nuclide_fraction_vector(
+                    nuclide_fraction_vector);
+
+
+
+            }
             barrier.wait();
 
 

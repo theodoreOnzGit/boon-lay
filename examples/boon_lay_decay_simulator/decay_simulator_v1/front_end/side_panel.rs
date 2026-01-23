@@ -7,10 +7,10 @@ use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecayS
 
 impl DecaySimApp {
 
-        pub fn side_panel(&mut self, ui: &mut Ui){
+    pub fn side_panel(&mut self, ui: &mut Ui){
 
         ui.heading("Timestep and Time");
-        
+
         // basically, get the simulator state first 
         ui.label(" ");
 
@@ -26,47 +26,36 @@ impl DecaySimApp {
         ui.label(" ");
 
         // display simulated time
+        // and timestep 
+        // (refactored using AI)
 
-        ui.label(" ");
-        let simulated_time = simulator_state_clone.get_simulated_time_seconds_2dp();
-        let mut simulated_time_string: String = "Simulated Time (seconds):".to_string();
-        simulated_time_string += &simulated_time.to_string();
-        ui.label(simulated_time_string);
+        let fmt5 = |x: f64| -> String { format!("{:.5}", x) };
 
-        let simulated_time = simulator_state_clone.get_simulated_time();
-        let mut simulated_time_string: String = "Simulated Time (days):".to_string();
-        simulated_time_string += &simulated_time.get::<day>().to_string();
-        ui.label(simulated_time_string);
+        ui.separator();
+        ui.label("Simulated time");
 
-        let mut simulated_time_string: String = "Simulated Time (years):".to_string();
-        simulated_time_string += &simulated_time.get::<year>().to_string();
-        ui.label(simulated_time_string);
+        // Use a single Time value and render in different units
+        let sim_t = simulator_state_clone.get_simulated_time();
 
-        let mut simulated_time_string: String = "Simulated Time (billion years):".to_string();
-        simulated_time_string += &(simulated_time.get::<year>()/1e9 as f64).to_string();
-        ui.label(simulated_time_string);
-        ui.label(" ");
+        ui.label(format!("Simulated Time (seconds): {}",     fmt5(sim_t.get::<second>())));
+        ui.label(format!("Simulated Time (days): {}",        fmt5(sim_t.get::<day>())));
+        ui.label(format!("Simulated Time (years): {}",       fmt5(sim_t.get::<year>())));
 
+        // Billion years (Ga)
+        let sim_years = sim_t.get::<year>();
+        ui.label(format!("Simulated Time (billion years): {}", fmt5(sim_years / 1.0e9)));
 
-        // display timestep
-        ui.label(" ");
-        let timestep = simulator_state_clone.get_timestep();
-        let mut timestep_string: String = "Timestep (seconds):".to_string();
-        timestep_string += &timestep.get::<second>().to_string();
-        ui.label(timestep_string);
+        ui.separator();
+        ui.label("Timestep");
 
-        // I also want to display this in milliseconds, days, years
-        let mut timestep_string: String = "Timestep (milliseconds):".to_string();
-        timestep_string += &timestep.get::<millisecond>().to_string();
-        ui.label(timestep_string);
+        let dt = simulator_state_clone.get_timestep();
 
-        let mut timestep_string: String = "Timestep (days):".to_string();
-        timestep_string += &timestep.get::<day>().to_string();
-        ui.label(timestep_string);
-        let mut timestep_string: String = "Timestep (years):".to_string();
-        timestep_string += &timestep.get::<year>().to_string();
-        ui.label(timestep_string);
-        ui.label(" ");
+        ui.label(format!("Timestep (milliseconds): {}", fmt5(dt.get::<millisecond>())));
+        ui.label(format!("Timestep (seconds): {}",      fmt5(dt.get::<second>())));
+        ui.label(format!("Timestep (days): {}",         fmt5(dt.get::<day>())));
+        ui.label(format!("Timestep (years): {}",        fmt5(dt.get::<year>())));
+
+        ui.separator();
 
         // nuclide fraction remaining
         ui.heading("Fraction of Nuclides yet to Decay");
@@ -236,6 +225,37 @@ impl DecaySimApp {
 
 
     }
+
+
+    // Single-threaded: "vector map" (linear search) without HashMap.
+    pub fn fractions_vec_map(nucs: &[Nuclide]) -> Vec<(Nuclide, f64)>
+    where
+        Nuclide: Clone, // or Copy if available
+        {
+            let total = nucs.len() as f64;
+            if total == 0.0 {
+                return Vec::new();
+            }
+
+            // Vec of (representative Nuclide, count)
+            let mut counts: Vec<(Nuclide, u64)> = Vec::new();
+
+            for n in nucs {
+                let key = n.get_z_a();
+                // linear search for existing key
+                if let Some((_, c)) = counts.iter_mut().find(|(rep, _)| rep.get_z_a() == key) {
+                    *c += 1;
+                } else {
+                    counts.push((n.clone(), 1));
+                }
+            }
+
+            // Convert counts to fractions
+            counts
+                .into_iter()
+                .map(|(rep, c)| (rep, c as f64 / total))
+                .collect()
+        }
 
 }
 
