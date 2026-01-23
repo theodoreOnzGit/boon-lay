@@ -116,6 +116,7 @@ At the frontend, it will need some information
 2. create graphs (in progress)
 3. create reset button and change nuclide button (done)
 4. reduce lag for drawing 250,000 particles (done)
+5. autotimestep determination based on half life (done)
 
 For the graphs part, at the start/restart or change of any 
 simulation, I need to get a list of unique nuclides.

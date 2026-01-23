@@ -90,6 +90,8 @@ impl DecaySimApp {
                 let timestep_based_on_hl: Time = 1e-5 * nuclide_half_life;
 
 
+                // make sure all threads in sync 
+                barrier.wait();
 
                 // once done 
                 *thread_ptr.lock().unwrap() = 
@@ -147,6 +149,8 @@ impl DecaySimApp {
 
                 // set timestep to 0.01% half life 
                 let timestep_based_on_hl: Time = 1e-5 * nuclide_half_life;
+                // make sure all threads in sync 
+                barrier.wait();
 
                 if thread_number == 1 {
 
