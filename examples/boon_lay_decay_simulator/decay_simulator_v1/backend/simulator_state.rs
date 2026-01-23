@@ -12,6 +12,8 @@ pub struct SimulatorState {
     simulated_time: Time,
     nuclide_fraction_remaining: Ratio,
     nuclide_fraction_vector: Vec<(Nuclide, f64)>,
+    nuclides_to_plot: Vec<Nuclide>,
+    nuclide_fractions_over_time: Vec<(Time, Vec<f64>)>,
 }
 
 impl Default for SimulatorState {
@@ -27,6 +29,22 @@ impl Default for SimulatorState {
         let nuclide_fraction_remaining = Ratio::new::<ratio>(1.0);
         let nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
             vec![];
+
+        let nuclides_to_plot: Vec<Nuclide> = vec![];
+        // the nuclide fractions over time 
+        //
+        // are of a tuple 
+        // first, time is recorded, 
+        //
+        // second, the fractions of the nuclides to plot are arranged in a vector 
+        // (we don't know at compile time which nuclides are in the 
+        // decay chain)
+        //
+        // note that these must be in order of the nuclides supplied in 
+        // nuclides to plot
+        // 
+        let nuclide_fractions_over_time: Vec<(Time, Vec<f64>)> = vec![];
+
         Self {
             is_running,
             restart_button_pressed,
@@ -37,6 +55,8 @@ impl Default for SimulatorState {
             simulated_time,
             nuclide_fraction_remaining,
             nuclide_fraction_vector,
+            nuclides_to_plot,
+            nuclide_fractions_over_time,
         }
     }
 }
