@@ -21,21 +21,6 @@ impl DecaySimApp {
         let elapsed_time = simulator_state_clone.get_elapsed_time();
         let mut elapsed_time_string: String = "Elapsed Time (seconds):".to_string();
         elapsed_time_string += &elapsed_time.get::<second>().to_string();
-        // vibe coded for extra speed
-        // Restart toggle button
-        let label = if self.simulator_state.lock().unwrap().is_restart_button_pressed() 
-        { "Restart (pending...)" } else { "Restart (OFF)" };
-        if ui.button(label).clicked() {
-            self.simulator_state.lock().unwrap().turn_on_restart_button();
-        }
-
-        // Change nuclide toggle button
-        let label = if self.simulator_state.lock().unwrap().is_change_nuclide_button_pressed() 
-        { "Change Nuclide (pending...)" } else { "Change Nuclide (OFF)" };
-        if ui.button(label).clicked() {
-            self.simulator_state.lock().unwrap().turn_on_change_nuclide_button();
-        }
-        ui.separator();
 
         // timestep settings
 
@@ -51,9 +36,9 @@ impl DecaySimApp {
         ui.add(timestep_slider_seconds);
         let timestep = Time::new::<second>(user_set_timestep_seconds);
         self.simulator_state.lock().unwrap().set_timestep(timestep);
+        ui.label(elapsed_time_string);
         ui.separator();
 
-        ui.label(elapsed_time_string);
         ui.label(" ");
 
         // display simulated time
@@ -183,6 +168,21 @@ impl DecaySimApp {
             });
 
         ui.label(format!("User Selected Nuclide: {:?}", nuclide));
+        // vibe coded for extra speed
+        // Restart toggle button
+        let label = if self.simulator_state.lock().unwrap().is_restart_button_pressed() 
+        { "Restart (pending...)" } else { "Restart (OFF)" };
+        if ui.button(label).clicked() {
+            self.simulator_state.lock().unwrap().turn_on_restart_button();
+        }
+
+        // Change nuclide toggle button
+        let label = if self.simulator_state.lock().unwrap().is_change_nuclide_button_pressed() 
+        { "Change Nuclide (pending...)" } else { "Change Nuclide (OFF)" };
+        if ui.button(label).clicked() {
+            self.simulator_state.lock().unwrap().turn_on_change_nuclide_button();
+        }
+        ui.separator();
 
         // just for convenience
 
