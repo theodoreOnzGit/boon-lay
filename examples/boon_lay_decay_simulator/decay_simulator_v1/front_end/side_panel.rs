@@ -74,6 +74,8 @@ impl DecaySimApp {
 
         ui.separator();
 
+
+
         // timestep settings
 
         let mut user_set_timestep_seconds 
@@ -195,9 +197,6 @@ impl DecaySimApp {
         ui.label(format!("Half-life (years): {:.5}", hl_years));
         ui.label(format!("Half-life (billion years): {:.5}", hl_gyr));
 
-
-
-
         ui.separator();
 
         self.simulator_state.lock().unwrap().set_user_selected_nuclide(
@@ -222,11 +221,61 @@ impl DecaySimApp {
         ui.separator();
 
 
+        // vibe coded to help display nuclides in decay chain
+        ui.heading("Nuclides in Simulation and their fraction");
+
+        // nuclides in simulation decay chain
+        // Minimal helpers; replace with your own if you already have them.
+        fn symbol_from_z(z: u16) -> &'static str {
+            static SYMBOLS: [&str; 119] = [
+                "", "H","He","Li","Be","B","C","N","O","F","Ne",
+                "Na","Mg","Al","Si","P","S","Cl","Ar",
+                "K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn",
+                "Ga","Ge","As","Se","Br","Kr",
+                "Rb","Sr","Y","Zr","Nb","Mo","Tc","Ru","Rh","Pd","Ag","Cd",
+                "In","Sn","Sb","Te","I","Xe",
+                "Cs","Ba","La","Ce","Pr","Nd","Pm","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb","Lu",
+                "Hf","Ta","W","Re","Os","Ir","Pt","Au","Hg",
+                "Tl","Pb","Bi","Po","At","Rn",
+                "Fr","Ra","Ac","Th","Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm","Md","No","Lr",
+                "Rf","Db","Sg","Bh","Hs","Mt","Ds","Rg","Cn",
+                "Nh","Fl","Mc","Lv","Ts","Og",
+            ];
+            if z <= 118 { SYMBOLS[z as usize] } else { "?" }
+        }
+
+        fn nuclide_to_string(n: Nuclide) -> String {
+            let (z, a) = n.get_z_a();
+            let sym = symbol_from_z(z as u16);
+            if a > 0 { format!("{sym}-{a}") } else { sym.to_string() }
+        }
+
+        fn ui_fraction_list(ui: &mut Ui, fractions: &[(Nuclide, f64)]) {
+            // Optional: sort by descending fraction for readability
+            let mut items = fractions.to_vec();
+            items.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+
+            for (n, frac) in items.iter() {
+                ui.label(format!(
+                        "{} fraction remaining: {:.5}",
+                        nuclide_to_string(*n),
+                        frac
+                ));
+                // Optional visual bar (comment out if you only want text):
+                // ui.add(egui::ProgressBar::new((*frac) as f32).show_percentage());
+            }
+        }
+
+        let nuclide_fraction_vec = &simulator_state_clone.get_nuclide_fraction_vector();
+
+        ui_fraction_list(ui, nuclide_fraction_vec);
+        ui.separator();
 
 
     }
 
 
+    // vibe coded by AI
     // Single-threaded: "vector map" (linear search) without HashMap.
     pub fn fractions_vec_map(nucs: &[Nuclide]) -> Vec<(Nuclide, f64)>
     where
