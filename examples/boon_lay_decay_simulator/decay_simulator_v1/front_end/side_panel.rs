@@ -109,10 +109,70 @@ impl DecaySimApp {
         egui::ComboBox::from_label("User Selected Nuclide")
             .selected_text(format!("{:?}", nuclide))
             .show_ui(ui, |ui| {
-                ui.selectable_value(&mut nuclide, Nuclide::U238, "U238");
-                ui.selectable_value(&mut nuclide, Nuclide::U235, "U235");
-                ui.selectable_value(&mut nuclide, Nuclide::Cs137, "Cs137");
-                ui.selectable_value(&mut nuclide, Nuclide::I131, "I131");
+                // Fuel / transuranics
+                ui.selectable_value(&mut nuclide, Nuclide::U238, "U-238");
+                ui.selectable_value(&mut nuclide, Nuclide::U235, "U-235");
+                ui.selectable_value(&mut nuclide, Nuclide::Pu238, "Pu-238");
+                ui.selectable_value(&mut nuclide, Nuclide::Pu239, "Pu-239");
+                ui.selectable_value(&mut nuclide, Nuclide::Pu240, "Pu-240");
+                ui.selectable_value(&mut nuclide, Nuclide::Am241, "Am-241");
+
+                ui.separator();
+
+                // Iodine chain (early dose drivers)
+                ui.selectable_value(&mut nuclide, Nuclide::I131, "I-131");
+                ui.selectable_value(&mut nuclide, Nuclide::I133, "I-133");
+                ui.selectable_value(&mut nuclide, Nuclide::I135, "I-135");
+                ui.selectable_value(&mut nuclide, Nuclide::I129, "I-129");
+                ui.selectable_value(&mut nuclide, Nuclide::I132, "I-132"); // from Te-132
+
+                ui.separator();
+
+                // Cesium (long-term contamination)
+                ui.selectable_value(&mut nuclide, Nuclide::Cs137, "Cs-137");
+                ui.selectable_value(&mut nuclide, Nuclide::Cs134, "Cs-134");
+
+                ui.separator();
+
+                // Strontium
+                ui.selectable_value(&mut nuclide, Nuclide::Sr90, "Sr-90");
+                ui.selectable_value(&mut nuclide, Nuclide::Sr89, "Sr-89");
+
+                ui.separator();
+
+                // Noble gases (plume dose)
+                ui.selectable_value(&mut nuclide, Nuclide::Xe133, "Xe-133");
+                ui.selectable_value(&mut nuclide, Nuclide::Xe135, "Xe-135");
+                ui.selectable_value(&mut nuclide, Nuclide::Kr85,  "Kr-85");
+
+                ui.separator();
+
+                // Other important fission products
+                ui.selectable_value(&mut nuclide, Nuclide::Te132, "Te-132");
+                ui.selectable_value(&mut nuclide, Nuclide::Ba140, "Ba-140");
+                ui.selectable_value(&mut nuclide, Nuclide::La140, "La-140");
+                ui.selectable_value(&mut nuclide, Nuclide::Zr95,  "Zr-95");
+                ui.selectable_value(&mut nuclide, Nuclide::Nb95,  "Nb-95");
+                ui.selectable_value(&mut nuclide, Nuclide::Ru103, "Ru-103");
+                ui.selectable_value(&mut nuclide, Nuclide::Ru106, "Ru-106");
+                ui.selectable_value(&mut nuclide, Nuclide::Mo99,  "Mo-99");
+                ui.selectable_value(&mut nuclide, Nuclide::Tc99m, "Tc-99m");
+                ui.selectable_value(&mut nuclide, Nuclide::Tc99,  "Tc-99");
+                ui.selectable_value(&mut nuclide, Nuclide::Ce144, "Ce-144");
+                ui.selectable_value(&mut nuclide, Nuclide::Sb125, "Sb-125");
+                ui.selectable_value(&mut nuclide, Nuclide::Ag110m,"Ag-110m");
+                ui.selectable_value(&mut nuclide, Nuclide::Eu154, "Eu-154");
+
+                ui.separator();
+
+                // Activation products
+                ui.selectable_value(&mut nuclide, Nuclide::H3,    "H-3 (Tritium)");
+                ui.selectable_value(&mut nuclide, Nuclide::C14,   "C-14");
+                ui.selectable_value(&mut nuclide, Nuclide::Co60,  "Co-60");
+                ui.selectable_value(&mut nuclide, Nuclide::Mn54,  "Mn-54");
+                ui.selectable_value(&mut nuclide, Nuclide::Fe59,  "Fe-59");
+                ui.selectable_value(&mut nuclide, Nuclide::Ar41,  "Ar-41");
+                ui.selectable_value(&mut nuclide, Nuclide::N16,   "N-16");
             });
 
         ui.label(format!("User Selected Nuclide: {:?}", nuclide));
