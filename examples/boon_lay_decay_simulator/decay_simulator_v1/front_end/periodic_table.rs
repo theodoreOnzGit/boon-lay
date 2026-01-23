@@ -1,5 +1,5 @@
 use boon_lay::Nuclide;
-use egui::{Align2, Color32, FontId, Rounding, Stroke, Ui, Vec2};
+use egui::{Align2, Color32, FontId, Pos2, Rect, Rounding, Stroke, Ui, Vec2, Widget};
 
 use crate::decay_simulator_v1::DecaySimApp;
 
@@ -8,7 +8,7 @@ impl DecaySimApp {
     pub fn periodic_table(&mut self, ui: &mut Ui) {
 
         let hydrogen = Nuclide::H1;
-        Self::ui_element_box(ui, hydrogen, 0.0, 0.0);
+        Self::ui_element_box_at_position(ui, hydrogen, 100.0, 100.0);
     }
 
     /// Simple contrast helper: choose black or white text based on fill.
@@ -21,43 +21,45 @@ impl DecaySimApp {
     }
 
     /// Draw a single element box (rounded rectangle) with Z and symbol at font size 32.
-    fn draw_element_box(ui: &mut egui::Ui, nuclide: Nuclide, symbol: &str, size: Vec2) {
-        let fill = Self::element_color(nuclide);
-        
-        let (z, _a) = nuclide.get_z_a();
-        let text_color = Self::contrasting_text(fill);
-
-        // Allocate space for the box
-        let (rect, _resp) = ui.allocate_exact_size(size, egui::Sense::hover());
-        let painter = ui.painter();
-
-        // Draw rounded filled rect with an outline
-        let rounding = Rounding::same(8.0);
-        painter.rect_filled(rect, rounding, fill);
-        painter.rect_stroke(rect, rounding, Stroke::new(2.0, Color32::BLACK));
-
-        // Text settings
-        let font32 = FontId::proportional(32.0);
-
-        // Draw atomic number (top-left, with a bit of padding)
-        let pad = 6.0;
-        let num_pos = egui::pos2(rect.min.x + pad, rect.min.y + pad);
-        painter.text(num_pos, Align2::LEFT_TOP, format!("{}", z), font32.clone(), text_color);
-
-        // Draw symbol centered
-        let center = rect.center();
-        painter.text(center, Align2::CENTER_CENTER, symbol, font32, text_color);
-    }
 
     /// Example usage: call this in your egui UI code (e.g., inside `eframe::App::update`)
-    fn ui_element_box(ui: &mut egui::Ui, nuclide: Nuclide,
+    fn ui_element_box_at_position(ui: &mut egui::Ui, nuclide: Nuclide,
         x_pixel: f32,
         y_pixel: f32) {
         // Choose a box size; adjust as needed
         let size = Vec2::new(80.0, 80.0);
+        let pos = Pos2::new(x_pixel, y_pixel);
         let (z,_a) = nuclide.get_z_a();
         let element_string: &str = Self::symbol_from_z(z);
-        Self::draw_element_box(ui, nuclide, element_string, size);
+        Self::draw_element_box_at(ui, nuclide, element_string, pos, size);
+    }
+
+    /// Draw a single element box at a specific UI coordinate.
+    /// - `pos`: top-left corner in the current `ui` coordinate space
+    /// - `size`: width/height of the box
+    /// - `symbol`: element symbol string (e.g., "H")
+    /// - `nuclide`: your crate’s nuclide for computing color and Z
+    pub fn draw_element_box_at(
+        ui: &mut egui::Ui,
+        nuclide: Nuclide,
+        symbol: &str,
+        pos: Pos2,
+        size: Vec2,
+    ) {
+
+        let centre_x_pixels = pos.x;
+        let centre_y_pixels = pos.y;
+        let x_width_pixels = size.x;
+        let y_width_pixels = size.y;
+        let element_box: ElementBox = nuclide.clone().into();
+        Self::put_widget_with_size_and_centre(ui, 
+            element_box, 
+            centre_x_pixels, 
+            centre_y_pixels, 
+            x_width_pixels, 
+            y_width_pixels
+        );
+
     }
 
     
@@ -82,5 +84,77 @@ impl DecaySimApp {
         ];
         if z <= 118 { SYMBOLS[z as usize] } else { "?" }
     }
+    pub fn put_widget_with_size_and_centre(ui: &mut Ui, widget: impl Widget,
+        centre_x_pixels: f32,
+        centre_y_pixels: f32,
+        x_width_pixels: f32,
+        y_width_pixels: f32){
 
+        let top_left_x: f32 = centre_x_pixels - 0.5 * x_width_pixels;
+        let top_left_y: f32 = centre_y_pixels - 0.5 * y_width_pixels;
+        let bottom_right_x: f32 = centre_x_pixels + 0.5 * x_width_pixels;
+        let bottom_right_y: f32 = centre_y_pixels + 0.5 * y_width_pixels;
+
+        let rect: Rect = Rect {
+            // top left
+            min: Pos2 { x: top_left_x, y: top_left_y },
+            // bottom right
+            max: Pos2 { x: bottom_right_x, y: bottom_right_y },
+        };
+
+        ui.put(rect, widget);
+
+    }
+
+
+}
+
+pub struct ElementBox {
+    pub nuclide: Nuclide,
+}
+
+impl From<Nuclide> for ElementBox {
+    fn from(nuclide: Nuclide) -> Self {
+        ElementBox { nuclide }
+    }
+}
+
+impl Widget for ElementBox {
+    fn ui(self, ui: &mut egui::Ui) -> egui::Response {
+        // Allocate the exact size so the widget participates in layout and interaction
+        let size = Vec2::new(80.0, 80.0);
+        let (mut response, painter) = ui.allocate_painter(
+            size, egui::Sense::hover()
+        );
+
+
+        let (z, _a) = self.nuclide.get_z_a();
+        let symbol = DecaySimApp::symbol_from_z(z);
+        let fill = DecaySimApp::element_color(self.nuclide);
+        let text_color = DecaySimApp::contrasting_text(fill);
+
+        let pos = Pos2::new(0.0, 0.0);
+        let rect = Rect::from_min_size(pos, size);
+
+        // Draw filled rounded rect and stroke
+        let rounding = Rounding::same(8.0);
+        painter.rect_filled(rect, rounding, fill);
+        painter.rect_stroke(rect, rounding, Stroke::new(2.0, Color32::BLACK));
+
+        // Text settings
+        let font32 = FontId::proportional(32.0);
+        let pad = 6.0;
+
+        // Atomic number (top-left, padded)
+        let num_pos = Pos2::new(rect.min.x + pad, rect.min.y + pad);
+        painter.text(num_pos, Align2::LEFT_TOP, format!("{}", z), font32.clone(), text_color);
+
+        // Symbol centered
+        painter.text(rect.center(), Align2::CENTER_CENTER, symbol, font32, text_color);
+        // Create a child UI scoped to this rect where we’ll place standard widgets
+
+        // Provide hover tooltip or interactions if desired
+        response = response.on_hover_text(format!("{} (Z={})", symbol, self.nuclide.get_z_a().0));
+        response
+    }
 }
