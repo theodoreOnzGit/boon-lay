@@ -442,6 +442,16 @@ impl SingleNuclideSimulatorMC {
 
     }
 
+    #[inline]
+    pub fn check_if_current_nuclide_matches(&self, nuclide_to_check: Nuclide) -> bool {
+        if self.get_current_nuclide() == nuclide_to_check {
+            return true;
+        } 
+
+        return false;
+
+    }
+
 }
 
 

@@ -1,6 +1,6 @@
 use boon_lay::Nuclide;
 use egui::Ui;
-use uom::si::{f64::Time, time::{day, millisecond, second, year}};
+use uom::si::{f64::Time, ratio::ratio, time::{day, millisecond, second, year}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
 
@@ -71,6 +71,20 @@ impl DecaySimApp {
         let mut timestep_string: String = "Timestep (years):".to_string();
         timestep_string += &timestep.get::<year>().to_string();
         ui.label(timestep_string);
+        ui.label(" ");
+
+        // nuclide fraction remaining
+        let mut nuclide_fraction_remaining: f64 = 
+            simulator_state_clone.get_nuclide_fraction().get::<ratio>();
+
+        // round to 3dp
+
+        nuclide_fraction_remaining = 
+            (nuclide_fraction_remaining *1000.0).round() /
+            1000.0;
+        let mut surviving_fraction_string: String = "Surviving Fraction:".to_string();
+        surviving_fraction_string += &nuclide_fraction_remaining.to_string();
+        ui.label(surviving_fraction_string);
         ui.label(" ");
 
         ui.separator();

@@ -1,5 +1,5 @@
 use boon_lay::Nuclide;
-use uom::{si::{f64::Time, time::second}, ConstZero};
+use uom::{ConstZero, si::{f64::{Ratio, Time}, ratio::ratio, time::second}};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct SimulatorState {
@@ -10,7 +10,7 @@ pub struct SimulatorState {
     user_selected_timestep: Time,
     elapsed_time: Time, 
     simulated_time: Time,
-
+    nuclide_fraction_remaining: Ratio,
 
 }
 
@@ -24,6 +24,7 @@ impl Default for SimulatorState {
         let user_selected_timestep = Time::new::<second>(0.1);
         let elapsed_time = Time::ZERO;
         let simulated_time = Time::ZERO;
+        let nuclide_fraction_remaining = Ratio::new::<ratio>(1.0);
         Self {
             is_running,
             restart_button_pressed,
@@ -32,6 +33,7 @@ impl Default for SimulatorState {
             user_selected_timestep,
             elapsed_time,
             simulated_time,
+            nuclide_fraction_remaining,
         }
     }
 }
@@ -108,5 +110,13 @@ impl SimulatorState {
         return self.change_nuclide_button_pressed;
     }
 
+    // nuclide fraction 
+    pub fn set_nuclide_fraction(&mut self, fraction: f64){
+        self.nuclide_fraction_remaining = Ratio::new::<ratio>(fraction);
+    }
+
+    pub fn get_nuclide_fraction(&self) -> Ratio{
+        self.nuclide_fraction_remaining
+    }
 }
 

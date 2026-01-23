@@ -196,9 +196,36 @@ impl DecaySimApp {
                     (loop_time.elapsed().unwrap().as_secs_f64() * 100.0).round()/100.0;
                 let elapsed_time = Time::new::<second>(elapsed_time_seconds);
 
+                // count fraction remaining (approx)
+                let (simulation_vector, _decay_library): 
+                    (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+                     thread_ptr.lock().unwrap().clone();
+
+                let user_set_nuclide: Nuclide = 
+                    simulator_state_ptr.lock().unwrap().get_user_selected_nuclide();
+
+                let mut surviving_nuclide_counter = 0;
+
+                for nuclide_simulation in simulation_vector.iter() {
+                    if nuclide_simulation.check_if_current_nuclide_matches(user_set_nuclide){
+                        surviving_nuclide_counter += 1;
+                    }
+                }
+
+
+                let nuclide_fraction_remaining = 
+                    surviving_nuclide_counter as f64 / 
+                    simulation_vector.clone().len() as f64 ;
+
+                simulator_state_ptr.lock().unwrap().set_nuclide_fraction(
+                    nuclide_fraction_remaining
+                );
+
                 simulator_state_ptr.lock().unwrap().set_elapsed_time(elapsed_time);
 
             }
+            barrier.wait();
+
 
 
         };

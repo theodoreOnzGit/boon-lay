@@ -9,8 +9,8 @@ impl DecaySimApp {
 
         let ui_rectangle: Rect = ui.min_rect();
 
-        let left_most_side = ui_rectangle.left();
-        let top_most_side = ui_rectangle.top();
+        let _left_most_side = ui_rectangle.left();
+        let _top_most_side = ui_rectangle.top();
 
         // this part is vibe coded
         // Fixed drawing area: 1600 x 1600 pixels
