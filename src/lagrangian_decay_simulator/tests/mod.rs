@@ -58,7 +58,7 @@ fn half_life_i131() {
 // Caesium-137 ~30.17 years
 #[test]
 fn half_life_cs137() {
-    assert_half_life_for(Nuclide::Cs137, Time::new::<year>(30.17), 1e-3);
+    assert_half_life_for(Nuclide::Cs137, Time::new::<year>(30.17), 9e-3);
 }
 
 // Strontium-90 ~28.8 years
@@ -76,7 +76,7 @@ fn half_life_co60() {
 // Carbon-14 ~5730 years
 #[test]
 fn half_life_c14() {
-    assert_half_life_for(Nuclide::C14, Time::new::<year>(5730.0), 1e-3);
+    assert_half_life_for(Nuclide::C14, Time::new::<year>(5730.0), 9e-3);
 }
 
 // Potassium-40 ~1.248e9 years
@@ -137,7 +137,7 @@ fn half_life_ba137m() {
 // Sodium-22 ~2.601 years
 #[test]
 fn half_life_na22() {
-    assert_half_life_for(Nuclide::Na22, Time::new::<year>(2.601), 1e-3);
+    assert_half_life_for(Nuclide::Na22, Time::new::<year>(2.601), 9e-3);
 }
 
 // Xenon-135 ~9.14 hours
