@@ -168,6 +168,14 @@ impl SimulatorState {
     pub fn is_change_nuclide_to_plot_button_pressed(&self) -> bool{
         return self.should_change_nuclide_to_graph_plot;
     }
+
+    // nuclides to plot a nuclide fraction over time 
+    pub fn get_nuclides_to_plot(&self) -> Vec<Nuclide> {
+        self.nuclides_to_plot.clone()
+    }
+    pub fn get_nuclides_fractions_over_time(&self) -> Vec<(Time, Vec<f64>)> {
+        self.nuclide_fractions_over_time.clone()
+    }
 }
 
 pub mod graphing;

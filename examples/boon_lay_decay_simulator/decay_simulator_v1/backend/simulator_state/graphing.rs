@@ -71,6 +71,8 @@ impl SimulatorState {
 
             self.nuclides_to_plot = nuclides_to_plot;
 
+            // then clear the nuclide fractions over time
+            self.nuclide_fractions_over_time = vec![];
 
             // once update is done, then turn the change nuclide to plot button off
 
@@ -89,11 +91,74 @@ impl SimulatorState {
                 &nuclides_to_plot
             );
 
+        // change these to fractions 
+        // This part is vibe coded
+        fn to_fractions_consume(nucs: Vec<(Nuclide, u64)>) -> Vec<(Nuclide, f64)> { 
+            // Sum as u128 to avoid u64 overflow during accumulation
+            let total: u128 = nucs.iter().map(|&(_, c)| c as u128).sum();
+
+            if total == 0 {
+                return nucs.into_iter().map(|(n, _)| (n, 0.0)).collect();
+            }
+
+            let total_f = total as f64;
+            nucs.into_iter()
+                .map(|(n, c)| (n, (c as f64) / total_f))
+                .collect()
+        }
+
+        let mut nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
+            to_fractions_consume(nuclide_count_vector);
+
+        // this is vibe coded
+        fn reorder_exact_linear(
+            nuclide_fraction_vector: &[(Nuclide, f64)],
+            nuclides_to_plot: &[Nuclide],
+        ) -> Vec<f64>
+        where
+            Nuclide: Clone + PartialEq,
+        {
+            nuclides_to_plot
+                .iter()
+                .cloned()
+                .map(|n| {
+                    let frac = nuclide_fraction_vector
+                        .iter()
+                        .find(|(m, _)| *m == n)
+                        .map(|(_, f)| *f)
+                        .unwrap_or(0.0);
+                    frac
+                })
+            .collect()
+        }
+
+        let nuclide_fraction_vector_float: Vec<f64> = reorder_exact_linear(
+            &nuclide_fraction_vector, 
+            &nuclides_to_plot
+        );
 
 
         // the graph plot is updated now
+        let simulated_time_now = self.simulated_time;
 
-        
+
+        self.nuclide_fractions_over_time.push(
+            (simulated_time_now, nuclide_fraction_vector_float)
+        );
+
+        // okay, we also dont want the vector to be too long,
+        // maybe 5000 entries is sufficient 
+
+        fn keep_last_5000<T>(v: &mut Vec<T>) {
+            let keep_from = v.len().saturating_sub(5000);
+            if keep_from > 0 {
+                v.drain(0..keep_from);
+            }
+        }
+
+        keep_last_5000(&mut self.nuclide_fractions_over_time);
+
+        // and now we're done!
 
     }
 
