@@ -36,8 +36,16 @@ impl SingleNuclideSimulatorMC {
         for sim in sims {
             for &(n, _) in &sim.stochastic_decay_chain.nuclides_and_decay_data_vec {
                 v.push((n, n.get_z_a()));
+                // need to get the current nuclide also otherwise 
+                // only plotted products
+                //
+                // this is rather inefficient, but okay lah
+                v.push((sim.current_nuclide, sim.current_nuclide.get_z_a()));
             }
         }
+
+        // we also need to get the existing nuclide (missed by ChatGPT5)
+        
 
         v.sort_by_key(|&(_, key)| key);
         v.dedup_by_key(|&mut (_, key)| key);

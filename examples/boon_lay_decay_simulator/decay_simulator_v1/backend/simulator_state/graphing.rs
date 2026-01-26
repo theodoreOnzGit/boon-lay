@@ -69,6 +69,7 @@ impl SimulatorState {
                     &full_nuclide_sim_vec
                 );
 
+            dbg!(&nuclides_to_plot);
             self.nuclides_to_plot = nuclides_to_plot;
 
             // then clear the nuclide fractions over time
