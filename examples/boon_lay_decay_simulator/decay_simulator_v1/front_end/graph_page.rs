@@ -230,7 +230,7 @@ impl DecaySimApp {
             &mut self.csv_simulator_state.graph_data_record_interval_seconds, 
             0.05..=1000.0)
             .logarithmic(true)
-            .text("Graph Data Recording Interval (Seconds)")
+            .text("Graph Data Recording Elapsed Time Interval (Seconds)")
             .drag_value_speed(0.001);
 
         ui.add(record_interval_seconds_slider);
@@ -241,7 +241,7 @@ impl DecaySimApp {
             &mut self.csv_simulator_state.csv_display_interval_seconds, 
             0.1..=1000.0)
             .logarithmic(true)
-            .text("CSV Display Interval (Seconds)")
+            .text("CSV Display Elapsed Time Interval (Seconds)")
             .drag_value_speed(0.001);
 
         ui.add(csv_display_interval_seconds_slider);
