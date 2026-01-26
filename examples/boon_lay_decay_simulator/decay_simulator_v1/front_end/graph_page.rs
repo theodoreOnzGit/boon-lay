@@ -19,7 +19,7 @@ impl DecaySimApp {
         let mut nuclide_plot = Plot::new("Nuclide Fractions over time").legend(Legend::default());
 
         // sets the aspect for plot 
-        nuclide_plot = nuclide_plot.width(800.0);
+        nuclide_plot = nuclide_plot.width(1800.0);
         nuclide_plot = nuclide_plot.view_aspect(16.0/9.0);
 
         nuclide_plot = nuclide_plot.x_axis_label(
