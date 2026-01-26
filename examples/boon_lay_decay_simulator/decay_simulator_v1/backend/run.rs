@@ -65,6 +65,7 @@ impl DecaySimApp {
                 let user_set_nuclide: Nuclide = 
                     simulator_state_ptr.lock().unwrap().get_user_selected_nuclide();
 
+                // this pre-simulates all the decay trajectories
                 for simulation in simulation_vector.iter_mut() {
 
                     let new_simulation 
@@ -103,6 +104,9 @@ impl DecaySimApp {
                     simulator_state_ptr.lock().unwrap().reset_simulated_time();
                     simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_hl);
 
+                    // upon restarting, we must toggle a flag to replot 
+                    // the nuclides 
+                    simulator_state_ptr.lock().unwrap().turn_on_change_nuclide_to_plot_button();
 
                 }
 
@@ -128,6 +132,8 @@ impl DecaySimApp {
                 let user_set_nuclide: Nuclide = 
                     simulator_state_ptr.lock().unwrap().get_user_selected_nuclide();
 
+                barrier.wait();
+                // this pre-simulates all the decay trajectories
                 for simulation in simulation_vector.iter_mut() {
                     simulation.transmute_nuclide(user_set_nuclide, &mut decay_library);
 
@@ -157,6 +163,10 @@ impl DecaySimApp {
                     simulator_state_ptr.lock().unwrap().turn_off_restart_button();
                     simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
                     simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_hl);
+
+                    // upon changing nuclide, we must toggle a flag to replot 
+                    // the nuclides 
+                    simulator_state_ptr.lock().unwrap().turn_on_change_nuclide_to_plot_button();
 
                 }
 

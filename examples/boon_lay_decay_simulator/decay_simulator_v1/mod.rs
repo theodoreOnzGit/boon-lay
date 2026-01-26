@@ -128,6 +128,25 @@ impl DecaySimApp {
         let simulator_state_thread_4_ptr: Arc<Mutex<SimulatorState>> = 
             new_decay_sim_app.simulator_state.clone();
 
+        // need to make another set of pointers for plotting
+        // this will be the initial update 
+        let decay_sim_plotting_thread_1_ptr = 
+            new_decay_sim_app.decay_sim_thread_1_ptr.clone();
+        let decay_sim_plotting_thread_2_ptr = 
+            new_decay_sim_app.decay_sim_thread_2_ptr.clone();
+        let decay_sim_plotting_thread_3_ptr = 
+            new_decay_sim_app.decay_sim_thread_3_ptr.clone();
+        let decay_sim_plotting_thread_4_ptr = 
+            new_decay_sim_app.decay_sim_thread_4_ptr.clone();
+
+        simulator_state_thread_4_ptr.lock().unwrap().update_fractions_using_decay_sim_thread_ptrs(
+            decay_sim_plotting_thread_1_ptr.clone(), 
+            decay_sim_plotting_thread_2_ptr.clone(), 
+            decay_sim_plotting_thread_3_ptr.clone(), 
+            decay_sim_plotting_thread_4_ptr.clone(),
+        );
+
+
         // the barrier keeps each thread running in sync, so that 
         // no one thread outruns another
         let num_threads = 4;
@@ -175,15 +194,6 @@ impl DecaySimApp {
                 barrier_4,
             );
         });
-        // need to make another set of pointers
-        let decay_sim_plotting_thread_1_ptr = 
-            new_decay_sim_app.decay_sim_thread_1_ptr.clone();
-        let decay_sim_plotting_thread_2_ptr = 
-            new_decay_sim_app.decay_sim_thread_2_ptr.clone();
-        let decay_sim_plotting_thread_3_ptr = 
-            new_decay_sim_app.decay_sim_thread_3_ptr.clone();
-        let decay_sim_plotting_thread_4_ptr = 
-            new_decay_sim_app.decay_sim_thread_4_ptr.clone();
         let simulator_state_thread_5_ptr: Arc<Mutex<SimulatorState>> = 
             new_decay_sim_app.simulator_state.clone();
 

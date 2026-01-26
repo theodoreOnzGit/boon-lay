@@ -11,6 +11,8 @@ pub struct SimulatorState {
     elapsed_time: Time, 
     simulated_time: Time,
     nuclide_fraction_remaining: Ratio,
+    // these are plotting settings
+    should_change_nuclide_to_graph_plot:bool,
     nuclide_fraction_vector: Vec<(Nuclide, f64)>,
     nuclides_to_plot: Vec<Nuclide>,
     nuclide_fractions_over_time: Vec<(Time, Vec<f64>)>,
@@ -26,6 +28,9 @@ impl Default for SimulatorState {
         let user_selected_timestep = Time::new::<second>(9000.0);
         let elapsed_time = Time::ZERO;
         let simulated_time = Time::ZERO;
+
+        // these are for plotting
+        let should_change_nuclide_to_graph_plot = true;
         let nuclide_fraction_remaining = Ratio::new::<ratio>(1.0);
         let nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
             vec![];
@@ -57,6 +62,7 @@ impl Default for SimulatorState {
             nuclide_fraction_vector,
             nuclides_to_plot,
             nuclide_fractions_over_time,
+            should_change_nuclide_to_graph_plot,
         }
     }
 }
@@ -151,6 +157,17 @@ impl SimulatorState {
         self.nuclide_fraction_vector = nuclide_fraction_vector;
     }
 
+    // the change nuclide to plot
+
+    pub fn turn_on_change_nuclide_to_plot_button(&mut self){
+        self.should_change_nuclide_to_graph_plot = true;
+    }
+    pub fn turn_off_change_nuclide_to_plot_button(&mut self){
+        self.should_change_nuclide_to_graph_plot = false;
+    }
+    pub fn is_change_nuclide_to_plot_button_pressed(&self) -> bool{
+        return self.should_change_nuclide_to_graph_plot;
+    }
 }
 
 pub mod graphing;
