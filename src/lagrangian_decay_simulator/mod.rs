@@ -21,3 +21,8 @@ pub use stochastic_decay_chain::*;
 /// this is not really vibe coded (still used chatgpt 5 advise on 
 /// some algorithms)
 pub mod monte_carlo_single_radionuclide_decay_simulator;
+
+/// these assert that the half life for each nuclide is 
+/// correct in the SingleNuclideSimulatorMC
+#[cfg(test)]
+pub mod tests;
