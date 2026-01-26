@@ -413,7 +413,9 @@ impl eframe::App for DecaySimApp {
                     });
                 },
                 Panel::GraphPage => {
-                    // nothing yet
+                    egui::ScrollArea::both().show(ui, |ui| {
+                        self.graph_page(ui);
+                    });
                 },
 
             }
