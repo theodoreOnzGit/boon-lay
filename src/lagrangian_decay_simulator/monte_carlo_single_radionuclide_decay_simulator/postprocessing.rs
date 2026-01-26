@@ -52,34 +52,38 @@ impl SingleNuclideSimulatorMC {
         v.into_iter().map(|(n, _)| n).collect()
     }
 
-    // Count occurrences of each nuclide (from your unique list) across a vector of simulations,
-    // without using HashMap. Compares by (Z, A) via `get_z_a()`.
+    // this wasn't vibe coded
+    // chatgpt didn't give the correct one
     //
-    // Simple version: linear search through `unique` for each encountered nuclide.
-    // Fast version: build a sorted key-index map for `unique` and use binary_search.
-    //
-    // Assumptions:
-    // - Nuclide provides `get_z_a() -> (u16, u16)` (adjust types if needed).
-    // - You want counts from the stochastic decay chains of each simulator.
-    //
-    // Return: Vec<(Nuclide, u64)> aligned with `unique` order.
-
+    // however, it did give a useful initial template
     pub fn count_nuclides_in_sims_linear(
         sims: &[SingleNuclideSimulatorMC],
         unique: &[Nuclide],
     ) -> Vec<(Nuclide, u64)> {
         // Initialize counts aligned to `unique`
-        let mut counts: Vec<(Nuclide, u64)> = unique.iter().cloned().map(|n| (n, 0)).collect();
+        let mut nuclide_counter_vec: Vec<(Nuclide, u64)> = unique.iter().cloned().map(|n| (n, 0)).collect();
+        // this counts starts everything at zero
+
+        // so we have to iterate over every simulator 
 
         for sim in sims {
-            for &(n, _) in &sim.stochastic_decay_chain.nuclides_and_decay_data_vec {
-                let key = n.get_z_a();
-                if let Some((_, c)) = counts.iter_mut().find(|(u, _)| u.get_z_a() == key) {
-                    *c += 1;
+
+            let current_nuclide: Nuclide = sim.current_nuclide;
+
+            // then let's compare it to the nuclide 
+            for (nuclide_to_check, current_count) in nuclide_counter_vec.iter_mut() {
+
+                if current_nuclide == *nuclide_to_check {
+                    *current_count += 1;
                 }
+
             }
+
+
+
         }
 
-        counts
+
+        nuclide_counter_vec
     }
 }
