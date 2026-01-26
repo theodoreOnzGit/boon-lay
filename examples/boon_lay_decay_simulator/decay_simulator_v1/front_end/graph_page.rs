@@ -1,7 +1,7 @@
 use boon_lay::Nuclide;
 use egui::Ui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
-use uom::si::{f64::Time, time::second};
+use uom::si::{f64::Time, time::{nanosecond, second}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
 
@@ -82,11 +82,17 @@ impl DecaySimApp {
         // basically, get the simulator state first 
         ui.label(" ");
 
-        let simulator_state_clone : SimulatorState
+        // this is the snapshot of the current simulator state
+        let current_simulator_state_clone : SimulatorState
             = self.simulator_state.lock().unwrap().clone();
 
+        // this is the simulator state used to plot csv data
+        let csv_simulator_state_clone = 
+            self.csv_simulator_state.clone();
+
+
         // display elapsed time
-        let elapsed_time = simulator_state_clone.get_elapsed_time();
+        let elapsed_time = current_simulator_state_clone.get_elapsed_time();
         let mut elapsed_time_string: String = "Elapsed Time (seconds):".to_string();
         elapsed_time_string += &elapsed_time.get::<second>().to_string();
 
@@ -94,7 +100,7 @@ impl DecaySimApp {
         // timestep settings
 
         let mut user_set_timestep_seconds 
-            = simulator_state_clone.get_timestep().get::<second>();
+            = current_simulator_state_clone.get_timestep().get::<second>();
 
         let timestep_slider_seconds = egui::Slider::new(
             &mut user_set_timestep_seconds, 
@@ -120,7 +126,7 @@ impl DecaySimApp {
 
         ui.label("Select nuclide :");
 
-        let mut nuclide = simulator_state_clone.get_user_selected_nuclide();
+        let mut nuclide = current_simulator_state_clone.get_user_selected_nuclide();
 
         egui::ComboBox::from_label("User Selected Nuclide")
             .selected_text(format!("{:?}", nuclide))
@@ -209,6 +215,157 @@ impl DecaySimApp {
         ui.separator();
 
         // just for convenience
+
+
+
+        ui.label("CSV Data");
+        if ui.button("Update CSV Data").clicked(){
+            // spawn a new window with csv data
+            self.csv_simulator_state = current_simulator_state_clone;
+
+        };
+        // allows user to control recording interval
+        let record_interval_seconds_slider = egui::Slider::new(
+            &mut self.csv_simulator_state.graph_data_record_interval_seconds, 
+            0.05..=1000.0)
+            .logarithmic(true)
+            .text("Graph Data Recording Interval (Seconds)")
+            .drag_value_speed(0.001);
+
+        ui.add(record_interval_seconds_slider);
+
+        // allows user to control csv display interval 
+
+        let csv_display_interval_seconds_slider = egui::Slider::new(
+            &mut self.csv_simulator_state.csv_display_interval_seconds, 
+            0.1..=1000.0)
+            .logarithmic(true)
+            .text("CSV Display Interval (Seconds)")
+            .drag_value_speed(0.001);
+
+        ui.add(csv_display_interval_seconds_slider);
+
+        // update the main simulator state with this new info 
+        self.simulator_state.lock().unwrap().csv_display_interval_seconds = 
+            self.csv_simulator_state.csv_display_interval_seconds;
+        self.simulator_state.lock().unwrap().graph_data_record_interval_seconds = 
+            self.csv_simulator_state.graph_data_record_interval_seconds;
+
+        let csv_display_interval_seconds = 
+            self.csv_simulator_state.csv_display_interval_seconds;
+        let graph_data_record_interval_seconds = 
+            self.csv_simulator_state.graph_data_record_interval_seconds;
+
+
+        // now, we filter data every x number of rows based on the ratio 
+        // of these two 
+
+        let csv_data_display_interval: i32 = 
+            (csv_display_interval_seconds/graph_data_record_interval_seconds)
+            .ceil() as i32;
+
+
+        // now we display rows every 
+        // csv_display_interval_seconds 
+        // rows
+
+        let mut display_counter: i32 = 0;
+
+        // now, let us construct proper labels, 
+        let mut label_string = "Time (s), ".to_string();
+
+        // let's add all the nuclides to it 
+        
+        let nuclides_to_plot = csv_simulator_state_clone.get_nuclides_to_plot();
+        let nuclide_fractions_over_time: Vec<(Time, Vec<f64>)> = 
+            csv_simulator_state_clone.get_nuclides_fractions_over_time();
+
+        for nuclide in nuclides_to_plot {
+            let nuclide_string = format!("{:?}", nuclide);
+
+            label_string += &nuclide_string;
+            label_string += ", ";
+
+        }
+
+
+        ui.label(label_string);
+
+        // now we can print the main csv data
+        for (time, nuclide_fraction_vector) in nuclide_fractions_over_time {
+
+            let mut data_string = "".to_string();
+
+            // first we add the time in seconds, correct to 9dp (nearest nanosecond)
+
+            let time_nanoseconds = time.get::<nanosecond>().round();
+            let time_seconds = Time::new::<nanosecond>(time_nanoseconds).get::<second>();
+
+            data_string += &time_seconds.to_string();
+            data_string += ", ";
+
+            // now, for each nuclide we must do the same 
+
+            for nuclide_fraction in nuclide_fraction_vector {
+                data_string += &nuclide_fraction.to_string();
+                data_string += " Fraction, ";
+
+            }
+
+            // this allows us to selectively show data for csv
+            let blank_data_row = 
+                time_seconds.round() as u32 != 0;
+            let data_display_remainder = 
+                display_counter.rem_euclid(csv_data_display_interval);
+
+            let data_display_modulus_zero: bool = 
+                data_display_remainder == 0;
+
+            if blank_data_row && data_display_modulus_zero {
+                ui.label(data_string);
+            }
+
+            display_counter += 1;
+        }
+
+
+        //latest_heater_data.iter().for_each(|data_tuple|{
+        //    let (time, power, bt11, bt12) = 
+        //        data_tuple;
+
+        //    let time_seconds: f64 = 
+        //        (time.get::<second>()*1000.0).round()/1000.0;
+
+        //    let power_kw: f64 = 
+        //        (power.get::<kilowatt>()*1000.0).round()/1000.0;
+        //    let bt11_degc: f64 = 
+        //        (bt11.get::<degree_celsius>()*1000.0).round()/1000.0;
+
+        //    let bt12_degc: f64 = 
+        //        (bt12.get::<degree_celsius>()*1000.0).round()/1000.0;
+
+
+        //    let heater_data_row: String = 
+        //        time_seconds.to_string() + ","
+        //        + &power_kw.to_string() + ","
+        //        + &bt11_degc.to_string() + ","
+        //        + &bt12_degc.to_string() + "," ;
+
+
+
+
+
+            // only add the label if heater time is not equal zero 
+            // AND the data display remainder is = 0
+
+            // if the remainder of the display counter is zero 
+            // then we show data 
+
+
+
+        //});
+
+
 
 
 

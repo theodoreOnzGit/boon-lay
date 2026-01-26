@@ -16,6 +16,8 @@ pub struct SimulatorState {
     nuclide_fraction_vector: Vec<(Nuclide, f64)>,
     nuclides_to_plot: Vec<Nuclide>,
     nuclide_fractions_over_time: Vec<(Time, Vec<f64>)>,
+    pub graph_data_record_interval_seconds: f64,
+    pub csv_display_interval_seconds: f64,
 }
 
 impl Default for SimulatorState {
@@ -50,6 +52,9 @@ impl Default for SimulatorState {
         // 
         let nuclide_fractions_over_time: Vec<(Time, Vec<f64>)> = vec![];
 
+        let graph_data_record_interval_seconds = 0.1;
+        let csv_display_interval_seconds = 1.0;
+
         Self {
             is_running,
             restart_button_pressed,
@@ -63,6 +68,8 @@ impl Default for SimulatorState {
             nuclides_to_plot,
             nuclide_fractions_over_time,
             should_change_nuclide_to_graph_plot,
+            graph_data_record_interval_seconds,
+            csv_display_interval_seconds,
         }
     }
 }

@@ -63,6 +63,10 @@ pub struct DecaySimApp {
     #[serde(skip)]
     simulator_state: Arc<Mutex<SimulatorState>>,
 
+    // then I'm also having a simulator state for plotting csv 
+    #[serde(skip)] 
+    csv_simulator_state: SimulatorState,
+
     //// this is for direct use in plots 
     //#[serde(skip)]
     //ciet_plot_data: PagePlotData,
@@ -201,7 +205,6 @@ impl DecaySimApp {
         // collect data to plot every 0.1s
         thread::spawn(move ||{
 
-            // to do...
             loop {
 
                 simulator_state_thread_5_ptr.lock().unwrap().update_fractions_using_decay_sim_thread_ptrs(
@@ -211,7 +214,13 @@ impl DecaySimApp {
                     decay_sim_plotting_thread_4_ptr.clone(),
                 );
 
-                let time_to_sleep_milliseconds: u64 = 100;
+                let time_to_sleep_seconds = 
+                    simulator_state_thread_5_ptr.lock().unwrap().graph_data_record_interval_seconds;
+                // main loop
+
+
+                let time_to_sleep_milliseconds: u64 = 
+                    (time_to_sleep_seconds*1000.0).round() as u64;
                 let time_to_sleep_non_realtime: Duration = 
                     Duration::from_millis(time_to_sleep_milliseconds);
                 thread::sleep(time_to_sleep_non_realtime);
@@ -270,6 +279,7 @@ impl Default for DecaySimApp {
             = build_four_vec(num_of_nuclides.try_into().unwrap(), nuclide);
 
         let simulator_state = Arc::new(Mutex::new(SimulatorState::default()));
+        let csv_simulator_state: SimulatorState = simulator_state.lock().unwrap().clone();
 
         let initiation_time_secs = time_start.elapsed().unwrap().as_secs();
 
@@ -291,6 +301,7 @@ impl Default for DecaySimApp {
             decay_sim_thread_3_ptr,
             decay_sim_thread_4_ptr,
             simulator_state,
+            csv_simulator_state,
             //user_desired_heater_type: HeaterType::InsulatedHeaterV1Fine15Mesh,
 
         }
