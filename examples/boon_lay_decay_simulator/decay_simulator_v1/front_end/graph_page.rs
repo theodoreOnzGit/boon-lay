@@ -218,7 +218,8 @@ impl DecaySimApp {
 
 
 
-        ui.label("CSV Data");
+        ui.heading("CSV Data");
+        ui.label("Press Update CSV Data if you want to copy/paste csv data");
         if ui.button("Update CSV Data").clicked(){
             // spawn a new window with csv data
             self.csv_simulator_state = current_simulator_state_clone;
@@ -284,7 +285,7 @@ impl DecaySimApp {
             let nuclide_string = format!("{:?}", nuclide);
 
             label_string += &nuclide_string;
-            label_string += ", ";
+            label_string += " Fraction, ";
 
         }
 
@@ -308,7 +309,7 @@ impl DecaySimApp {
 
             for nuclide_fraction in nuclide_fraction_vector {
                 data_string += &nuclide_fraction.to_string();
-                data_string += " Fraction, ";
+                data_string += ", ";
 
             }
 
