@@ -10,17 +10,26 @@ impl DecaySimApp {
     pub fn graph_page(&self, ui: &mut Ui){
 
 
-        let simulator_state_clone = 
+        let mut simulator_state_clone = 
             self.simulator_state.lock().unwrap().clone();
 
         let nuclides_to_plot = simulator_state_clone.get_nuclides_to_plot();
         let nuclide_fractions_over_time: Vec<(Time, Vec<f64>)> = 
             simulator_state_clone.get_nuclides_fractions_over_time();
 
+        let plot_width_slider = egui::Slider::new(
+            &mut simulator_state_clone.plot_width_pixels, 
+            800.0..=1800.0
+        ) .logarithmic(false) .text("Plot Width (Pixels)") .drag_value_speed(0.001);
+        ui.add(plot_width_slider);
+
+        self.simulator_state.lock().unwrap().plot_width_pixels = 
+            simulator_state_clone.plot_width_pixels;
+
         let mut nuclide_plot = Plot::new("Nuclide Fractions over time").legend(Legend::default());
 
         // sets the aspect for plot 
-        nuclide_plot = nuclide_plot.width(1800.0);
+        nuclide_plot = nuclide_plot.width(simulator_state_clone.plot_width_pixels as f32);
         nuclide_plot = nuclide_plot.view_aspect(16.0/9.0);
 
         nuclide_plot = nuclide_plot.x_axis_label(
