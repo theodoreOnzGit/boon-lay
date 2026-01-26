@@ -234,3 +234,4 @@ is accumulated before a transmutation reaction occurs.
 Now, when transmutation occurs, the entire decay chain changes. How can 
 we consider if the decay chain happens?
 
+

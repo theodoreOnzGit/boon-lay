@@ -14,3 +14,20 @@ to simulate and visualise radionuclide transport in real-time for
 public education and outreach, as well as open source research.
 
 
+To run the Boon Lay Decay Simulator,
+```bash 
+cargo run --release --example boon_lay_decay_simulator
+```
+
+
+# Patch Notes 
+
+## v0.1.0 Initial Commit 
+
+This has shown promise because all tests can pass, and the Boon Lay 
+Decay Simulator works.
+
+However, the files are much too big for upload to cargo. The compressed 
+file size is 18++ MB, whereas cargo limits are around 10 MB. 
+
+I'm going to split up the files into other elements.
