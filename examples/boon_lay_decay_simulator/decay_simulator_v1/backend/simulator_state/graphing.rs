@@ -107,7 +107,7 @@ impl SimulatorState {
                 .collect()
         }
 
-        let mut nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
+        let nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
             to_fractions_consume(nuclide_count_vector);
 
         // this is vibe coded

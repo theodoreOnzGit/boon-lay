@@ -18,7 +18,16 @@ impl SingleNuclideSimulatorMC {
 
         v.sort_by_key(|&(_, key)| key);
         v.dedup_by_key(|&mut (_, key)| key);
-        v.into_iter().map(|(n, _)| n).collect()
+
+        // I had to make an edition because it was not including the  
+        // current nuclide
+        // then add the existing nuclide 
+        let mut unique_nuclide_vector: Vec<Nuclide> = 
+            v.into_iter().map(|(n, _)| n).collect();
+        unique_nuclide_vector.push(self.current_nuclide);
+
+        unique_nuclide_vector
+
     }
 
     // Unique nuclides across multiple simulators (sorted by Z,A; order not preserved)
