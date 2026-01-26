@@ -2,7 +2,38 @@
 name = "boon-lay"
 version = "0.1.0"
 edition = "2024"
+license = "GPL-3.0"
+
+description = "BOmbardment of neutrons On Nuclides with Lagrangian transport and transmutation Yields (Boon Lay)"
+homepage = "https://github.com/theodoreOnzGit/boon-lay"
+repository ="https://github.com/theodoreOnzGit/boon-lay"
+readme = "README.md"
+categories = ["science"]
 
 [dependencies]
-fission-yields-data = "0.1.2"
+fission-yields-data = "0.1.4"
 uom = "0.37.0"
+serde = {version = "1.0.228",  features = ["derive"]}
+serde-xml-rs = "0.8.2"
+anyhow = "1.0.100"
+oorandom = "11.1.5"
+
+[dev-dependencies]
+approx = "0.5.1"
+egui = "0.29.1"
+eframe = { version = "0.29.1", default-features = false, features = [
+    "accesskit",     # Make egui comptaible with screen readers. NOTE: adds a lot of dependencies.
+    "default_fonts", # Embed the default egui fonts.
+    "glow",          # Use the glow rendering backend. Alternative: "wgpu".
+    "persistence",   # Enable restoring app state when restarting the app.
+] }
+log = "0.4"
+egui_extras = { version = "0.29.0", features = ["all_loaders"] }
+egui_plot = "0.29.0"
+image = { version = "0.25", features = ["jpeg", "png"] } # Add the types you want support for
+rayon = "1.11.0"
+
+[[example]]
+name = "boon_lay_decay_simulator"
+
+
