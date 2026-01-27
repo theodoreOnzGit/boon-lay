@@ -33,7 +33,10 @@ egui_extras = { version = "0.29.0", features = ["all_loaders"] }
 egui_plot = "0.29.0"
 image = { version = "0.25", features = ["jpeg", "png"] } # Add the types you want support for
 rayon = "1.11.0"
+# for the monte carlo vibecode test
 csv = "1.3"
+rand = "0.8"
+rand_distr = "0.4"
 
 [[example]]
 name = "boon_lay_decay_simulator"
