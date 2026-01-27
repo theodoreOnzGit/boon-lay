@@ -26,3 +26,12 @@ pub mod monte_carlo_single_radionuclide_decay_simulator;
 /// correct in the SingleNuclideSimulatorMC
 #[cfg(test)]
 pub mod tests;
+
+
+/// Diffusion problems normally run on a continuum basis,
+///
+/// I chose Lagrangian-style diffusion here as it is easy to visualise
+///
+/// moreover, it is compatible with the monte carlo style of the simulator 
+/// it is quite visual.
+pub mod lagrangian_diffusion;
