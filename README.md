@@ -22,6 +22,8 @@ cargo run --release --example boon_lay_decay_simulator
 
 # Patch Notes 
 
+## v0.2.1 diffusion
+
 ## v0.2.0 Crate Separation 
 
 When I tried pushing v0.1.0 to Cargo, it complained that the filesize 
