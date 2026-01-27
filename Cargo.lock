@@ -576,7 +576,7 @@ dependencies = [
 
 [[package]]
 name = "boon-lay"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "approx",
@@ -588,6 +588,7 @@ dependencies = [
  "image",
  "log",
  "oorandom",
+ "openmc-endf-8-depletion-lib-b",
  "rayon",
  "serde",
  "serde-xml-rs",
@@ -2462,6 +2463,27 @@ name = "oorandom"
 version = "11.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6790f58c7ff633d8771f42965289203411a5e5c68388703c06e14f24770b41e"
+
+[[package]]
+name = "openmc-endf-8-depletion-lib-a"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f47182ad7d6fee991ad80fdb21960eef765067a4765d34e9ecec7c2c9a6cf815"
+dependencies = [
+ "serde",
+ "serde-xml-rs",
+]
+
+[[package]]
+name = "openmc-endf-8-depletion-lib-b"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b45b56c1199f22efc3ddce9cf64acb4a21ce7bca7b9df30f94f7a01e7aaa263"
+dependencies = [
+ "openmc-endf-8-depletion-lib-a",
+ "serde",
+ "serde-xml-rs",
+]
 
 [[package]]
 name = "orbclient"

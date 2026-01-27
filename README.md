@@ -22,6 +22,17 @@ cargo run --release --example boon_lay_decay_simulator
 
 # Patch Notes 
 
+## v0.2.0 Crate Separation 
+
+When I tried pushing v0.1.0 to Cargo, it complained that the filesize 
+was too big, namely, 18+ MB, when the only allowable size was 10MB for 
+cargo crates max. Hence, I separated the xml data out into two crates on 
+rust. 
+
+Moreover, as feedback came for the boon\_lay\_decay\_simulator, I found 
+that the default timestep was too slow for people's liking. Hence, I sped 
+it up by like 100 times.
+
 ## v0.1.0 Initial Commit 
 
 This has shown promise because all tests can pass, and the Boon Lay 
