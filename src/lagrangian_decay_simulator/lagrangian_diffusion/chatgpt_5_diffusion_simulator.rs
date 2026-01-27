@@ -43,9 +43,9 @@ impl Vec3 {
 /// Sample an isotropic direction on the unit sphere.
 /// Method: mu = cos(theta) ~ U[-1, 1], phi ~ U[0, 2π]
 fn sample_isotropic_direction<R: Rng>(rng: &mut R) -> Vec3 {
-    let mu = rng.gen_range(-1.0..=1.0);
+    let mu :f64 = rng.gen_range(-1.0..=1.0);
     let phi = rng.gen_range(0.0..(2.0 * PI));
-    let sin_theta = (1.0 - mu * mu).sqrt();
+    let sin_theta: f64 = (1.0_f64 - mu * mu).sqrt();
     Vec3 {
         x: sin_theta * phi.cos(),
         y: sin_theta * phi.sin(),
@@ -132,12 +132,12 @@ fn chat_gpt_sim() {
 
     // Optional: write full trajectory to CSV
     // Uncomment to enable
-    let mut wtr = csv::Writer::from_path("trajectory.csv").expect("cannot create CSV");
-    wtr.write_record(&["step", "x", "y", "z"]).unwrap();
-    for (i, p) in trajectory.iter().enumerate() {
-        wtr.write_record(&[i.to_string(), p.x.to_string(), p.y.to_string(), p.z.to_string()]).unwrap();
-    }
-    wtr.flush().unwrap();
-    println!("Wrote trajectory.csv");
-    todo!();
+    //let mut wtr = csv::Writer::from_path("trajectory.csv").expect("cannot create CSV");
+    //wtr.write_record(&["step", "x", "y", "z"]).unwrap();
+    //for (i, p) in trajectory.iter().enumerate() {
+    //    wtr.write_record(&[i.to_string(), p.x.to_string(), p.y.to_string(), p.z.to_string()]).unwrap();
+    //}
+    //wtr.flush().unwrap();
+    //println!("Wrote trajectory.csv");
+    //todo!();
 }
