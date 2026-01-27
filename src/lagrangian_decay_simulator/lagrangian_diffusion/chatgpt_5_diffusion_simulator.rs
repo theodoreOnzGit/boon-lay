@@ -139,5 +139,4 @@ fn chat_gpt_sim() {
     //}
     //wtr.flush().unwrap();
     //println!("Wrote trajectory.csv");
-    //todo!();
 }
