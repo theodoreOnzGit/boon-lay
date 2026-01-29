@@ -13,3 +13,38 @@ pub mod chatgpt_5_diffusion_simulator;
 // for various particles in silicon carbide, carbon and such
 //
 // This will require some literature review.
+//
+// (anyway I did some literature review in another repository)
+//
+//
+// I was also thinking at night of a problem with random walk with diffusion. 
+// The mean free path is horrendously short, and the random walk would 
+// take many collisions in order to get somewhere. 
+//
+// How would I know where one would go? 
+//
+//
+// Thankfully, there is such thing as the central limit theorem.
+//
+// Here, we are summing the result of many random walks of isotropically 
+// distributed collisions. This is the mean or sum of many isotropically 
+// distributed collisions. The mean itself or sum  itself must be 
+// normally distributed according to the central limit theorem. In effect,
+// we don't care as much about the individual random walk, as much as the 
+// summation of the random walks.
+//
+// For vectors, in the (x,y,z) direction, 
+// https://en.wikipedia.org/wiki/Central_limit_theorem
+//
+// We can apply the central limit theorem and have them converge 
+// to a multivariate normal distribution.
+//
+// https://en.wikipedia.org/wiki/Multivariate_normal_distribution
+//
+// @article{hill2011approximating,
+//  title={APPROXIMATING THE RANDOM WALK USING THE CENTRAL LIMIT THEOREM},
+//  author={HILL, MITCH},
+//  year={2011}
+//}
+//
+//
