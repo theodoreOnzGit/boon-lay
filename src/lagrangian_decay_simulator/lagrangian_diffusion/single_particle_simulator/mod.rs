@@ -1,7 +1,7 @@
 use rand::RngCore;
-use uom::{si::f64::*, ConstZero};
+use uom::{si::{f64::*, length::meter, linear_number_density::per_meter}, ConstZero};
 
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::{oorandom_rng::OoRng64, per_component_variance_exponential_for_3d_vector, sample_dimensioned_gaussian_vector};
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::{central_limit_theorem::{oorandom_rng::OoRng64, per_component_variance_exponential_for_3d_vector, sample_dimensioned_gaussian_vector}, isotropic_scattering::{sample_free_path, sample_isotropic_direction_into_array}};
 
 #[derive(Debug,Clone,Copy,PartialEq)]
 pub struct SingleParticleDiffusionSimulatorMC {
@@ -72,4 +72,21 @@ impl SingleParticleDiffusionSimulatorMC {
 
     }
 
+    /// samples isotropic direction 
+    pub fn sample_isotropic_direction(&mut self) -> [Ratio;3] {
+        sample_isotropic_direction_into_array(&mut self.rng)
+    }
+
+    /// samples distance travelled given a mean free path
+    /// given a macroscopic scattering cross section
+    pub fn sample_mean_free_path_given_sigma_s(&mut self, sigma_s: LinearNumberDensity) 
+        -> Length {
+
+            let sigma_s_per_meter: f64 = sigma_s.get::<per_meter>();
+            let distance_travelled_randomised_meters = 
+                sample_free_path(&mut self.rng, sigma_s_per_meter);
+
+            return Length::new::<meter>(distance_travelled_randomised_meters);
+
+    }
 }

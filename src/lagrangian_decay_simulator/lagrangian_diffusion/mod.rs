@@ -73,6 +73,10 @@ pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator_time_bas
 /// of this crate
 pub mod central_limit_theorem;
 
+/// contains functions for isotropic scattering 
+/// allows particle to finish random walk with isotropic scattering
+pub mod isotropic_scattering;
+
 /// this module converts a thermodynamic temperature into a number 
 /// of collisions expected on a per unit time basis 
 pub mod temperature_dependent_collisions;
