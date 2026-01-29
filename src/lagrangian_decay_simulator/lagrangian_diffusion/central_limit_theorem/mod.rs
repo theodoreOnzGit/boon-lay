@@ -19,8 +19,8 @@ pub fn per_component_variance_from_second_moment(
 /// denoted as lambda
 ///
 /// this is meant for 3d vector
-pub fn per_component_variance_exponential_for_3d_vector(no_of_collisions: u64, lambda: Length) -> Area {
-    let e_s2: Area = 2.0 * lambda * lambda;
+pub fn per_component_variance_exponential_for_3d_vector(no_of_collisions: u64, mean_free_path: Length) -> Area {
+    let e_s2: Area = 2.0 * mean_free_path * mean_free_path;
     per_component_variance_from_second_moment(no_of_collisions, e_s2)
 }
 
@@ -36,5 +36,5 @@ pub fn sample_dimensioned_gaussian_vector<R: Rng + ?Sized>(rng: &mut R, variance
 
 /// this is a local type
 /// that implements Rng for oorandom
-mod oorandom_rng;
+pub mod oorandom_rng;
 

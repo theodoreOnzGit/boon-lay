@@ -76,3 +76,8 @@ pub mod central_limit_theorem;
 /// this module converts a thermodynamic temperature into a number 
 /// of collisions expected on a per unit time basis 
 pub mod temperature_dependent_collisions;
+
+/// this is for simulation of a single particle 
+/// isotropic material and isotropic scattering (no medium boundaries and 
+/// such).
+pub mod single_particle_simulator;
