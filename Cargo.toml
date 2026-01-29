@@ -19,6 +19,8 @@ anyhow = "1.0.100"
 oorandom = "11.1.5"
 openmc-endf-8-depletion-lib-b = "1.0.0"
 rand_distr = "0.4"
+rand_core = "0.6"
+rand = "0.8"
 
 [dev-dependencies]
 approx = "0.5.1"
@@ -36,7 +38,6 @@ image = { version = "0.25", features = ["jpeg", "png"] } # Add the types you wan
 rayon = "1.11.0"
 # for the monte carlo vibecode test
 csv = "1.3"
-rand = "0.8"
 
 [[example]]
 name = "boon_lay_decay_simulator"

@@ -591,6 +591,7 @@ dependencies = [
  "oorandom",
  "openmc-endf-8-depletion-lib-b",
  "rand 0.8.5",
+ "rand_core 0.6.4",
  "rand_distr",
  "rayon",
  "serde",
