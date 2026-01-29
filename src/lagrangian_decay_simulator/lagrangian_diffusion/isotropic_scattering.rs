@@ -5,14 +5,14 @@ use rand_distr::{Distribution, Exp};
 use uom::si::{f64::Ratio, ratio::ratio};
 
 #[derive(Debug, Clone, Copy)]
-struct Vec3 {
+pub struct Vec3 {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
 
 impl Vec3 {
-    fn _add(&self, other: Vec3) -> Vec3 {
+    pub fn add(&self, other: Vec3) -> Vec3 {
         Vec3 { x: self.x + other.x, y: self.y + other.y, z: self.z + other.z }
     }
 
@@ -24,7 +24,7 @@ impl Vec3 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
-    fn _normalize(&self) -> Vec3 {
+    pub fn normalize(&self) -> Vec3 {
         let n = self.norm();
         if n == 0.0 {
             // Avoid division by zero; return some default
