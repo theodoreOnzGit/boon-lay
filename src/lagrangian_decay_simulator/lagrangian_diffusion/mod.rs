@@ -60,5 +60,15 @@ pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator;
 /// the above was distance based, 
 /// Now I want a time based model 
 /// because simulator runs on simulated time
+/// This is just sample code
 #[cfg(test)]
 pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator_time_based;
+
+
+/// this module contains functions for Gaussian distributions, 
+/// where multiple isotropic scatterings are summed together to 
+/// produce a Gaussian distribution due to the central limit theorem 
+///
+/// this is partly vibe coded from ChatGPT, then edited to fit the needs 
+/// of this crate
+pub mod central_limit_theorem;
