@@ -89,4 +89,10 @@ impl SingleParticleDiffusionSimulatorMC {
             return Length::new::<meter>(distance_travelled_randomised_meters);
 
     }
+
+
+    // now, for challenge with scattering is that we want to 
+    // is that we want to have them precalculated.
+    //
+    // That isn't easy, but I'll probably do this another day
 }

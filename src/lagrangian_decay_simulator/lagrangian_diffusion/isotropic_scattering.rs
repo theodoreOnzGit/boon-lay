@@ -12,19 +12,19 @@ struct Vec3 {
 }
 
 impl Vec3 {
-    fn add(&self, other: Vec3) -> Vec3 {
+    fn _add(&self, other: Vec3) -> Vec3 {
         Vec3 { x: self.x + other.x, y: self.y + other.y, z: self.z + other.z }
     }
 
-    fn scale(&self, s: f64) -> Vec3 {
+    pub fn scale(&self, s: f64) -> Vec3 {
         Vec3 { x: self.x * s, y: self.y * s, z: self.z * s }
     }
 
-    fn norm(&self) -> f64 {
+    pub fn norm(&self) -> f64 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
-    fn normalize(&self) -> Vec3 {
+    fn _normalize(&self) -> Vec3 {
         let n = self.norm();
         if n == 0.0 {
             // Avoid division by zero; return some default
@@ -38,7 +38,7 @@ impl Vec3 {
 /// Sample an isotropic direction on the unit sphere.
 /// Method: mu = cos(theta) ~ U[-1, 1], phi ~ U[0, 2π]
 #[inline]
-fn sample_isotropic_direction<R: Rng>(rng: &mut R) -> Vec3 {
+fn _sample_isotropic_direction<R: Rng>(rng: &mut R) -> Vec3 {
     let mu :f64 = rng.gen_range(-1.0..=1.0);
     let phi: f64 = rng.gen_range(0.0..(2.0 * PI));
     let sin_theta: f64 = (1.0_f64 - mu * mu).sqrt();
