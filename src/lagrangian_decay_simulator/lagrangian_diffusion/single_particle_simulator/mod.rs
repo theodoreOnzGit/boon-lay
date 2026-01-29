@@ -90,6 +90,26 @@ impl SingleParticleDiffusionSimulatorMC {
 
     }
 
+    // if we have a scattering marcoscopic cross section,
+    // we can scatter the particle isotropically
+    #[inline] 
+    pub fn scatter_isotropically_using_macro_xs(
+        &mut self, 
+        sigma_s: LinearNumberDensity,
+    ){
+        let [dx_unit, dy_unit, dz_unit] = self.sample_isotropic_direction();
+        let randomly_sampled_length = self.sample_mean_free_path_given_sigma_s(sigma_s);
+
+        let dx = dx_unit * randomly_sampled_length;
+        let dy = dy_unit * randomly_sampled_length;
+        let dz = dz_unit * randomly_sampled_length;
+
+        let length_array = [dx,dy,dz];
+        self.move_particle_using_array(length_array);
+
+    }
+
+
 
     // now, for challenge with scattering is that we want to 
     // is that we want to have them precalculated.
