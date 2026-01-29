@@ -19,14 +19,16 @@ pub fn per_component_variance_from_second_moment(
 /// denoted as lambda
 ///
 /// this is meant for 3d vector
+#[inline]
 pub fn per_component_variance_exponential_for_3d_vector(no_of_collisions: u64, mean_free_path: Length) -> Area {
     let e_s2: Area = 2.0 * mean_free_path * mean_free_path;
     per_component_variance_from_second_moment(no_of_collisions, e_s2)
 }
 
+#[inline]
 /// Sample a 3D Gaussian displacement vector X ~ N(0, sigma2 * I3).
-pub fn sample_dimensioned_gaussian_vector<R: Rng + ?Sized>(rng: &mut R, variance: Area) -> [Length; 3] {
-    let std_deviation = variance.sqrt();
+pub fn sample_dimensioned_gaussian_vector<R: Rng + ?Sized>(rng: &mut R, per_component_variance: Area) -> [Length; 3] {
+    let std_deviation = per_component_variance.sqrt();
     let x: f64 = rng.sample(StandardNormal);
     let y: f64 = rng.sample(StandardNormal);
     let z: f64 = rng.sample(StandardNormal);

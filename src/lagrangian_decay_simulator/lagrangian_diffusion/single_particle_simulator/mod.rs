@@ -1,7 +1,7 @@
 use rand::RngCore;
 use uom::{si::f64::*, ConstZero};
 
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::{oorandom_rng::OoRng64, per_component_variance_exponential_for_3d_vector, sample_dimensioned_gaussian_vector};
 
 #[derive(Debug,Clone,Copy,PartialEq)]
 pub struct SingleParticleDiffusionSimulatorMC {
@@ -50,4 +50,26 @@ impl SingleParticleDiffusionSimulatorMC {
         self.coordinates = (x+dx, y+dy, z+dz);
 
     }
+
+
+    /// move particle assuming normal distribution 
+    /// given mean free path and number of collisions 
+    pub fn move_particle_gaussian_sampling(&mut self,
+        mean_free_path: Length,
+        no_of_collisions: u64){
+
+        let per_component_variance = 
+            per_component_variance_exponential_for_3d_vector(
+                no_of_collisions, mean_free_path);
+
+        let gaussian_length_array = 
+            sample_dimensioned_gaussian_vector(
+                &mut self.rng, 
+                per_component_variance,
+            );
+
+        self.move_particle_using_array(gaussian_length_array);
+
+    }
+
 }
