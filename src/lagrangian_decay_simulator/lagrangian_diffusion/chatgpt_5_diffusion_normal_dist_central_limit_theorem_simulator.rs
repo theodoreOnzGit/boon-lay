@@ -1,144 +1,86 @@
 use rand::prelude::*;
 use rand_distr::StandardNormal;
 
-/// Compute the Cholesky decomposition L of a symmetric positive-definite 3x3 matrix Sigma,
-/// such that Sigma = L * L^T. Returns None if the matrix is not SPD (numerically).
-fn cholesky_3x3(sigma: [[f64; 3]; 3]) -> Option<[[f64; 3]; 3]> {
-    // Ensure symmetry (not strictly necessary if caller guarantees it)
-    let s = sigma;
-
-    // L lower-triangular
-    let mut l = [[0.0f64; 3]; 3];
-
-    // l00
-    let mut v = s[0][0];
-    if v <= 0.0 { return None; }
-    l[0][0] = v.sqrt();
-
-    // l10, l11
-    l[1][0] = s[1][0] / l[0][0];
-    v = s[1][1] - l[1][0] * l[1][0];
-    if v <= 0.0 { return None; }
-    l[1][1] = v.sqrt();
-
-    // l20, l21, l22
-    l[2][0] = s[2][0] / l[0][0];
-    l[2][1] = (s[2][1] - l[2][0] * l[1][0]) / l[1][1];
-    v = s[2][2] - l[2][0] * l[2][0] - l[2][1] * l[2][1];
-    if v <= 0.0 { return None; }
-    l[2][2] = v.sqrt();
-
-    // Enforce lower-triangular zeros in the upper part
-    l[0][1] = 0.0; l[0][2] = 0.0;
-    l[1][2] = 0.0;
-
-    Some(l)
+/// Compute per-component variance sigma2 for the Gaussian displacement after n isotropic steps.
+/// General case: sigma2 = n * E[S^2] / 3.
+/// For exponential step lengths with mean lambda, E[S^2] = 2 lambda^2 ⇒ sigma2 = n * 2 lambda^2 / 3.
+fn per_component_variance_from_m2(n: usize, e_s2: f64) -> f64 {
+    (n as f64) * e_s2 / 3.0
 }
 
-/// Sample a 3D multivariate normal: mu + L z where z ~ N(0, I), L from Cholesky(Sigma)
-fn sample_multivariate_normal<R: Rng + ?Sized>(
-    rng: &mut R,
-    mu: [f64; 3],
-    l: [[f64; 3]; 3],
-) -> [f64; 3] {
-    let z0: f64 = rng.sample(StandardNormal);
-    let z1: f64 = rng.sample(StandardNormal);
-    let z2: f64 = rng.sample(StandardNormal);
-
-    // y = L z
-    let y0 = l[0][0] * z0;
-    let y1 = l[1][0] * z0 + l[1][1] * z1;
-    let y2 = l[2][0] * z0 + l[2][1] * z1 + l[2][2] * z2;
-
-    [mu[0] + y0, mu[1] + y1, mu[2] + y2]
+fn per_component_variance_exponential(n: usize, lambda: f64) -> f64 {
+    let e_s2 = 2.0 * lambda * lambda;
+    per_component_variance_from_m2(n, e_s2)
 }
 
-/// Simulate multiple 3D random walk paths.
-/// - num_paths: number of Monte Carlo paths
-/// - num_steps: steps per path
-/// - start: starting position [x, y, z]
-/// - mu: mean step vector
-/// - sigma: 3x3 covariance matrix for step distribution
-/// Returns Vec of paths; each path is Vec of positions length (num_steps + 1),
-/// including the initial position.
-fn simulate_random_walks(
-    num_paths: usize,
-    num_steps: usize,
-    start: [f64; 3],
-    mu: [f64; 3],
-    sigma: [[f64; 3]; 3],
-    seed: Option<u64>,
-) -> Result<Vec<Vec<[f64; 3]>>, String> {
-    let l = cholesky_3x3(sigma).ok_or_else(|| "Covariance matrix is not SPD (Cholesky failed)".to_string())?;
+/// Sample a 3D Gaussian displacement vector X ~ N(0, sigma2 * I3).
+fn sample_gaussian_vector<R: Rng + ?Sized>(rng: &mut R, sigma2: f64) -> [f64; 3] {
+    let s = sigma2.sqrt();
+    let x: f64 = rng.sample(StandardNormal);
+    let y: f64 = rng.sample(StandardNormal);
+    let z: f64 = rng.sample(StandardNormal);
+    [s * x, s * y, s * z]
+}
 
-    let mut rng: StdRng = match seed {
-        Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
-    };
+/// Sample a unit direction uniformly on S^2.
+fn sample_unit_vector<R: Rng + ?Sized>(rng: &mut R) -> [f64; 3] {
+    let u: f64 = rng.gen_range(-1.0..=1.0); // cos(theta)
+    let phi: f64 = rng.gen_range(0.0..(2.0 * std::f64::consts::PI));
+    let rxy = (1.0 - u * u).sqrt();
+    [rxy * phi.cos(), rxy * phi.sin(), u]
+}
 
-    let mut paths = Vec::with_capacity(num_paths);
-    for _ in 0..num_paths {
-        let mut path = Vec::with_capacity(num_steps + 1);
-        let mut pos = start;
-        path.push(pos);
+/// Sample net distance R for the Gaussian displacement using the Maxwell distribution with scale sigma.
+/// Equivalent to ||N(0, sigma^2 I3)||.
+fn sample_maxwell_radius<R: Rng + ?Sized>(rng: &mut R, sigma: f64) -> f64 {
+    // Efficient and numerically stable: norm of 3 standard normals times sigma.
+    let x: f64 = rng.sample(StandardNormal);
+    let y: f64 = rng.sample(StandardNormal);
+    let z: f64 = rng.sample(StandardNormal);
+    sigma * (x * x + y * y + z * z).sqrt()
+}
 
-        for _ in 0..num_steps {
-            let step = sample_multivariate_normal(&mut rng, mu, l);
-            pos = [pos[0] + step[0], pos[1] + step[1], pos[2] + step[2]];
-            path.push(pos);
-        }
-
-        paths.push(path);
-    }
-
-    Ok(paths)
+/// Sample (distance, direction) for the Gaussian net displacement after n isotropic steps.
+/// You can pass sigma2 directly (per-component variance) or compute it from n and E[S^2].
+fn sample_distance_and_direction<R: Rng + ?Sized>(rng: &mut R, sigma2: f64) -> (f64, [f64; 3]) {
+    let sigma = sigma2.sqrt();
+    // Option A: independent sampling: R from Maxwell(sigma), u isotropic.
+    // This yields exactly the same law as the vector method.
+    let r = sample_maxwell_radius(rng, sigma);
+    let u = sample_unit_vector(rng);
+    (r, u)
 }
 
 #[test]
-fn clt_norm_dist_random_walk() -> Result<(), String> {
-    // Example parameters
-    let num_paths = 10;
-    let num_steps = 1000;
-    let start = [0.0, 0.0, 0.0];
+/// Produce a collection of Gaussian displacement samples (either as vectors,
+/// or as distance-direction pairs) for given n and either E[S^2] or lambda.
+fn diffusion_gaussian_sum() {
+    let mut rng = StdRng::seed_from_u64(42);
 
-    // Mean step per time increment (e.g., drift)
-    let mu = [0.0, 0.0, 0.0];
+    // Example settings:
+    let n = 1000usize;
 
-    // Symmetric positive-definite covariance for step distribution
-    // Example: correlated axes
-    let sigma = [
-        [1.0, 0.3, 0.2],
-        [0.3, 1.5, 0.4],
-        [0.2, 0.4, 0.8],
-    ];
+    // Case A: exponential step lengths with mean free path lambda
+    let lambda = 1.0;
+    let sigma2 = per_component_variance_exponential(n, lambda);
 
-    // Optional reproducibility
-    let seed = Some(42);
+    // Case B (alternative): specify E[S^2] directly
+    // let e_s2 = 0.5; // example
+    // let sigma2 = per_component_variance_from_m2(n, e_s2);
 
-    let paths = simulate_random_walks(num_paths, num_steps, start, mu, sigma, seed)?;
-
-    // Example: print the final position of each path
-    for (i, path) in paths.iter().enumerate() {
-        let end = path.last().unwrap();
-        println!("Path {i} end: [{:.4}, {:.4}, {:.4}]", end[0], end[1], end[2]);
+    // Sample 5 Gaussian displacement vectors
+    println!("Gaussian vectors X ~ N(0, sigma2 I3), with sigma2 = {:.6}", sigma2);
+    for i in 0..5 {
+        let x = sample_gaussian_vector(&mut rng, sigma2);
+        println!("vec #{i}: [{:.4}, {:.4}, {:.4}]", x[0], x[1], x[2]);
     }
 
-    // Example: compute sample mean of endpoints
-    let mut sum = [0.0; 3];
-    for path in &paths {
-        let end = path.last().unwrap();
-        sum[0] += end[0];
-        sum[1] += end[1];
-        sum[2] += end[2];
+    // Sample 5 (distance, direction) pairs and reconstruct vectors
+    println!("\nDistance–direction samples (Maxwell distance, isotropic direction):");
+    for i in 0..5 {
+        let (r, u) = sample_distance_and_direction(&mut rng, sigma2);
+        let x = [r * u[0], r * u[1], r * u[2]];
+        println!("pair #{i}: R = {:.4}, u = [{:.4}, {:.4}, {:.4}], X = [{:.4}, {:.4}, {:.4}]",
+                 r, u[0], u[1], u[2], x[0], x[1], x[2]);
     }
-    let n = paths.len() as f64;
-    let mean_end = [sum[0] / n, sum[1] / n, sum[2] / n];
-    println!(
-        "Sample mean endpoint: [{:.4}, {:.4}, {:.4}]",
-        mean_end[0], mean_end[1], mean_end[2]
-    );
-
-    //todo!();
-    Ok(())
-        
 }

@@ -48,6 +48,11 @@ pub mod chatgpt_5_diffusion_simulator;
 ///}
 ///
 ///
+/// as chatgpt5 mentions:
+///
+/// For diffusive limits, many small isotropic scatterings with exponential 
+/// steps converge to a Gaussian displacement; but the microscopic model 
+/// should use the isotropic step sampling above.
 
 #[cfg(test)]
 pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator;
