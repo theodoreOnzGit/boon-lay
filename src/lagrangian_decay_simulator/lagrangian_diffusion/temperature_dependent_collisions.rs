@@ -20,11 +20,11 @@ fn boltzmann_constant() -> Energy {
 
 /// Mean speed (Maxwell–Boltzmann) at temperature T for a particle of mass m:
 /// v_mean = sqrt(8 k_B T / (pi m))
-fn mean_speed(T: ThermodynamicTemperature, m: Mass) -> Velocity {
+fn mean_speed(medium_temperature: ThermodynamicTemperature, particle_mass: Mass) -> Velocity {
     // k_B * T has dimension of energy
-    let k_b_T: Energy = boltzmann_constant() * (T / ThermodynamicTemperature::new::<kelvin>(1.0));
+    let k_b_T: Energy = boltzmann_constant() * (medium_temperature / ThermodynamicTemperature::new::<kelvin>(1.0));
     // specific energy (m^2/s^2)
-    let specific = (8.0 * k_b_T) / (PI * m);
+    let specific = (8.0 * k_b_T) / (PI * particle_mass);
     // sqrt to get velocity
     specific.sqrt()
 }
@@ -32,16 +32,27 @@ fn mean_speed(T: ThermodynamicTemperature, m: Mass) -> Velocity {
 /// Expected number of collisions in time t with mean free path ℓ:
 /// E[N(t)] = (t / ℓ) * E[v]
 /// Returns a dimensionless count (f64).
+///
+///
+/// now this is not quite atomic jumps as chatGPT suggested,
+/// D = 1/6 a^2 * nu
+///
+/// However, atomic jumps assume diffusion is only within monocrystalline 
+/// material without defects. 
+///
+/// In reality, there are defects, grain boundaries, dislocations etc.
+/// Therefore, we need an effective diffusion coefficient to consider 
+/// this
 fn expected_collisions(
-    T: ThermodynamicTemperature,
-    m: Mass,
-    ell: Length,
+    medium_temperature: ThermodynamicTemperature,
+    particle_mass: Mass,
+    mean_free_path: Length,
     t: Time,
 ) -> f64 {
-    let v_mean = mean_speed(T, m);
+    let v_mean = mean_speed(medium_temperature, particle_mass);
     // Compute in scalar form to avoid needing reciprocal-velocity quantity:
     // (t/ell) has units s/m, v_mean has m/s -> dimensionless.
-    (t.get::<second>() / ell.get::<meter>()) * v_mean.get::<meter_per_second>()
+    (t.get::<second>() / mean_free_path.get::<meter>()) * v_mean.get::<meter_per_second>()
 }
 
 
