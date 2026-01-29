@@ -56,3 +56,9 @@ pub mod chatgpt_5_diffusion_simulator;
 
 #[cfg(test)]
 pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator;
+
+/// the above was distance based, 
+/// Now I want a time based model 
+/// because simulator runs on simulated time
+#[cfg(test)]
+pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator_time_based;

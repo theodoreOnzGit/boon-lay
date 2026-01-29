@@ -52,6 +52,7 @@ fn sample_distance_and_direction<R: Rng + ?Sized>(rng: &mut R, sigma2: f64) -> (
 }
 
 #[test]
+//#[ignore = "testing"]
 /// Produce a collection of Gaussian displacement samples (either as vectors,
 /// or as distance-direction pairs) for given n and either E[S^2] or lambda.
 fn diffusion_gaussian_sum() {
