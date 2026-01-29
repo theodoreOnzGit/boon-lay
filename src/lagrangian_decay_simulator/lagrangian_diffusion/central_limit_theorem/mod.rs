@@ -25,7 +25,7 @@ pub fn per_component_variance_exponential_for_3d_vector(no_of_collisions: u64, l
 }
 
 /// Sample a 3D Gaussian displacement vector X ~ N(0, sigma2 * I3).
-fn sample_dimensioned_gaussian_vector<R: Rng + ?Sized>(rng: &mut R, variance: Area) -> [Length; 3] {
+pub fn sample_dimensioned_gaussian_vector<R: Rng + ?Sized>(rng: &mut R, variance: Area) -> [Length; 3] {
     let std_deviation = variance.sqrt();
     let x: f64 = rng.sample(StandardNormal);
     let y: f64 = rng.sample(StandardNormal);
