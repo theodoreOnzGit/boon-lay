@@ -107,7 +107,7 @@ impl DecaySimApp {
         let sampled_particles_for_plotting: Vec<SingleNuclideSimulatorMC> = 
             take_random_without_replacement(
                 &mut nuclide_sim_full_vec, 
-                200, 
+                2000, 
                 seed
             );
 

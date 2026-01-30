@@ -203,7 +203,7 @@ impl DecaySimApp {
                 decay_simulation.advance_timestep(timestep);
                 // then I want to move the particle 
                 let number_of_collisions_float: f64 
-                    = 1e9 * timestep.get::<second>().round();
+                    = 1e3 * timestep.get::<second>().round();
                 let number_of_collisions: u64 = 
                     number_of_collisions_float.round() as u64;
                 // these are placeholders
