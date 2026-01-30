@@ -64,8 +64,14 @@ pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator;
 #[cfg(test)]
 pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator_time_based;
 
+/// this is to generate a list of vectors for a spherical shell between r1 and r2
 #[cfg(test)]
 pub mod chatgpt_5_list_of_vectors_uniformly_distributed_on_spherical_shell;
+
+/// this is to draw 
+/// a triso particle widget in egui
+#[cfg(test)]
+pub mod triso_particle_widget;
 
 /// this module contains functions for Gaussian distributions, 
 /// where multiple isotropic scatterings are summed together to 
