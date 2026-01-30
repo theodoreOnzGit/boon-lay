@@ -8,19 +8,8 @@
 // eframe = "0.27"
 // egui = "0.27"
 
-use eframe::{egui, egui::{Color32, Pos2, Stroke, Vec2, Widget}};
+use eframe::{egui, egui::{Color32, Pos2, Stroke, Widget}};
 
-fn main() -> eframe::Result<()> {
-    let options = eframe::NativeOptions {
-        initial_window_size: Some(Vec2::new(800.0, 800.0)),
-        ..Default::default()
-    };
-    eframe::run_native(
-        "egui",
-        options,
-        Box::new(|_cc| Box::new(App::default())),
-    )
-}
 
 #[derive(Clone)]
 struct TrisoParticle {
