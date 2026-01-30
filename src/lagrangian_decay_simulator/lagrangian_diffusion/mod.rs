@@ -64,6 +64,8 @@ pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator;
 #[cfg(test)]
 pub mod chatgpt_5_diffusion_normal_dist_central_limit_theorem_simulator_time_based;
 
+#[cfg(test)]
+pub mod chatgpt_5_list_of_vectors_uniformly_distributed_on_spherical_shell;
 
 /// this module contains functions for Gaussian distributions, 
 /// where multiple isotropic scatterings are summed together to 
