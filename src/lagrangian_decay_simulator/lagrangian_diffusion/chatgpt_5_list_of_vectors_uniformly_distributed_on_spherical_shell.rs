@@ -49,3 +49,35 @@ fn rng_test() {
         println!("shell: {x:.6}, {y:.6}, {z:.6}");
     }
 }
+
+
+type Point3 = (f64, f64, f64);
+
+/// Returns all points whose z is between z1 and z2 (inclusive).
+/// If z1 > z2, the bounds are swapped.
+fn filter_points_by_z(points: &[Point3], z1: f64, z2: f64) -> Vec<Point3> {
+    let (lo, hi) = if z1 <= z2 { (z1, z2) } else { (z2, z1) };
+    points
+        .iter()
+        .copied()
+        .filter(|&(_, _, z)| z >= lo && z <= hi)
+        .collect()
+}
+
+#[test]
+fn test_for_filtering() {
+    let particles: Vec<Point3> = vec![
+        (0.1, 0.2, -0.3),
+        (0.5, -0.1, 0.0),
+        (0.7, 0.8, 0.9),
+        (-0.4, 0.3, 0.4),
+    ];
+
+    let z1 = 0.0;
+    let z2 = 0.5;
+
+    let filtered = filter_points_by_z(&particles, z1, z2);
+    for (x, y, z) in filtered {
+        println!("({x}, {y}, {z})");
+    }
+}
