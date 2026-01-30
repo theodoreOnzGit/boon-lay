@@ -5,7 +5,7 @@ use crate::lagrangian_decay_simulator::lagrangian_diffusion::{central_limit_theo
 
 #[derive(Debug,Clone,Copy,PartialEq)]
 pub struct SingleParticleDiffusionSimulatorMC {
-    pub coordinates: (Length, Length, Length),
+    pub position: (Length, Length, Length),
     /// random number generator
     pub rng: OoRng64,
 }
@@ -22,7 +22,7 @@ impl SingleParticleDiffusionSimulatorMC {
         let rng = OoRng64::from_u64(outside_rng.next_u64());
 
         return Self { 
-            coordinates, 
+            position: coordinates, 
             rng,
         }
 
@@ -35,9 +35,9 @@ impl SingleParticleDiffusionSimulatorMC {
         let dy = length_array[1];
         let dz = length_array[2];
 
-        let (x, y, z) = self.coordinates;
+        let (x, y, z) = self.position;
 
-        self.coordinates = (x+dx, y+dy, z+dz);
+        self.position = (x+dx, y+dy, z+dz);
 
     }
 
@@ -45,9 +45,9 @@ impl SingleParticleDiffusionSimulatorMC {
     pub fn move_particle_using_tuple(&mut self, length_tuple: (Length, Length, Length)){
         let (dx, dy, dz) = length_tuple;
 
-        let (x, y, z) = self.coordinates;
+        let (x, y, z) = self.position;
 
-        self.coordinates = (x+dx, y+dy, z+dz);
+        self.position = (x+dx, y+dy, z+dz);
 
     }
 
@@ -116,3 +116,7 @@ impl SingleParticleDiffusionSimulatorMC {
     //
     // That isn't easy, but I'll probably do this another day
 }
+
+/// implements conversion and interaction with the 
+/// SingleNuclideSimulatorMC
+pub mod conversion;
