@@ -2,7 +2,7 @@ use std::{sync::{Arc, Barrier, Mutex}, thread, time::{Duration, SystemTime}};
 
 use boon_lay::{lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::SingleParticleDiffusionSimulatorMC, prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
 use rand::SeedableRng;
-use uom::si::{f64::{Length, Time}, length::angstrom, time::{millisecond, second}};
+use uom::si::{f64::{Length, Time}, length::{angstrom, micrometer}, time::{millisecond, second}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
 use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
@@ -98,7 +98,7 @@ impl DecaySimApp {
                     nuclide_info.try_get_half_life().unwrap();
 
                 // set timestep to 0.1% half life 
-                let timestep_based_on_hl: Time = 1e-3 * nuclide_half_life;
+                let timestep_based_on_hl: Time = 1e-6 * nuclide_half_life;
 
 
                 // make sure all threads in sync 
@@ -164,7 +164,7 @@ impl DecaySimApp {
                     nuclide_info.try_get_half_life().unwrap();
 
                 // set timestep to 0.1% half life 
-                let timestep_based_on_hl: Time = 1e-3 * nuclide_half_life;
+                let timestep_based_on_hl: Time = 1e-6 * nuclide_half_life;
                 // make sure all threads in sync 
                 barrier.wait();
 
@@ -209,11 +209,12 @@ impl DecaySimApp {
                 // these are placeholders
                 let mean_free_path = Length::new::<angstrom>(1.0);
 
-                diffusion_simulator.move_particle_gaussian_sampling(
+                diffusion_simulator.
+                    move_single_decaying_particle_gaussian_mfp_and_no_of_collisions(
+                    decay_simulation, 
                     mean_free_path, 
                     number_of_collisions
                 );
-
 
             };
 
