@@ -1,10 +1,14 @@
 
+use boon_lay::prelude::SingleNuclideSimulatorMC;
 use eframe::{egui, egui::{Color32, Pos2, Stroke, Widget}};
 use egui::{Rect, Ui};
+use uom::si::{f64::*, length::micrometer, ratio::ratio};
+
+use crate::decay_simulator_v1::DecaySimApp;
 
 
 #[derive(Clone,Copy, Debug)]
-pub struct TrisoParticle {
+pub struct TrisoParticleUi {
     // Metadata: physical diameter (not used for scaling unless you decide to map mm→px)
     diameter_mm: f32,
 
@@ -20,22 +24,47 @@ pub struct TrisoParticle {
 
     // Optional tint for the rings (stroke color), background is taken from the panel.
     color: Color32,
+
+    // fuel kernel diameter 
+    kernel_diameter: Length, 
+
+    // buffer thickness 
+    buffer_thickness: Length,
+
+    // inner pyrolytic carbon layer thickness
+    ipyc_thickness: Length,
+    // silicon carbide thickness
+    sic_thickness: Length,
+    // outer pyrolytic carbon thickness
+    opyc_thickness: Length,
 }
 
-impl Default for TrisoParticle {
+impl Default for TrisoParticleUi {
     fn default() -> Self {
+        // Nominal values commonly cited in literature
+        let kernel_diameter: Length = Length::new::<micrometer>(350.0);   // diameter
+        let buffer_thickness: Length = Length::new::<micrometer>(100.0);  // thickness
+        let ipyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
+        let sic_thickness: Length = Length::new::<micrometer>(35.0);      // thickness
+        let opyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
+
         Self {
             diameter_mm: 1.0,          // 1 mm (metadata)
             ui_diameter_ratio: 0.8,   // occupy ~80% of the UI
             num_rings: 18,             // adjust to taste
             stroke: Stroke { width: 6.0, color: Color32::WHITE },
             color: Color32::WHITE,
+            kernel_diameter,
+            buffer_thickness,
+            ipyc_thickness,
+            sic_thickness,
+            opyc_thickness,
         }
     }
 }
 
 // Implement the Widget trait so you can `ui.add(triso.clone())`
-impl Widget for TrisoParticle {
+impl Widget for TrisoParticleUi {
     fn ui(self, ui: &mut egui::Ui) -> egui::Response {
         // Reserve all available space in the current UI region.
         let desired = ui.available_size();
@@ -75,31 +104,14 @@ impl Widget for TrisoParticle {
 }
 
 
-impl TrisoParticle {
+impl TrisoParticleUi {
 
-    /// Convert atomic number (Z) to element symbol.
-    /// Covers Z = 1..=118; returns "?" for out of range.
-    pub fn symbol_from_z(z: u32) -> &'static str {
-        // index = Z; index 0 is unused
-        static SYMBOLS: [&str; 119] = [
-            "",  // 0
-            "H","He","Li","Be","B","C","N","O","F","Ne",
-            "Na","Mg","Al","Si","P","S","Cl","Ar",
-            "K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn",
-            "Ga","Ge","As","Se","Br","Kr",
-            "Rb","Sr","Y","Zr","Nb","Mo","Tc","Ru","Rh","Pd","Ag","Cd",
-            "In","Sn","Sb","Te","I","Xe",
-            "Cs","Ba","La","Ce","Pr","Nd","Pm","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb","Lu",
-            "Hf","Ta","W","Re","Os","Ir","Pt","Au","Hg",
-            "Tl","Pb","Bi","Po","At","Rn",
-            "Fr","Ra","Ac","Th","Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm","Md","No","Lr",
-            "Rf","Db","Sg","Bh","Hs","Mt","Ds","Rg","Cn",
-            "Nh","Fl","Mc","Lv","Ts","Og",
-        ];
-        if z <= 118 { SYMBOLS[z as usize] } else { "?" }
-    }
+    /// copied this from my tuas solver
+    ///
+    /// this also sets the appropriate width
+    /// for the triso particle in pixels
     pub fn put_self_with_size_and_centre(
-        &self,
+        &mut self,
         ui: &mut Ui, 
         centre_x_pixels: f32,
         centre_y_pixels: f32,
@@ -121,4 +133,95 @@ impl TrisoParticle {
         ui.put(rect, *self);
 
     }
+
+    // coded myself 
+    pub fn put_particle_vector_with_size_and_centre(
+        &mut self,
+        ui: &mut Ui, 
+        triso_centre_x_pixels: f32,
+        triso_centre_y_pixels: f32,
+        triso_width_pixels: f32,
+        sampled_particle_sims_for_plotting: Vec<SingleNuclideSimulatorMC>,
+    ){
+
+        // first i get the diameter
+        let triso_diameter: Length = self.diameter_after_opyc();
+
+        // then I scale the width of the radionuclide by like 2% of the triso 
+        // particle
+        let radionuclide_x_width_pixels = triso_width_pixels/100.0;
+        let radionuclide_y_width_pixels = triso_centre_x_pixels;
+
+        // next i need a code to convert diameter coordinates to pixels 
+
+        // first is to get scaling right 
+        let scale_length_per_pixel: Length = triso_diameter/triso_width_pixels as f64;
+
+        fn convert_coordinate_to_pixel( 
+            coordinate: (Length, Length, Length),
+            scale_length_per_pixel: Length) -> (f32, f32, f32) {
+
+            let (x,y,z) = coordinate;
+            let x_pixel: f32 = (x/scale_length_per_pixel).get::<ratio>() as f32;
+            let y_pixel: f32 = (y/scale_length_per_pixel).get::<ratio>() as f32;
+            let z_pixel: f32 = (z/scale_length_per_pixel).get::<ratio>() as f32;
+
+            return (x_pixel,y_pixel,z_pixel);
+
+        }
+
+
+        let painter = ui.painter();
+        for radionuclide_sim in sampled_particle_sims_for_plotting {
+
+            // first lets get x,y,z relative to the centre 
+
+            let radionuclide_position = radionuclide_sim.position;
+
+            let (x_pixel,y_pixel, z_pixel) = 
+                convert_coordinate_to_pixel(radionuclide_position, scale_length_per_pixel);
+
+            let radionuclide_center_x_pixels = triso_centre_x_pixels + x_pixel;
+            let radionuclide_center_y_pixels = triso_centre_y_pixels + y_pixel;
+
+
+            let top_left_x: f32 = radionuclide_center_x_pixels - 0.5 * radionuclide_x_width_pixels;
+            let top_left_y: f32 = radionuclide_center_y_pixels - 0.5 * radionuclide_y_width_pixels;
+            let bottom_right_x: f32 = radionuclide_center_x_pixels + 0.5 * radionuclide_x_width_pixels;
+            let bottom_right_y: f32 = radionuclide_center_y_pixels + 0.5 * radionuclide_y_width_pixels;
+
+            let rect: Rect = Rect {
+                // top left
+                min: Pos2 { x: top_left_x, y: top_left_y },
+                // bottom right
+                max: Pos2 { x: bottom_right_x, y: bottom_right_y },
+            };
+
+            // now let's obtain the nuclide 
+            let nuclide = radionuclide_sim.get_current_nuclide();
+            let colour = DecaySimApp::element_color(nuclide);
+
+            let center = Pos2::new(radionuclide_center_x_pixels, radionuclide_center_y_pixels);
+            let radius = radionuclide_x_width_pixels;
+            painter.circle_filled(center, radius, colour);
+        }
+
+
+    }
+
+    // vibe coded
+    pub fn diameter_after_buffer(&self) -> Length {
+        self.kernel_diameter + self.buffer_thickness * 2.0
+    }
+    pub fn diameter_after_ipyc(&self) -> Length {
+        self.diameter_after_buffer() + self.ipyc_thickness * 2.0
+    }
+    pub fn diameter_after_sic(&self) -> Length {
+        self.diameter_after_ipyc() + self.sic_thickness * 2.0
+    }
+    pub fn diameter_after_opyc(&self) -> Length {
+        self.diameter_after_sic() + self.opyc_thickness * 2.0
+    }
+
+
 }

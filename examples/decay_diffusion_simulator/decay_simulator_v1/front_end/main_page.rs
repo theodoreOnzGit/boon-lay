@@ -1,7 +1,8 @@
 use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
 use egui::{Color32, Pos2, Rect, Ui};
+use oorandom::Rand64;
 
-use crate::decay_simulator_v1::{front_end::triso_particle::TrisoParticle, DecaySimApp};
+use crate::decay_simulator_v1::{front_end::triso_particle::TrisoParticleUi, DecaySimApp};
 use rayon::prelude::*;
 
 impl DecaySimApp {
@@ -27,7 +28,6 @@ impl DecaySimApp {
         let dx = SIZE / COLS as f32; // 3.2 px
         let dy = SIZE / ROWS as f32; // 3.2 px
         let radius = 0.45 * dx.min(dy); // ~1.44 px
-
         let origin = rect.min; // top-left of the allocated 2500x2500 area
 
         // let me obtain the four vectors of nuclides 
@@ -35,28 +35,10 @@ impl DecaySimApp {
         // Convert a Vec<SingleNuclideSimualtorMC> into Vec<Nuclide>
         // using the provided getter.
 
-        // also vibe coded
-        fn to_nuclides(simulators: &[SingleNuclideSimulatorMC]) -> Vec<Nuclide> {
-            simulators.iter().map(|s| s.get_current_nuclide()).collect()
-        }
 
-        // If you have four vectors:
-        fn convert_all(
-            v0: &[SingleNuclideSimulatorMC],
-            v1: &[SingleNuclideSimulatorMC],
-            v2: &[SingleNuclideSimulatorMC],
-            v3: &[SingleNuclideSimulatorMC],
-        ) -> (Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>) {
-            (
-                to_nuclides(v0),
-                to_nuclides(v1),
-                to_nuclides(v2),
-                to_nuclides(v3),
-            )
-        }
 
         // collect all nuclides and then display them
-        let (nuclide_sim_vec_1,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+        let (nuclide_sim_vec_1, decay_library): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
             self.decay_sim_thread_1_ptr.lock().unwrap().clone();
         let (nuclide_sim_vec_2,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
             self.decay_sim_thread_2_ptr.lock().unwrap().clone();
@@ -65,149 +47,107 @@ impl DecaySimApp {
         let (nuclide_sim_vec_4,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
             self.decay_sim_thread_4_ptr.lock().unwrap().clone();
 
-        let (nuclide_vec_1, nuclide_vec_2, nuclide_vec_3, nuclide_vec_4): 
-            (Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>, Vec<Nuclide>) 
-             = convert_all(
-                 &nuclide_sim_vec_1, 
-                 &nuclide_sim_vec_2, 
-                 &nuclide_sim_vec_3, 
-                 &nuclide_sim_vec_4,
-             );
-
-        let full_nuclide_vector: Vec<Nuclide> = 
-            nuclide_vec_1.into_iter()
-            .chain(nuclide_vec_2)
-            .chain(nuclide_vec_3)
-            .chain(nuclide_vec_4)
+        // had chatGPT assistance
+        let mut nuclide_sim_full_vec: Vec<SingleNuclideSimulatorMC> = 
+            nuclide_sim_vec_1.into_iter()
+            .chain(nuclide_sim_vec_2)
+            .chain(nuclide_sim_vec_3)
+            .chain(nuclide_sim_vec_4)
             .collect();
 
-        //let mut nuclide_index = 0;
+        // with this full vector, I want to sample about 20000 for plotting 
+        // had chatGPT assistance
 
+        let rng: Rand64 = decay_library.random_number_generator;
 
-        //for row in 0..ROWS {
-        //    for col in 0..COLS {
-        //        // Center each circle in its cell
-        //        let x = origin.x + (col as f32 + 0.5) * dx;
-        //        let y = origin.y + (row as f32 + 0.5) * dy;
-        //        let center = egui::pos2(x, y);
+        // from chatgpt 5
+        // Fisher–Yates shuffle using oorandom
 
-        //        // Example color gradient by position (any palette can be used)
-        //        //let r = (col * 255 / (COLS - 1)) as u8;
-        //        //let g = (row * 255 / (ROWS - 1)) as u8;
-        //        //let b = 160u8;
-        //        // not vibe coded:
-        //        // now to obtain colour, we get the nuclide index
-        //        // 
-        //        let nuclide = full_nuclide_vector[nuclide_index];
-        //        let color = Self::element_color(nuclide);
-        //        nuclide_index += 1;
-
-        //        // just assert to be printing different nuclides, 
-        //        // this works correct 
-        //        // dbg!(&nuclide_index);
-
-        //        painter.circle_filled(center, radius, color);
-        //    }
-        //}
-
-        // refactored using vibe coding to increase smoothness
-        #[derive(Clone, Copy)]
-        struct CircleInst {
-            center: egui::Pos2,
-            radius: f32,
-            color: egui::Color32,
+        fn uniform_u64(rng: &mut oorandom::Rand64, bound: u64) -> u64 {
+            // Rejection sampling to avoid modulo bias
+            // Returns value in [0, bound)
+            assert!(bound > 0);
+            let zone = u64::MAX - (u64::MAX % bound);
+            loop {
+                let x = rng.rand_u64();
+                if x < zone {
+                    return x % bound;
+                }
+            }
         }
 
-        fn draw_grid_parallel(
-            ui: &mut egui::Ui,
-            origin: egui::Pos2,
-            dx: f32,
-            dy: f32,
-            radius: f32,
-            full_nuclide_vector: &[Nuclide],
-            rows: usize,
-            cols: usize,
-            viewport: Rect,
-        ) {
-            // Parallel precompute
-            let circles: Vec<CircleInst> = (0..rows * cols)
-                .into_par_iter()
-                .map(|idx| {
-                    let row = idx / cols;
-                    let col = idx % cols;
+        fn uniform_usize(rng: &mut oorandom::Rand64, bound: usize) -> usize {
+            uniform_u64(rng, bound as u64) as usize
+        }
 
-                    let x = origin.x + (col as f32 + 0.5) * dx;
-                    let y = origin.y + (row as f32 + 0.5) * dy;
-                    let center = egui::pos2(x, y);
 
-                    let nuclide = full_nuclide_vector[idx];
-                    let color = DecaySimApp::element_color(nuclide);
+        fn shuffle_in_place<T>(v: &mut [T], seed: u64) {
+            let len = v.len();
+            if len <= 1 { return; }
+            let mut rng = Rand64::new(seed.into());
+            for i in (1..len).rev() {
+                // pick j in [0, i]
+                let j = uniform_usize(&mut rng, i + 1);
+                v.swap(i, j);
+            }
+        }
 
-                    CircleInst { center, radius, color }
-                })
-            .collect();
+        // Moves k random elements out, leaving the rest in `v`
+        fn take_random_without_replacement<T>(v: &mut Vec<T>, k: usize, seed: u64) -> Vec<T> {
+            if v.is_empty() || k == 0 {
+                return Vec::new();
+            }
+            let k = k.min(v.len());
+            shuffle_in_place(v, seed);
+            v.split_off(v.len() - k)
+        }
 
-            // Single-threaded draw (UI thread)
-            let painter = ui.painter();
-            let content_origin: Pos2 = ui.min_rect().min;
+        let seed = 20_999_u64;
+
+        let sampled_particles_for_plotting: Vec<SingleNuclideSimulatorMC> = 
+            take_random_without_replacement(
+                &mut nuclide_sim_full_vec, 
+                200, 
+                seed
+            );
+
+        // this part deals with the triso particle
+        // and then painting the radionuclide
+
+        {
+            // later on, i want to have a width changing the triso particle 
+            // but maybe layer
+
+            let mut triso_picture = TrisoParticleUi::default();
+
+
             let content_origin_rect: Rect = ui.min_rect();
-
             let left_limit = content_origin_rect.left();
             let top_limit = content_origin_rect.top();
 
             let right_limit = left_limit + viewport.right();
             let bottom_limit = top_limit + viewport.bottom();
 
-            
-            // so basically, i need to get the position relative to the content origin 
+            let triso_width = 0.8 * (bottom_limit - top_limit);
 
+            let triso_centre_x = 0.5 * (right_limit -  left_limit);
+            let triso_centre_y = 0.5 * (bottom_limit - top_limit);
 
-
-            for c in &circles {
-
-
-                let circle_abs_pos_x: f32 = content_origin.x + c.center.x;
-                let circle_abs_pos_y: f32 = content_origin.y + c.center.y;
-
-                if circle_abs_pos_x < left_limit || circle_abs_pos_x > right_limit   {
-                    continue;
-                };
-                if circle_abs_pos_y < top_limit || circle_abs_pos_y > bottom_limit   {
-                    continue;
-                };
-
-                
-
-                painter.circle_filled(c.center, c.radius, c.color);
-            }
-
-
-
+            triso_picture.put_self_with_size_and_centre(ui, 
+                triso_centre_x, 
+                triso_centre_y, 
+                triso_width, 
+                triso_width,
+            );
+            triso_picture.put_particle_vector_with_size_and_centre(ui, 
+                triso_centre_x, 
+                triso_centre_y, 
+                triso_width, 
+                sampled_particles_for_plotting,
+            );
         }
 
 
-
-        draw_grid_parallel(ui, origin, dx, dy, radius, 
-            &full_nuclide_vector, ROWS, COLS,
-            viewport);
-        let triso_picture = TrisoParticle::default();
-
-
-        let content_origin_rect: Rect = ui.min_rect();
-        let left_limit = content_origin_rect.left();
-        let top_limit = content_origin_rect.top();
-
-        let right_limit = left_limit + viewport.right();
-        let bottom_limit = top_limit + viewport.bottom();
-
-        let triso_width = 0.8 * (bottom_limit - top_limit);
-
-        triso_picture.put_self_with_size_and_centre(ui, 
-            0.5 * right_limit, 
-            0.5 * bottom_limit, 
-            triso_width, 
-            triso_width,
-        );
 
     }
 
