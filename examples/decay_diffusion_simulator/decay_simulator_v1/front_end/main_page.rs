@@ -160,8 +160,6 @@ impl DecaySimApp {
 
             
             // so basically, i need to get the position relative to the content origin 
-            
-            let mut triso_particle = TrisoParticle::default();
 
 
 
@@ -195,12 +193,20 @@ impl DecaySimApp {
         let triso_picture = TrisoParticle::default();
 
 
+        let content_origin_rect: Rect = ui.min_rect();
+        let left_limit = content_origin_rect.left();
+        let top_limit = content_origin_rect.top();
+
+        let right_limit = left_limit + viewport.right();
+        let bottom_limit = top_limit + viewport.bottom();
+
+        let triso_width = 0.8 * (bottom_limit - top_limit);
 
         triso_picture.put_self_with_size_and_centre(ui, 
-            origin.x, 
-            origin.y, 
-            800.0, 
-            800.0,
+            0.5 * right_limit, 
+            0.5 * bottom_limit, 
+            triso_width, 
+            triso_width,
         );
 
     }
