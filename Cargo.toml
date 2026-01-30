@@ -43,3 +43,5 @@ csv = "1.3"
 name = "boon_lay_decay_simulator"
 
 
+[[example]]
+name = "decay_diffusion_simulator"
