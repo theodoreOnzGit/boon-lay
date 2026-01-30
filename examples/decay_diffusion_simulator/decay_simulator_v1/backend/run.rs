@@ -1,9 +1,11 @@
 use std::{sync::{Arc, Barrier, Mutex}, thread, time::{Duration, SystemTime}};
 
-use boon_lay::{Nuclide, prelude::{SingleNuclideSimulatorMC, decay_library::DecayLibrary}};
-use uom::si::{f64::Time, time::{millisecond, second}};
+use boon_lay::{lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::SingleParticleDiffusionSimulatorMC, prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
+use rand::SeedableRng;
+use uom::si::{f64::{Length, Time}, length::angstrom, time::{millisecond, second}};
 
 use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
+use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
 
 
 impl DecaySimApp {
@@ -25,6 +27,14 @@ impl DecaySimApp {
 
         let loop_time = SystemTime::now();
 
+        // now i create the the SingleParticleDiffusionSimulatorMC 
+        let mut particle_simulator_rng: OoRng64 = 
+            OoRng64::from_seed([thread_number * 7_u8 ; 16]);
+
+        let mut diffusion_simulator = 
+            SingleParticleDiffusionSimulatorMC::new_from_rng(
+                &mut particle_simulator_rng
+            );
 
         // this is the main loop
         loop {
@@ -191,6 +201,20 @@ impl DecaySimApp {
             // all we are doing here is to advance_timestep
             for decay_simulation in simulation_vector.iter_mut() {
                 decay_simulation.advance_timestep(timestep);
+                // then I want to move the particle 
+                let number_of_collisions_float: f64 
+                    = 1e9 * timestep.get::<second>().round();
+                let number_of_collisions: u64 = 
+                    number_of_collisions_float.round() as u64;
+                // these are placeholders
+                let mean_free_path = Length::new::<angstrom>(1.0);
+
+                diffusion_simulator.move_particle_gaussian_sampling(
+                    mean_free_path, 
+                    number_of_collisions
+                );
+
+
             };
 
             // once the decay simulation is complete, lock the thread ptr 

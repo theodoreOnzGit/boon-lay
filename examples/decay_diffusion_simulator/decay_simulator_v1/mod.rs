@@ -19,7 +19,7 @@ pub fn decay_simulator_v1() -> eframe::Result<()> {
         ..Default::default()
     };
     eframe::run_native(
-        "Decay Simulator v1 Powered by Boon Lay",
+        "Decay and Diffusion Simulator v1 Powered by Boon Lay",
         native_options,
         Box::new(|cc| {
             // image support,
