@@ -17,3 +17,6 @@ pub mod side_panel;
 
 /// this provides a legend as to what elements are what colour
 pub mod periodic_table;
+
+/// contains code to simulate a single triso particle as a widget
+pub mod triso_particle;

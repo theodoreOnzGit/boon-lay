@@ -1,7 +1,7 @@
 use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
 use egui::{Color32, Pos2, Rect, Ui};
 
-use crate::decay_simulator_v1::DecaySimApp;
+use crate::decay_simulator_v1::{front_end::triso_particle::TrisoParticle, DecaySimApp};
 use rayon::prelude::*;
 
 impl DecaySimApp {
@@ -161,6 +161,9 @@ impl DecaySimApp {
             
             // so basically, i need to get the position relative to the content origin 
             
+            let mut triso_particle = TrisoParticle::default();
+
+
 
             for c in &circles {
 
@@ -181,11 +184,24 @@ impl DecaySimApp {
             }
 
 
+
         }
+
+
 
         draw_grid_parallel(ui, origin, dx, dy, radius, 
             &full_nuclide_vector, ROWS, COLS,
             viewport);
+        let triso_picture = TrisoParticle::default();
+
+
+
+        triso_picture.put_self_with_size_and_centre(ui, 
+            origin.x, 
+            origin.y, 
+            800.0, 
+            800.0,
+        );
 
     }
 
@@ -265,3 +281,6 @@ impl DecaySimApp {
         }
     }
 }
+
+
+
