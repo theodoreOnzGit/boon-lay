@@ -1,9 +1,10 @@
-use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
-use egui::{Color32, Pos2, Rect, Ui};
+use boon_lay::Nuclide;
+use boon_lay::prelude::SingleNuclideSimulatorMC;
+use boon_lay::prelude::decay_library::DecayLibrary;
+use egui::{Color32, Rect, Ui};
 use oorandom::Rand64;
 
 use crate::decay_simulator_v1::{front_end::triso_particle::TrisoParticleUi, DecaySimApp};
-use rayon::prelude::*;
 
 impl DecaySimApp {
 
@@ -27,8 +28,8 @@ impl DecaySimApp {
         // Grid cell size (fixed, independent of the UI rectangle size)
         let dx = SIZE / COLS as f32; // 3.2 px
         let dy = SIZE / ROWS as f32; // 3.2 px
-        let radius = 0.45 * dx.min(dy); // ~1.44 px
-        let origin = rect.min; // top-left of the allocated 2500x2500 area
+        let _radius = 0.45 * dx.min(dy); // ~1.44 px
+        let _origin = rect.min; // top-left of the allocated 2500x2500 area
 
         // let me obtain the four vectors of nuclides 
         
@@ -38,7 +39,7 @@ impl DecaySimApp {
 
 
         // collect all nuclides and then display them
-        let (nuclide_sim_vec_1, decay_library): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+        let (nuclide_sim_vec_1, _decay_library): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
             self.decay_sim_thread_1_ptr.lock().unwrap().clone();
         let (nuclide_sim_vec_2,_): (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
             self.decay_sim_thread_2_ptr.lock().unwrap().clone();
@@ -57,8 +58,6 @@ impl DecaySimApp {
 
         // with this full vector, I want to sample about 20000 for plotting 
         // had chatGPT assistance
-
-        let rng: Rand64 = decay_library.random_number_generator;
 
         // from chatgpt 5
         // Fisher–Yates shuffle using oorandom
