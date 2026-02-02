@@ -234,6 +234,9 @@ impl TrisoParticleUi {
     pub fn get_diameter_after_opyc(&self) -> Length {
         self.get_diameter_after_sic() + self.opyc_thickness * 2.0
     }
+    pub fn get_diameter_after_fuel(&self) -> Length {
+        self.kernel_diameter
+    }
 
     pub fn convert_coordinate_to_pixel( 
         coordinate: (Length, Length, Length),

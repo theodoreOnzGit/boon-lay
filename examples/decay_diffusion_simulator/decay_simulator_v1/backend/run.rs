@@ -89,8 +89,10 @@ impl DecaySimApp {
 
                 // get new position based on triso particle
                 let new_triso_particle = TrisoParticleUi::default();
-                let buffer_radius = new_triso_particle.get_diameter_after_buffer() * 0.5;
-                let ipyc_radius = new_triso_particle.get_diameter_after_ipyc() * 0.5;
+                let _buffer_radius = new_triso_particle.get_diameter_after_buffer() * 0.5;
+                let _ipyc_radius = new_triso_particle.get_diameter_after_ipyc() * 0.5;
+                let fuel_radius = new_triso_particle.get_diameter_after_fuel() * 0.5;
+                let opyc_radius = new_triso_particle.get_diameter_after_opyc() * 0.5;
                 let mut rng_for_position = OoRng64::from_u64(thread_number as u64 *4);
 
                 // this pre-simulates all the decay trajectories
@@ -101,9 +103,10 @@ impl DecaySimApp {
                             user_set_nuclide, &mut decay_library
                         );
 
-                    let coordinate = Self::random_point_in_spherical_shell(
-                        buffer_radius, 
-                        ipyc_radius, 
+                    let coordinate = Self::random_point_in_triso(
+                        fuel_radius, 
+                        opyc_radius, 
+                        &mut decay_library.random_number_generator,
                         &mut rng_for_position
                     );
                     new_simulation.position = coordinate;

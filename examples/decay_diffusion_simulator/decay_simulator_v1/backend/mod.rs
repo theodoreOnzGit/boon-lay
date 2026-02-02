@@ -35,8 +35,10 @@ impl DecaySimApp {
             // I need to be individually constructing them
             let new_triso_particle = TrisoParticleUi::default();
 
-            let buffer_radius = new_triso_particle.get_diameter_after_buffer() * 0.5;
-            let ipyc_radius = new_triso_particle.get_diameter_after_ipyc() * 0.5;
+            let _buffer_radius = new_triso_particle.get_diameter_after_buffer() * 0.5;
+            let _ipyc_radius = new_triso_particle.get_diameter_after_ipyc() * 0.5;
+            let opyc_radius = new_triso_particle.get_diameter_after_opyc() * 0.5;
+            let fuel_radius = new_triso_particle.get_diameter_after_fuel() * 0.5;
 
 
             // i tried rayon here, can't really do this because the 
@@ -47,12 +49,13 @@ impl DecaySimApp {
                         nuclide, &mut decay_library
                     );
 
-                // get new simulation to random point between r1 and r2 
                 
-                let coordinate = Self::random_point_in_spherical_shell(
-                    buffer_radius, 
-                    ipyc_radius, 
-                    &mut rng_for_position
+                
+                let coordinate = Self::random_point_in_triso(
+                    fuel_radius, 
+                    opyc_radius, 
+                    &mut decay_library.random_number_generator,
+                    &mut rng_for_position,
                 );
 
                 new_simulation.position = coordinate;
@@ -93,6 +96,40 @@ impl DecaySimApp {
 
         (rho * x, rho * y, rho * z)
     }
+
+    /// this distributes the fission products in the triso 
+    pub fn random_point_in_triso<R: Rng + ?Sized>(
+        r_fuel: Length,
+        r_opyc: Length,
+        rng_for_layer: &mut Rand64,
+        rng_for_position: &mut R) -> (Length, Length, Length) {
+
+        let layer_random_number: f64 = rng_for_layer.rand_float();
+
+        // 95% of the fp should be in fuel 
+
+        // within fuel
+        if layer_random_number < 0.95 {
+
+            let coordinate = Self::random_point_in_spherical_shell(
+                Length::ZERO, 
+                r_fuel, 
+                rng_for_position
+            );
+
+            return coordinate;
+        } 
+
+        let coordinate = Self::random_point_in_spherical_shell(
+            r_fuel, 
+            r_opyc, 
+            rng_for_position
+        );
+
+        return coordinate;
+
+    }
+
 
 
     
