@@ -5,7 +5,6 @@ use uom::si::f64::{
 };
 use uom::si::energy::joule;
 use uom::si::length::meter;
-use uom::si::mass::kilogram;
 use uom::si::thermodynamic_temperature::kelvin;
 use uom::si::time::second;
 use uom::si::velocity::meter_per_second;
@@ -22,9 +21,9 @@ fn boltzmann_constant() -> Energy {
 /// v_mean = sqrt(8 k_B T / (pi m))
 fn mean_speed(medium_temperature: ThermodynamicTemperature, particle_mass: Mass) -> Velocity {
     // k_B * T has dimension of energy
-    let k_b_T: Energy = boltzmann_constant() * (medium_temperature / ThermodynamicTemperature::new::<kelvin>(1.0));
+    let k_b_t: Energy = boltzmann_constant() * (medium_temperature / ThermodynamicTemperature::new::<kelvin>(1.0));
     // specific energy (m^2/s^2)
-    let specific = (8.0 * k_b_T) / (PI * particle_mass);
+    let specific = (8.0 * k_b_t) / (PI * particle_mass);
     // sqrt to get velocity
     specific.sqrt()
 }
