@@ -4,7 +4,7 @@ use boon_lay::{lagrangian_decay_simulator::lagrangian_diffusion::single_particle
 use rand::SeedableRng;
 use uom::si::{f64::{Length, Time}, length::{angstrom, micrometer}, time::{millisecond, second}};
 
-use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
+use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, front_end::triso_particle::TrisoParticleUi, DecaySimApp};
 use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
 
 
@@ -75,14 +75,26 @@ impl DecaySimApp {
                 let user_set_nuclide: Nuclide = 
                     simulator_state_ptr.lock().unwrap().get_user_selected_nuclide();
 
+                // get new position based on triso particle
+                let new_triso_particle = TrisoParticleUi::default();
+                let buffer_radius = new_triso_particle.get_diameter_after_buffer() * 0.5;
+                let ipyc_radius = new_triso_particle.get_diameter_after_ipyc() * 0.5;
+                let mut rng_for_position = OoRng64::from_u64(thread_number as u64 *4);
+
                 // this pre-simulates all the decay trajectories
                 for simulation in simulation_vector.iter_mut() {
 
-                    let new_simulation 
+                    let mut new_simulation 
                         = SingleNuclideSimulatorMC::new_decay_chain_simulation(
                             user_set_nuclide, &mut decay_library
                         );
 
+                    let coordinate = Self::random_point_in_spherical_shell(
+                        buffer_radius, 
+                        ipyc_radius, 
+                        &mut rng_for_position
+                    );
+                    new_simulation.position = coordinate;
 
                     *simulation = new_simulation;
 
@@ -114,6 +126,8 @@ impl DecaySimApp {
                     simulator_state_ptr.lock().unwrap().reset_simulated_time();
                     simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_hl);
 
+                    
+
                     // upon restarting, we must toggle a flag to replot 
                     // the nuclides 
                     simulator_state_ptr.lock().unwrap().turn_on_change_nuclide_to_plot_button();
@@ -144,6 +158,8 @@ impl DecaySimApp {
 
                 barrier.wait();
                 // this pre-simulates all the decay trajectories
+                //
+                // change nuclide does not reset position
                 for simulation in simulation_vector.iter_mut() {
                     simulation.transmute_nuclide(user_set_nuclide, &mut decay_library);
 
