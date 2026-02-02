@@ -122,8 +122,8 @@ impl DecaySimApp {
 
 
             let content_origin_rect: Rect = ui.min_rect();
-            let left_limit = top_most_side;
-            let top_limit = left_most_side;
+            let left_limit = left_most_side;
+            let top_limit = top_most_side;
 
             let right_limit = left_limit + content_origin_rect.right();
             let bottom_limit = top_limit + content_origin_rect.bottom();
@@ -131,8 +131,8 @@ impl DecaySimApp {
 
             let triso_width = 0.8 * (viewport.bottom() - viewport.top());
 
-            let triso_centre_x = left_limit + triso_width/2.0;
-            let triso_centre_y = top_limit + triso_width/2.0;
+            let triso_centre_x = left_limit + right_limit/2.0;
+            let triso_centre_y = top_limit + bottom_limit/2.0;
 
             triso_picture.put_self_with_size_and_centre(ui, 
                 triso_centre_x, 
