@@ -1,8 +1,15 @@
 
-use boon_lay::{prelude::SingleNuclideSimulatorMC, Nuclide};
-use eframe::{egui, egui::{Color32, Pos2, Stroke, Widget}};
-use egui::{Rect, Ui};
-use uom::si::{f64::*, length::{micrometer, millimeter}, ratio::ratio};
+use boon_lay::Nuclide;
+use boon_lay::prelude::SingleNuclideSimulatorMC;
+use eframe::egui;
+use eframe::egui::Widget;
+use eframe::egui::Pos2;
+use egui::Rect;
+use egui::Ui;
+use uom::si::f64::*;
+use uom::si::ratio::ratio;
+use uom::si::length::millimeter;
+use uom::si::length::micrometer;
 
 use crate::decay_simulator_v1::DecaySimApp;
 
