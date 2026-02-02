@@ -4,15 +4,12 @@ use uom::si::f64::{
     Energy, Length, Mass, ThermodynamicTemperature, Time, Velocity,
 };
 use uom::si::energy::joule;
-use uom::si::length::meter;
 use uom::si::ratio::ratio;
 use uom::si::thermodynamic_temperature::kelvin;
-use uom::si::time::second;
-use uom::si::velocity::meter_per_second;
 
 /// Boltzmann constant k_B in SI (J/K).
 /// Define as Energy per Temperature so we can multiply by T to get Energy.
-fn boltzmann_constant() -> Energy {
+pub fn boltzmann_constant() -> Energy {
     // Represent k_B as Energy per Kelvin by taking 1 K in the denominator.
     // k_B = 1.380649e-23 J/K.
     Energy::new::<joule>(1.380_649e-23)
@@ -20,7 +17,7 @@ fn boltzmann_constant() -> Energy {
 
 /// Mean speed (Maxwell–Boltzmann) at temperature T for a particle of mass m:
 /// v_mean = sqrt(8 k_B T / (pi m))
-fn mean_speed(medium_temperature: ThermodynamicTemperature, particle_mass: Mass) -> Velocity {
+pub fn mean_speed(medium_temperature: ThermodynamicTemperature, particle_mass: Mass) -> Velocity {
     // k_B * T has dimension of energy
     let k_b_t: Energy = boltzmann_constant() * (medium_temperature / ThermodynamicTemperature::new::<kelvin>(1.0));
     // specific energy (m^2/s^2)
@@ -43,7 +40,7 @@ fn mean_speed(medium_temperature: ThermodynamicTemperature, particle_mass: Mass)
 /// In reality, there are defects, grain boundaries, dislocations etc.
 /// Therefore, we need an effective diffusion coefficient to consider 
 /// this
-fn expected_collisions(
+pub fn expected_collisions_atomic_jumps(
     medium_temperature: ThermodynamicTemperature,
     particle_mass: Mass,
     mean_free_path: Length,
@@ -62,6 +59,9 @@ fn expected_collisions(
 #[test]
 fn boltzmann_test() {
     use uom::si::mass::kilogram;
+    use uom::si::time::second;
+    use uom::si::velocity::meter_per_second;
+    use uom::si::length::meter;
     // Example: nitrogen molecule at room temperature
     // Temperature T = 300 K
     let room_temp = ThermodynamicTemperature::new::<kelvin>(300.0);
@@ -77,7 +77,7 @@ fn boltzmann_test() {
     let t = Time::new::<second>(1e-6);
 
     let v_mean = mean_speed(room_temp, m);
-    let n_expected = expected_collisions(room_temp, m, ell, t);
+    let n_expected = expected_collisions_atomic_jumps(room_temp, m, ell, t);
 
     println!("Inputs:");
     println!("  T = {:.3} K", room_temp.get::<kelvin>());
