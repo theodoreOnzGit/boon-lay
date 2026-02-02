@@ -5,6 +5,7 @@ use uom::si::f64::{
 };
 use uom::si::energy::joule;
 use uom::si::length::meter;
+use uom::si::ratio::ratio;
 use uom::si::thermodynamic_temperature::kelvin;
 use uom::si::time::second;
 use uom::si::velocity::meter_per_second;
@@ -51,7 +52,8 @@ fn expected_collisions(
     let v_mean = mean_speed(medium_temperature, particle_mass);
     // Compute in scalar form to avoid needing reciprocal-velocity quantity:
     // (t/ell) has units s/m, v_mean has m/s -> dimensionless.
-    (t.get::<second>() / mean_free_path.get::<meter>()) * v_mean.get::<meter_per_second>()
+
+    return (t/mean_free_path * v_mean).get::<ratio>();
 }
 
 
@@ -59,9 +61,10 @@ fn expected_collisions(
 /// boltzmann collision test
 #[test]
 fn boltzmann_test() {
+    use uom::si::mass::kilogram;
     // Example: nitrogen molecule at room temperature
     // Temperature T = 300 K
-    let T = ThermodynamicTemperature::new::<kelvin>(300.0);
+    let room_temp = ThermodynamicTemperature::new::<kelvin>(300.0);
 
     // Mass m: take N2 with molar mass ~28 g/mol -> per molecule m = 28e-3 kg / N_A
     // For demonstration, use m ≈ 4.65e-26 kg (approx for N2).
@@ -73,11 +76,11 @@ fn boltzmann_test() {
     // Time horizon t: 1 microsecond
     let t = Time::new::<second>(1e-6);
 
-    let v_mean = mean_speed(T, m);
-    let n_expected = expected_collisions(T, m, ell, t);
+    let v_mean = mean_speed(room_temp, m);
+    let n_expected = expected_collisions(room_temp, m, ell, t);
 
     println!("Inputs:");
-    println!("  T = {:.3} K", T.get::<kelvin>());
+    println!("  T = {:.3} K", room_temp.get::<kelvin>());
     println!("  m = {:.3e} kg", m.get::<kilogram>());
     println!("  ℓ = {:.3e} m", ell.get::<meter>());
     println!("  t = {:.3e} s", t.get::<second>());
