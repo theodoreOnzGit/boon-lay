@@ -17,10 +17,6 @@ use crate::decay_simulator_v1::DecaySimApp;
 #[derive(Clone,Copy, Debug)]
 pub struct TrisoParticleUi {
 
-    // Fraction of the smallest UI dimension that the particle’s diameter should occupy.
-    // 0.40 means the drawn diameter will be ~40% of the panel's min(width, height).
-    ui_diameter_ratio: f32,
-
 
     // fuel kernel diameter 
     kernel_diameter: Length, 
@@ -46,7 +42,6 @@ impl Default for TrisoParticleUi {
         let opyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
 
         Self {
-            ui_diameter_ratio: 0.8,   // occupy ~80% of the UI
             kernel_diameter,
             buffer_thickness,
             ipyc_thickness,
@@ -65,7 +60,7 @@ impl Widget for TrisoParticleUi {
 
         // Compute center and target radius based on the 40% diameter target.
         let min_dim = rect.width().min(rect.height());
-        let outer_radius: f32 = 0.5 * self.ui_diameter_ratio * min_dim; // radius = 0.5 * (ratio * min_dim)
+        let outer_radius: f32 = 0.5 * min_dim; // radius = 0.5 * (ratio * min_dim)
         let center: Pos2 = rect.center();
 
         // Painter for drawing.
@@ -215,7 +210,10 @@ impl TrisoParticleUi {
             let nuclide = radionuclide_sim.get_current_nuclide();
             let colour = DecaySimApp::element_color(nuclide);
 
-            let center = Pos2::new(radionuclide_center_x_pixels, radionuclide_center_y_pixels);
+            let center = Pos2::new(
+                radionuclide_center_x_pixels, 
+                radionuclide_center_y_pixels
+            );
             let radius = radionuclide_x_width_pixels;
             painter.circle_filled(center, radius, colour);
         }
