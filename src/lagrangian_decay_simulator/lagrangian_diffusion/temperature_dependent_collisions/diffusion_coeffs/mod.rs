@@ -157,8 +157,7 @@ pub fn get_q2_for_cs(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d1_for_sr(triso_layer: TrisoLayerMaterial,
-    gamma_neutron_fluence: ArealNumberDensity) -> DiffusionCoefficient{
+pub fn get_d1_for_sr(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
         TrisoLayerMaterial::Kernel => 2.2e-3,
@@ -189,6 +188,52 @@ pub fn get_q1_for_sr(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
         TrisoLayerMaterial::Kernel => 488.0,
         TrisoLayerMaterial::PyC => 197.0,
         TrisoLayerMaterial::SiC => 205.0,
+    };
+
+    return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
+
+
+}
+
+// from Jiang 2023
+// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
+// Novascone, S. R. (2023). Fission product transport in TRISO particles 
+// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
+// Idaho Falls, ID (United States).
+//
+// table on page 13 of 105
+#[inline]
+pub fn get_d2_for_sr(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
+
+    let coeff_m2_per_s: f64 = match triso_layer {
+        TrisoLayerMaterial::Kernel => 0.0,
+        TrisoLayerMaterial::PyC => 0.0,
+        TrisoLayerMaterial::SiC => {
+            1.8e6
+        },
+    };
+
+    return DiffusionCoefficient::new::<square_meter_per_second>(
+        coeff_m2_per_s
+    );
+
+
+}
+
+// from Jiang 2023
+// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
+// Novascone, S. R. (2023). Fission product transport in TRISO particles 
+// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
+// Idaho Falls, ID (United States).
+//
+// table on page 13 of 105
+#[inline]
+pub fn get_q2_for_sr(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
+
+    let coeff_kj_per_mol: f64 = match triso_layer {
+        TrisoLayerMaterial::Kernel => 0.0,
+        TrisoLayerMaterial::PyC => 0.0,
+        TrisoLayerMaterial::SiC => 791.0,
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
