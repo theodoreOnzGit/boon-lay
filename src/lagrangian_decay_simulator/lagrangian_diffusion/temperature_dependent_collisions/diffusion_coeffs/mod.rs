@@ -290,11 +290,58 @@ pub fn get_q1_for_kr(triso_layer: TrisoLayerMaterial,
 
 }
 
-fn get_s_for_d_in_krypton(){
+// from Jiang 2023
+// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
+// Novascone, S. R. (2023). Fission product transport in TRISO particles 
+// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
+// Idaho Falls, ID (United States).
+//
+// table on page 13 of 105
+/// see table 2.10 function 
+/// s(a,b,c)
+/// s(a, b, c) gives a if temperature 
+/// is less than c (°C) and b otherwise.
+#[inline]
+fn get_s_for_d_in_krypton(
+    d_below_threshold_temperature: DiffusionCoefficient,
+    d_above_threshold_temperature: DiffusionCoefficient,
+    threshold_temperature: ThermodynamicTemperature,
+    temperature: ThermodynamicTemperature,
+) -> DiffusionCoefficient {
 
+    if temperature < threshold_temperature {
+        return d_below_threshold_temperature;
+    }
+
+    return d_above_threshold_temperature;
 }
 
 
+// from Jiang 2023
+// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
+// Novascone, S. R. (2023). Fission product transport in TRISO particles 
+// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
+// Idaho Falls, ID (United States).
+//
+// table on page 13 of 105
+/// see table 2.10 function 
+/// s(a,b,c)
+/// s(a, b, c) gives a if temperature 
+/// is less than c (°C) and b otherwise.
+#[inline]
+fn get_s_for_q_in_krypton(
+    q_below_threshold_temperature: MolarEnergy,
+    q_above_threshold_temperature: MolarEnergy,
+    threshold_temperature: ThermodynamicTemperature,
+    temperature: ThermodynamicTemperature,
+) -> MolarEnergy {
+
+    if temperature < threshold_temperature {
+        return q_below_threshold_temperature;
+    }
+
+    return q_above_threshold_temperature;
+}
 
 
 
