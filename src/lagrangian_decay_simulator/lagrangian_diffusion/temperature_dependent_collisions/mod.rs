@@ -65,7 +65,7 @@ pub fn expected_collisions_atomic_jumps(
 //
 // D = D1 exp (-Q1/RT) + D2 exp (-Q2/RT)
 pub fn diffusion_coeff_jiang(
-    triso_layer: TrisoLayerMaterial,
+    triso_layer: TrisoPebbleLayerMaterial,
     nuclide: Nuclide,
     temperature: ThermodynamicTemperature,
     ) -> Option<DiffusionCoefficient> {
@@ -91,10 +91,12 @@ use diffusion_coeffs::*;
 
 /// triso layer for diffusion
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub enum TrisoLayerMaterial {
-    Kernel,
+pub enum TrisoPebbleLayerMaterial {
+    KernelUO2,
     PyC,
     SiC,
+    MatrixGraphite,
+    StructuralGraphite,
 }
 
 

@@ -1,4 +1,4 @@
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::temperature_dependent_collisions::TrisoLayerMaterial;
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::temperature_dependent_collisions::TrisoPebbleLayerMaterial;
 use uom::si::areal_number_density::per_square_meter;
 use uom::si::f64::*;
 use uom::si::diffusion_coefficient::square_meter_per_second;
@@ -13,12 +13,14 @@ use uom::si::thermodynamic_temperature::degree_celsius;
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d1_for_ag(triso_layer: TrisoLayerMaterial,) -> DiffusionCoefficient{
+pub fn get_d1_for_ag(triso_layer: TrisoPebbleLayerMaterial,) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 6.7e-9,
-        TrisoLayerMaterial::PyC => 5.3e-9,
-        TrisoLayerMaterial::SiC => 3.6e-9,
+        TrisoPebbleLayerMaterial::KernelUO2 => 6.7e-9,
+        TrisoPebbleLayerMaterial::PyC => 5.3e-9,
+        TrisoPebbleLayerMaterial::SiC => 3.6e-9,
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -36,12 +38,14 @@ pub fn get_d1_for_ag(triso_layer: TrisoLayerMaterial,) -> DiffusionCoefficient{
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_q1_for_ag(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
+pub fn get_q1_for_ag(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 165.0,
-        TrisoLayerMaterial::PyC => 154.0,
-        TrisoLayerMaterial::SiC => 215.0,
+        TrisoPebbleLayerMaterial::KernelUO2 => 165.0,
+        TrisoPebbleLayerMaterial::PyC => 154.0,
+        TrisoPebbleLayerMaterial::SiC => 215.0,
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -57,13 +61,13 @@ pub fn get_q1_for_ag(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d1_for_cs(triso_layer: TrisoLayerMaterial,
+pub fn get_d1_for_cs(triso_layer: TrisoPebbleLayerMaterial,
     gamma_fast_neutron_fluence: ArealNumberDensity) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 5.6e-8,
-        TrisoLayerMaterial::PyC => 6.3e-8,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::KernelUO2 => 5.6e-8,
+        TrisoPebbleLayerMaterial::PyC => 6.3e-8,
+        TrisoPebbleLayerMaterial::SiC => {
             let gamma_neutron_fluence_neutrons_per_sqm = 
                 gamma_fast_neutron_fluence.get::<per_square_meter>();
 
@@ -72,6 +76,8 @@ pub fn get_d1_for_cs(triso_layer: TrisoLayerMaterial,
 
             5.5e-14 * exponential_factor
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -89,12 +95,14 @@ pub fn get_d1_for_cs(triso_layer: TrisoLayerMaterial,
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_q1_for_cs(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
+pub fn get_q1_for_cs(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 209.0,
-        TrisoLayerMaterial::PyC => 222.0,
-        TrisoLayerMaterial::SiC => 125.0,
+        TrisoPebbleLayerMaterial::KernelUO2 => 209.0,
+        TrisoPebbleLayerMaterial::PyC => 222.0,
+        TrisoPebbleLayerMaterial::SiC => 125.0,
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -111,14 +119,16 @@ pub fn get_q1_for_cs(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d2_for_cs(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
+pub fn get_d2_for_cs(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 5.2e-4,
-        TrisoLayerMaterial::PyC => 0.0,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::KernelUO2 => 5.2e-4,
+        TrisoPebbleLayerMaterial::PyC => 0.0,
+        TrisoPebbleLayerMaterial::SiC => {
             1.6e-2
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -136,12 +146,14 @@ pub fn get_d2_for_cs(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_q2_for_cs(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
+pub fn get_q2_for_cs(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 362.0,
-        TrisoLayerMaterial::PyC => 0.0,
-        TrisoLayerMaterial::SiC => 514.0,
+        TrisoPebbleLayerMaterial::KernelUO2 => 362.0,
+        TrisoPebbleLayerMaterial::PyC => 0.0,
+        TrisoPebbleLayerMaterial::SiC => 514.0,
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -158,14 +170,16 @@ pub fn get_q2_for_cs(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d1_for_sr(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
+pub fn get_d1_for_sr(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 2.2e-3,
-        TrisoLayerMaterial::PyC => 2.3e-6,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::KernelUO2 => 2.2e-3,
+        TrisoPebbleLayerMaterial::PyC => 2.3e-6,
+        TrisoPebbleLayerMaterial::SiC => {
             1.2e-9
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -183,12 +197,14 @@ pub fn get_d1_for_sr(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_q1_for_sr(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
+pub fn get_q1_for_sr(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 488.0,
-        TrisoLayerMaterial::PyC => 197.0,
-        TrisoLayerMaterial::SiC => 205.0,
+        TrisoPebbleLayerMaterial::KernelUO2 => 488.0,
+        TrisoPebbleLayerMaterial::PyC => 197.0,
+        TrisoPebbleLayerMaterial::SiC => 205.0,
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -204,14 +220,16 @@ pub fn get_q1_for_sr(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d2_for_sr(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
+pub fn get_d2_for_sr(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 0.0,
-        TrisoLayerMaterial::PyC => 0.0,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::KernelUO2 => 0.0,
+        TrisoPebbleLayerMaterial::PyC => 0.0,
+        TrisoPebbleLayerMaterial::SiC => {
             1.8e6
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -229,12 +247,14 @@ pub fn get_d2_for_sr(triso_layer: TrisoLayerMaterial) -> DiffusionCoefficient{
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_q2_for_sr(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
+pub fn get_q2_for_sr(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 0.0,
-        TrisoLayerMaterial::PyC => 0.0,
-        TrisoLayerMaterial::SiC => 791.0,
+        TrisoPebbleLayerMaterial::KernelUO2 => 0.0,
+        TrisoPebbleLayerMaterial::PyC => 0.0,
+        TrisoPebbleLayerMaterial::SiC => 791.0,
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -251,11 +271,11 @@ pub fn get_q2_for_sr(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d1_for_kr(triso_layer: TrisoLayerMaterial,
+pub fn get_d1_for_kr(triso_layer: TrisoPebbleLayerMaterial,
     temperature: ThermodynamicTemperature) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => {
+        TrisoPebbleLayerMaterial::KernelUO2 => {
 
             let (a,b,c) = (1.3e-12, 8.8e-15,700.0);
 
@@ -279,8 +299,8 @@ pub fn get_d1_for_kr(triso_layer: TrisoLayerMaterial,
                     threshold_temperature, 
                     temperature);
         },
-        TrisoLayerMaterial::PyC => 2.9e-8,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::PyC => 2.9e-8,
+        TrisoPebbleLayerMaterial::SiC => {
             let (a,b,c) = (8.6e-10, 3.7e1,1353.0);
 
             let d_below_threshold_temperature = 
@@ -303,6 +323,8 @@ pub fn get_d1_for_kr(triso_layer: TrisoLayerMaterial,
                     threshold_temperature, 
                     temperature);
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -320,11 +342,11 @@ pub fn get_d1_for_kr(triso_layer: TrisoLayerMaterial,
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_q1_for_kr(triso_layer: TrisoLayerMaterial,
+pub fn get_q1_for_kr(triso_layer: TrisoPebbleLayerMaterial,
     temperature: ThermodynamicTemperature) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => {
+        TrisoPebbleLayerMaterial::KernelUO2 => {
             let (a,b,c) = (126.0 , 54.0, 700.0);
 
             let d_below_threshold_temperature = 
@@ -347,8 +369,8 @@ pub fn get_q1_for_kr(triso_layer: TrisoLayerMaterial,
                     threshold_temperature, 
                     temperature);
         },
-        TrisoLayerMaterial::PyC => 291.0,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::PyC => 291.0,
+        TrisoPebbleLayerMaterial::SiC => {
             let (a,b,c) = (326.0, 657.0, 1353.0);
 
             let d_below_threshold_temperature = 
@@ -371,6 +393,8 @@ pub fn get_q1_for_kr(triso_layer: TrisoLayerMaterial,
                     threshold_temperature, 
                     temperature);
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -386,11 +410,11 @@ pub fn get_q1_for_kr(triso_layer: TrisoLayerMaterial,
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_d2_for_kr(triso_layer: TrisoLayerMaterial,
+pub fn get_d2_for_kr(triso_layer: TrisoPebbleLayerMaterial,
     temperature: ThermodynamicTemperature) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => {
+        TrisoPebbleLayerMaterial::KernelUO2 => {
 
             let (a,b,c) = (0.0, 6e-1, 700.0);
 
@@ -414,10 +438,12 @@ pub fn get_d2_for_kr(triso_layer: TrisoLayerMaterial,
                     threshold_temperature, 
                     temperature);
         },
-        TrisoLayerMaterial::PyC => 2e5,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::PyC => 2e5,
+        TrisoPebbleLayerMaterial::SiC => {
             0.0
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -435,11 +461,11 @@ pub fn get_d2_for_kr(triso_layer: TrisoLayerMaterial,
 //
 // table on page 13 of 105
 #[inline]
-pub fn get_q2_for_kr(triso_layer: TrisoLayerMaterial,
+pub fn get_q2_for_kr(triso_layer: TrisoPebbleLayerMaterial,
     temperature: ThermodynamicTemperature) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => {
+        TrisoPebbleLayerMaterial::KernelUO2 => {
             let (a,b,c) = (0.0, 480.0, 700.0);
 
             let d_below_threshold_temperature = 
@@ -462,10 +488,12 @@ pub fn get_q2_for_kr(triso_layer: TrisoLayerMaterial,
                     threshold_temperature, 
                     temperature);
         },
-        TrisoLayerMaterial::PyC => 923.0,
-        TrisoLayerMaterial::SiC => {
+        TrisoPebbleLayerMaterial::PyC => 923.0,
+        TrisoPebbleLayerMaterial::SiC => {
             0.0
         },
+        TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
+        TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -527,3 +555,15 @@ fn get_s_for_q_in_krypton(
 
 
 
+/// https://inldigitallibrary.inl.gov/sites/sti/sti/7245704.pdf
+///
+/// Data is obtained using GraphReader for plots from: 
+///
+///
+/// Collin, B. P. (2016). Diffusivities of Ag, Cs, Sr, and 
+/// Kr in TRISO fuel particles and graphite (No. INL/EXT-16-39548). 
+/// Idaho National Lab.(INL), Idaho Falls, ID (United States).
+///
+/// This is to ensure that values of the triso are reasonable
+#[cfg(test)]
+mod tests;
