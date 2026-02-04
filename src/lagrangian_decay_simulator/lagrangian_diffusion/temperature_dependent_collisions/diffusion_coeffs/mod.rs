@@ -385,6 +385,100 @@ pub fn get_q1_for_kr(triso_layer: TrisoLayerMaterial,
 // Idaho Falls, ID (United States).
 //
 // table on page 13 of 105
+#[inline]
+pub fn get_d2_for_kr(triso_layer: TrisoLayerMaterial,
+    temperature: ThermodynamicTemperature) -> DiffusionCoefficient{
+
+    let coeff_m2_per_s: f64 = match triso_layer {
+        TrisoLayerMaterial::Kernel => {
+
+            let (a,b,c) = (0.0, 6e-1, 700.0);
+
+            let d_below_threshold_temperature = 
+                DiffusionCoefficient::new::<square_meter_per_second>(
+                    a
+                );
+            let d_above_threshold_temperature = 
+                DiffusionCoefficient::new::<square_meter_per_second>(
+                    b
+                );
+
+            let threshold_temperature = 
+                ThermodynamicTemperature::new::<degree_celsius>(
+                    c
+                );
+
+            return get_s_for_d_in_krypton(
+                    d_below_threshold_temperature, 
+                    d_above_threshold_temperature, 
+                    threshold_temperature, 
+                    temperature);
+        },
+        TrisoLayerMaterial::PyC => 2e5,
+        TrisoLayerMaterial::SiC => {
+            0.0
+        },
+    };
+
+    return DiffusionCoefficient::new::<square_meter_per_second>(
+        coeff_m2_per_s
+    );
+
+
+}
+
+// from Jiang 2023
+// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
+// Novascone, S. R. (2023). Fission product transport in TRISO particles 
+// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
+// Idaho Falls, ID (United States).
+//
+// table on page 13 of 105
+#[inline]
+pub fn get_q2_for_kr(triso_layer: TrisoLayerMaterial,
+    temperature: ThermodynamicTemperature) -> MolarEnergy {
+
+    let coeff_kj_per_mol: f64 = match triso_layer {
+        TrisoLayerMaterial::Kernel => {
+            let (a,b,c) = (0.0, 480.0, 700.0);
+
+            let d_below_threshold_temperature = 
+                MolarEnergy::new::<kilojoule_per_mole>(
+                    a
+                );
+            let d_above_threshold_temperature = 
+                MolarEnergy::new::<kilojoule_per_mole>(
+                    b
+                );
+
+            let threshold_temperature = 
+                ThermodynamicTemperature::new::<degree_celsius>(
+                    c
+                );
+
+            return get_s_for_q_in_krypton(
+                    d_below_threshold_temperature, 
+                    d_above_threshold_temperature, 
+                    threshold_temperature, 
+                    temperature);
+        },
+        TrisoLayerMaterial::PyC => 923.0,
+        TrisoLayerMaterial::SiC => {
+            0.0
+        },
+    };
+
+    return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
+
+
+}
+// from Jiang 2023
+// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
+// Novascone, S. R. (2023). Fission product transport in TRISO particles 
+// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
+// Idaho Falls, ID (United States).
+//
+// table on page 13 of 105
 /// see table 2.10 function 
 /// s(a,b,c)
 /// s(a, b, c) gives a if temperature 
