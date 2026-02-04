@@ -3,6 +3,7 @@ use uom::si::areal_number_density::per_square_meter;
 use uom::si::f64::*;
 use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::molar_energy::kilojoule_per_mole;
+use uom::si::thermodynamic_temperature::degree_celsius;
 
 // from Jiang 2023
 // Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
@@ -57,17 +58,17 @@ pub fn get_q1_for_ag(triso_layer: TrisoLayerMaterial,) -> MolarEnergy {
 // table on page 13 of 105
 #[inline]
 pub fn get_d1_for_cs(triso_layer: TrisoLayerMaterial,
-    gamma_neutron_fluence: ArealNumberDensity) -> DiffusionCoefficient{
+    gamma_fast_neutron_fluence: ArealNumberDensity) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
         TrisoLayerMaterial::Kernel => 5.6e-8,
         TrisoLayerMaterial::PyC => 6.3e-8,
         TrisoLayerMaterial::SiC => {
             let gamma_neutron_fluence_neutrons_per_sqm = 
-                gamma_neutron_fluence.get::<per_square_meter>();
+                gamma_fast_neutron_fluence.get::<per_square_meter>();
 
             let exponential_factor = 
-                (gamma_neutron_fluence_neutrons_per_sqm * 1.1/5.0).exp();
+                (gamma_neutron_fluence_neutrons_per_sqm/1e25 * 1.1/5.0).exp();
 
             5.5e-14 * exponential_factor
         },
@@ -254,10 +255,53 @@ pub fn get_d1_for_kr(triso_layer: TrisoLayerMaterial,
     temperature: ThermodynamicTemperature) -> DiffusionCoefficient{
 
     let coeff_m2_per_s: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 0.0,
-        TrisoLayerMaterial::PyC => 0.0,
+        TrisoLayerMaterial::Kernel => {
+
+            let (a,b,c) = (1.3e-12, 8.8e-15,700.0);
+
+            let d_below_threshold_temperature = 
+                DiffusionCoefficient::new::<square_meter_per_second>(
+                    a
+                );
+            let d_above_threshold_temperature = 
+                DiffusionCoefficient::new::<square_meter_per_second>(
+                    b
+                );
+
+            let threshold_temperature = 
+                ThermodynamicTemperature::new::<degree_celsius>(
+                    c
+                );
+
+            return get_s_for_d_in_krypton(
+                    d_below_threshold_temperature, 
+                    d_above_threshold_temperature, 
+                    threshold_temperature, 
+                    temperature);
+        },
+        TrisoLayerMaterial::PyC => 2.9e-8,
         TrisoLayerMaterial::SiC => {
-            1.8e6
+            let (a,b,c) = (8.6e-10, 3.7e1,1353.0);
+
+            let d_below_threshold_temperature = 
+                DiffusionCoefficient::new::<square_meter_per_second>(
+                    a
+                );
+            let d_above_threshold_temperature = 
+                DiffusionCoefficient::new::<square_meter_per_second>(
+                    b
+                );
+
+            let threshold_temperature = 
+                ThermodynamicTemperature::new::<degree_celsius>(
+                    c
+                );
+
+            return get_s_for_d_in_krypton(
+                    d_below_threshold_temperature, 
+                    d_above_threshold_temperature, 
+                    threshold_temperature, 
+                    temperature);
         },
     };
 
@@ -280,9 +324,53 @@ pub fn get_q1_for_kr(triso_layer: TrisoLayerMaterial,
     temperature: ThermodynamicTemperature) -> MolarEnergy {
 
     let coeff_kj_per_mol: f64 = match triso_layer {
-        TrisoLayerMaterial::Kernel => 0.0,
-        TrisoLayerMaterial::PyC => 0.0,
-        TrisoLayerMaterial::SiC => 791.0,
+        TrisoLayerMaterial::Kernel => {
+            let (a,b,c) = (126.0 , 54.0, 700.0);
+
+            let d_below_threshold_temperature = 
+                MolarEnergy::new::<kilojoule_per_mole>(
+                    a
+                );
+            let d_above_threshold_temperature = 
+                MolarEnergy::new::<kilojoule_per_mole>(
+                    b
+                );
+
+            let threshold_temperature = 
+                ThermodynamicTemperature::new::<degree_celsius>(
+                    c
+                );
+
+            return get_s_for_q_in_krypton(
+                    d_below_threshold_temperature, 
+                    d_above_threshold_temperature, 
+                    threshold_temperature, 
+                    temperature);
+        },
+        TrisoLayerMaterial::PyC => 291.0,
+        TrisoLayerMaterial::SiC => {
+            let (a,b,c) = (326.0, 657.0, 1353.0);
+
+            let d_below_threshold_temperature = 
+                MolarEnergy::new::<kilojoule_per_mole>(
+                    a
+                );
+            let d_above_threshold_temperature = 
+                MolarEnergy::new::<kilojoule_per_mole>(
+                    b
+                );
+
+            let threshold_temperature = 
+                ThermodynamicTemperature::new::<degree_celsius>(
+                    c
+                );
+
+            return get_s_for_q_in_krypton(
+                    d_below_threshold_temperature, 
+                    d_above_threshold_temperature, 
+                    threshold_temperature, 
+                    temperature);
+        },
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
