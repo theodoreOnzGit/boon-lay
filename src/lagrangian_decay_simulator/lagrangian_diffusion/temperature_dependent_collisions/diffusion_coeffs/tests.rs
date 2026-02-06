@@ -223,3 +223,57 @@ fn test_diffusion_coeff_jiang_matches_tabulated_cs_in_kernel() {
         );
     }
 }
+
+#[test]
+fn test_diffusion_coeff_jiang_matches_tabulated_cs_in_buffer() {
+    // GIVEN
+    let triso_layer = TrisoPebbleLayerMaterial::Buffer;
+    let nuclide = Nuclide::Cs137;
+
+    // neutron fluence: 5.5e25 n/m^2
+    let fluence =
+        ArealNumberDensity::new::<uom::si::areal_number_density::per_square_meter>(5.5e25);
+    let gamma_neutron_fluence = Some(fluence);
+
+    // (T [K], log10(D [m^2/s])) for Cs in Buffer
+    let data: &[(f64, f64)] = &[
+        (642.6282, -7.9535),
+        (718.9103, -7.9136),
+        (781.7308, -7.9136),
+        (862.5000, -7.9136),
+        (963.4615, -7.9136),
+        (1100.3205, -7.9136),
+        (1228.2051, -7.9136),
+        (1398.7179, -7.9535),
+        (1515.3846, -7.9934),
+        (1634.2949, -7.9535),
+        (1746.4744, -7.9535),
+        (1831.7308, -7.9136),
+        (1930.4487, -7.9535),
+        (2026.9231, -7.9535),
+    ];
+
+    // THEN
+    let rtol = 0.02;
+
+    for &(t_k, log10_d) in data {
+        let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
+
+        let got = diffusion_coeff_jiang(
+            triso_layer,
+            nuclide,
+            temperature,
+            gamma_neutron_fluence,
+        )
+        .unwrap_or_else(|| panic!("Expected Some(D) at T={t_k} K, got None"));
+
+        let expected_d_m2_s = 10f64.powf(log10_d);
+        let got_d_m2_s = got.get::<uom::si::diffusion_coefficient::square_meter_per_second>();
+
+        assert_relative_eq!(
+            got_d_m2_s,
+            expected_d_m2_s,
+            max_relative = rtol,
+        );
+    }
+}
