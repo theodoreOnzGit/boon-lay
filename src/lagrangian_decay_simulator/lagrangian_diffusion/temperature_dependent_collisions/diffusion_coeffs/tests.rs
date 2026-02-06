@@ -49,6 +49,8 @@ mod tests {
             (1811.5385, -16.1262),
             (1883.3333, -15.8472),
             (1950.6410, -15.4086),
+            // note that for these values, a larger error 
+            // bound is required as the logscale gets bigger
             (2017.9487, -14.9302),
             (2087.5000, -14.6910),
         ];
@@ -57,7 +59,7 @@ mod tests {
         // Tolerance: choose something appropriate for your implementation
         // (e.g., regression fit, interpolation, or piecewise model).
         // Here we allow 2% relative error.
-        let rtol = 2e-2;
+        let rtol = 0.02;
 
         for &(t_k, log10_d) in data {
             let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
@@ -70,6 +72,7 @@ mod tests {
             )
             .unwrap_or_else(|| panic!("Expected Some(D) at T={t_k} K, got None"));
 
+            dbg!(&temperature);
             // expected D in m^2/s
             let expected_d_m2_s = 10f64.powf(log10_d);
 
@@ -79,6 +82,7 @@ mod tests {
             // - got.value
             // - f64::from(got)
             let got_d_m2_s = got.get::<uom::si::diffusion_coefficient::square_meter_per_second>();
+
 
             assert_relative_eq!(
                 got_d_m2_s,
