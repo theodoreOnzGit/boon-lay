@@ -620,3 +620,19 @@ mod cesium_tests;
 /// This is largely vibe coded
 #[cfg(test)]
 mod strontium_tests;
+
+
+/// https://inldigitallibrary.inl.gov/sites/sti/sti/7245704.pdf
+///
+/// Data is obtained using GraphReader for plots from: 
+///
+///
+/// Collin, B. P. (2016). Diffusivities of Ag, Cs, Sr, and 
+/// Kr in TRISO fuel particles and graphite (No. INL/EXT-16-39548). 
+/// Idaho National Lab.(INL), Idaho Falls, ID (United States).
+///
+/// This is to ensure that values of the triso are reasonable
+///
+/// This is largely vibe coded
+#[cfg(test)]
+mod silver_tests;
