@@ -1,27 +1,26 @@
 use std::f64::consts::PI;
 
 use fission_yields_data::prelude::Nuclide;
+use uom::ConstZero;
 use uom::si::areal_number_density::per_square_meter;
 use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::f64::*;
 use uom::si::energy::joule;
+use uom::si::heat_capacity::boltzmann_constant;
 use uom::si::molar_energy::kilojoule_per_mole;
+use uom::si::molar_heat_capacity::molar_gas_constant;
 use uom::si::ratio::ratio;
 use uom::si::thermodynamic_temperature::kelvin;
 
-/// Boltzmann constant k_B in SI (J/K).
-/// Define as Energy per Temperature so we can multiply by T to get Energy.
-pub fn boltzmann_constant() -> Energy {
-    // Represent k_B as Energy per Kelvin by taking 1 K in the denominator.
-    // k_B = 1.380649e-23 J/K.
-    Energy::new::<joule>(1.380_649e-23)
-}
 
 /// Mean speed (Maxwell–Boltzmann) at temperature T for a particle of mass m:
 /// v_mean = sqrt(8 k_B T / (pi m))
+///
+/// used uom si botlzmann constant
 pub fn mean_speed(medium_temperature: ThermodynamicTemperature, particle_mass: Mass) -> Velocity {
     // k_B * T has dimension of energy
-    let k_b_t: Energy = boltzmann_constant() * (medium_temperature / ThermodynamicTemperature::new::<kelvin>(1.0));
+    let k_b_t: Energy =  HeatCapacity::new::<boltzmann_constant>(1.0) * 
+        medium_temperature;
     // specific energy (m^2/s^2)
     let specific = (8.0 * k_b_t) / (PI * particle_mass);
     // sqrt to get velocity
@@ -74,6 +73,27 @@ pub fn diffusion_coeff_jiang(
 
     let d1: Option<DiffusionCoefficient> = match z {
         // Silver 
+        47 => {
+            let d1: DiffusionCoefficient = get_d1_for_ag(triso_layer);
+            let q1: MolarEnergy = get_q1_for_ag(triso_layer);
+            let d2: DiffusionCoefficient = DiffusionCoefficient::ZERO;
+            let q2: MolarEnergy = MolarEnergy::ZERO;
+
+            // 8.314 J/mol K
+            let r = MolarHeatCapacity::new::<molar_gas_constant>(1.0);
+
+            let rt: MolarEnergy = r * temperature;
+
+            let q1_by_rt: Ratio = q1/rt;
+            let q2_by_rt: Ratio = q2/rt;
+
+            let d = d1 * (-q1_by_rt).get::<ratio>().exp()
+                + d2 * (-q2_by_rt).get::<ratio>().exp();
+
+            return Some(d);
+
+
+        },
         _ => None
     };
 
@@ -97,6 +117,16 @@ pub enum TrisoPebbleLayerMaterial {
     SiC,
     MatrixGraphite,
     StructuralGraphite,
+    /// from CRP 6 tests within 
+    /// Hales, J. D., Jiang, W., Toptan, A., & Gamble, 
+    /// K. A. (2021). Modeling fission product 
+    /// diffusion in TRISO fuel particles with BISON. 
+    /// Journal of Nuclear Materials, 548, 152840.
+    ///
+    /// Tests 3d and 3e have cracked material, 
+    /// wherein the diffusion coefficient is 
+    /// 1e-6 m2/s
+    CrackedMaterial,
 }
 
 
