@@ -129,6 +129,55 @@ pub fn diffusion_coeff_jiang(
 
 
         },
+        // strontium 
+        38 => {
+
+            let d1: DiffusionCoefficient = get_d1_for_sr( triso_layer);
+            let q1: MolarEnergy = get_q1_for_sr(triso_layer);
+            let d2: DiffusionCoefficient = get_d2_for_sr(triso_layer);
+            let q2: MolarEnergy = get_q2_for_sr(triso_layer);
+
+            // 8.314 J/mol K
+            let r = MolarHeatCapacity::new::<molar_gas_constant>(1.0);
+
+            let rt: MolarEnergy = r * temperature;
+
+            let q1_by_rt: Ratio = q1/rt;
+            let q2_by_rt: Ratio = q2/rt;
+
+            let d = d1 * (-q1_by_rt).get::<ratio>().exp()
+                + d2 * (-q2_by_rt).get::<ratio>().exp();
+
+            Some(d)
+
+
+
+        },
+        // krypton 
+        //
+        36 => {
+
+            let d1: DiffusionCoefficient = get_d1_for_kr( triso_layer, temperature);
+            let q1: MolarEnergy = get_q1_for_kr(triso_layer, temperature);
+            let d2: DiffusionCoefficient = get_d2_for_kr(triso_layer, temperature);
+            let q2: MolarEnergy = get_q2_for_kr(triso_layer, temperature);
+
+            // 8.314 J/mol K
+            let r = MolarHeatCapacity::new::<molar_gas_constant>(1.0);
+
+            let rt: MolarEnergy = r * temperature;
+
+            let q1_by_rt: Ratio = q1/rt;
+            let q2_by_rt: Ratio = q2/rt;
+
+            let d = d1 * (-q1_by_rt).get::<ratio>().exp()
+                + d2 * (-q2_by_rt).get::<ratio>().exp();
+
+            Some(d)
+
+
+
+        },
         _ => None
     };
 

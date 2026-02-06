@@ -81,7 +81,7 @@ pub fn get_d1_for_cs(triso_layer: TrisoPebbleLayerMaterial,
                 gamma_fast_neutron_fluence.get::<per_square_meter>();
 
             let exponential_factor = 
-                (gamma_neutron_fluence_neutrons_per_sqm/1e25 * 1.1/5.0).exp();
+                (gamma_neutron_fluence_neutrons_per_sqm*1e-25 * 1.1/5.0).exp();
 
             5.5e-14 * exponential_factor
         },
