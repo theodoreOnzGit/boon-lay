@@ -277,5 +277,3 @@ fn test_diffusion_coeff_jiang_matches_tabulated_cs_in_buffer() {
         );
     }
 }
-
-

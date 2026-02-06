@@ -603,4 +603,4 @@ fn get_s_for_q_in_krypton(
 ///
 /// This is largely vibe coded
 #[cfg(test)]
-mod tests;
+mod cesium_tests;
