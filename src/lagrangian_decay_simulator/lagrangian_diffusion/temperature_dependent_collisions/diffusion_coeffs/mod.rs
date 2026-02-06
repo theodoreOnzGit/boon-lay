@@ -29,6 +29,7 @@ pub fn get_d1_for_ag(triso_layer: TrisoPebbleLayerMaterial,) -> DiffusionCoeffic
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -55,6 +56,7 @@ pub fn get_q1_for_ag(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -88,6 +90,7 @@ pub fn get_d1_for_cs(triso_layer: TrisoPebbleLayerMaterial,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -114,6 +117,7 @@ pub fn get_q1_for_cs(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -141,6 +145,7 @@ pub fn get_d2_for_cs(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoeffici
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -167,6 +172,7 @@ pub fn get_q2_for_cs(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -194,6 +200,7 @@ pub fn get_d1_for_sr(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoeffici
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -220,6 +227,7 @@ pub fn get_q1_for_sr(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -246,6 +254,7 @@ pub fn get_d2_for_sr(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoeffici
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -272,6 +281,7 @@ pub fn get_q2_for_sr(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -343,6 +353,7 @@ pub fn get_d1_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -414,6 +425,7 @@ pub fn get_q1_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -464,6 +476,7 @@ pub fn get_d2_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return DiffusionCoefficient::new::<square_meter_per_second>(
@@ -515,6 +528,7 @@ pub fn get_q2_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
         TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -586,5 +600,7 @@ fn get_s_for_q_in_krypton(
 /// Idaho National Lab.(INL), Idaho Falls, ID (United States).
 ///
 /// This is to ensure that values of the triso are reasonable
+///
+/// This is largely vibe coded
 #[cfg(test)]
 mod tests;

@@ -211,6 +211,8 @@ pub enum TrisoPebbleLayerMaterial {
     /// wherein the diffusion coefficient is 
     /// 1e-6 m2/s
     CrackedMaterial,
+    /// buffer layer 
+    Buffer,
 }
 
 

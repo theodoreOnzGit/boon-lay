@@ -158,3 +158,68 @@ fn test_diffusion_coeff_jiang_matches_tabulated_cs_in_pyc() {
         );
     }
 }
+
+#[test]
+fn test_diffusion_coeff_jiang_matches_tabulated_cs_in_kernel() {
+    // GIVEN
+    let triso_layer = TrisoPebbleLayerMaterial::KernelUO2; // <- kernel material/layer
+    let nuclide = Nuclide::Cs137;
+
+    // neutron fluence: 5.5e25 n/m^2
+    let fluence =
+        ArealNumberDensity::new::<uom::si::areal_number_density::per_square_meter>(5.5e25);
+    let gamma_neutron_fluence = Some(fluence);
+
+    // (T [K], log10(D [m^2/s])) for Cs in TRISO kernel
+    let data: &[(f64, f64)] = &[
+        (617.9487, -24.7774),
+        (642.6282, -24.2591),
+        (667.3077, -23.4618),
+        (703.2051, -22.7442),
+        (736.8590, -22.0266),
+        (777.2436, -21.2691),
+        (822.1154, -20.4718),
+        (855.7692, -19.9934),
+        (911.8590, -19.1163),
+        (974.6795, -18.5183),
+        (1012.8205, -17.8804),
+        (1091.3462, -17.1628),
+        (1145.1923, -16.6445),
+        (1221.4744, -16.0465),
+        (1295.5128, -15.5282),
+        (1380.7692, -15.1296),
+        (1466.0256, -14.6512),
+        (1551.2821, -14.1728),
+        (1629.8077, -13.7741),
+        (1703.8462, -13.4551),
+        (1766.6667, -13.1761),
+        (1831.7308, -12.9767),
+        (1901.2821, -12.6578),
+        (1977.5641, -12.3787),
+        (2053.8462, -12.1794),
+    ];
+
+    // THEN
+    let rtol = 0.02;
+
+    for &(t_k, log10_d) in data {
+        let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
+
+        let got = diffusion_coeff_jiang(
+            triso_layer,
+            nuclide,
+            temperature,
+            gamma_neutron_fluence,
+        )
+        .unwrap_or_else(|| panic!("Expected Some(D) at T={t_k} K, got None"));
+
+        let expected_d_m2_s = 10f64.powf(log10_d);
+        let got_d_m2_s = got.get::<uom::si::diffusion_coefficient::square_meter_per_second>();
+
+        assert_relative_eq!(
+            got_d_m2_s,
+            expected_d_m2_s,
+            max_relative = rtol,
+        );
+    }
+}
