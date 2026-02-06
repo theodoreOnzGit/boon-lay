@@ -55,23 +55,27 @@ pub fn expected_collisions_atomic_jumps(
 }
 
 
-// diffusion coefficient 
-// from Jiang 2023
-// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
-// Novascone, S. R. (2023). Fission product transport in TRISO particles 
-// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
-// Idaho Falls, ID (United States).
-//
-// D = D1 exp (-Q1/RT) + D2 exp (-Q2/RT)
+/// diffusion coefficient 
+/// from Jiang 2023
+/// Jiang, W., Toptan, A., Hales, J. D., Spencer, B. W., & 
+/// Novascone, S. R. (2023). Fission product transport in TRISO particles 
+/// and pebbles (No. INL/EXT-21-63549-Rev001). Idaho National Lab.(INL), 
+/// Idaho Falls, ID (United States).
+///
+/// D = D1 exp (-Q1/RT) + D2 exp (-Q2/RT)
+///
+/// Neutron fluence is also a factor, 
+/// but if there is no neutron fluence, just give the None enum
 pub fn diffusion_coeff_jiang(
     triso_layer: TrisoPebbleLayerMaterial,
     nuclide: Nuclide,
     temperature: ThermodynamicTemperature,
+    gamma_neutron_fluence: Option<ArealNumberDensity>,
     ) -> Option<DiffusionCoefficient> {
 
     let (z,_a) = nuclide.get_z_a();
 
-    let d1: Option<DiffusionCoefficient> = match z {
+    let d: Option<DiffusionCoefficient> = match z {
         // Silver 
         47 => {
             let d1: DiffusionCoefficient = get_d1_for_ag(triso_layer);
@@ -90,14 +94,45 @@ pub fn diffusion_coeff_jiang(
             let d = d1 * (-q1_by_rt).get::<ratio>().exp()
                 + d2 * (-q2_by_rt).get::<ratio>().exp();
 
-            return Some(d);
+            Some(d)
+
+
+        },
+        // cesium 
+        55 => {
+
+            // if no neutron fluence is supplied, just do zero
+            let neutron_fluence: ArealNumberDensity = match gamma_neutron_fluence {
+                Some(fluence) => fluence,
+                None => ArealNumberDensity::ZERO,
+            };
+            let d1: DiffusionCoefficient = get_d1_for_cs(
+                triso_layer, neutron_fluence
+            );
+            let q1: MolarEnergy = get_q1_for_cs(triso_layer);
+            let d2: DiffusionCoefficient = get_d2_for_cs(triso_layer);
+            let q2: MolarEnergy = get_q2_for_cs(triso_layer);
+
+            // 8.314 J/mol K
+            let r = MolarHeatCapacity::new::<molar_gas_constant>(1.0);
+
+            let rt: MolarEnergy = r * temperature;
+
+            let q1_by_rt: Ratio = q1/rt;
+            let q2_by_rt: Ratio = q2/rt;
+
+            let d = d1 * (-q1_by_rt).get::<ratio>().exp()
+                + d2 * (-q2_by_rt).get::<ratio>().exp();
+
+            Some(d)
+
 
 
         },
         _ => None
     };
 
-    todo!()
+    return d;
 
 }
 
