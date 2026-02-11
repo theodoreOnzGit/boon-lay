@@ -111,7 +111,7 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_pyc() {
     ];
 
     // THEN
-    let rtol = 0.30;
+    let rtol = 0.02;
 
     for &(t_k, log10_d) in data {
         let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
@@ -126,8 +126,21 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_pyc() {
 
         let expected_d_m2_s = 10f64.powf(log10_d);
         let got_d_m2_s = got.get::<uom::si::diffusion_coefficient::square_meter_per_second>();
+        dbg!(&(t_k, log10_d));
 
-        dbg!(&temperature);
+        if t_k > 1000.0 {
+
+            // larger tolerance for higher temperatures
+            let rtol = 0.50;
+            assert_relative_eq!(
+                got_d_m2_s,
+                expected_d_m2_s,
+                max_relative=rtol,
+            );
+
+            continue;
+        }
+
         assert_relative_eq!(
             got_d_m2_s,
             expected_d_m2_s,

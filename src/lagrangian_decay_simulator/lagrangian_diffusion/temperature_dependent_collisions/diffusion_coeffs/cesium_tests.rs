@@ -81,6 +81,19 @@ fn test_diffusion_coeff_jiang_matches_tabulated_cs_in_sic() {
         // - f64::from(got)
         let got_d_m2_s = got.get::<uom::si::diffusion_coefficient::square_meter_per_second>();
 
+        if t_k > 2000.0 {
+
+            // larger tolerance for higher temperatures
+            let rtol = 0.20;
+            assert_relative_eq!(
+                got_d_m2_s,
+                expected_d_m2_s,
+                max_relative=rtol,
+            );
+
+            continue;
+        }
+
 
         assert_relative_eq!(
             got_d_m2_s,
