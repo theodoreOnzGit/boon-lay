@@ -122,3 +122,18 @@ impl SingleParticleDiffusionSimulatorMC {
 /// implements conversion and interaction with the 
 /// SingleNuclideSimulatorMC
 pub mod interaction_with_decaying_nuclide_simulator;
+
+
+/// next challenge is how do we include geometry?
+/// There is simple constructive solid geometry,
+/// then there are more complex things like STL files
+/// 
+///
+/// I mean there can be more complex ways to do things, 
+/// but the simplest is with constructive solid geometry 
+///
+/// simplest thing is a sphere.
+///
+/// where the norm can be used to determine if a a coordinate is within 
+/// the sphere or not 
+pub mod constructive_solid_geometry;
