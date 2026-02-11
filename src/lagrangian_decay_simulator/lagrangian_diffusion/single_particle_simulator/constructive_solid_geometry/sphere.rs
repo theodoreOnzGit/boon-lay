@@ -1,10 +1,10 @@
 use uom::si::{f64::*, length::meter};
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub(crate) struct Sphere {
-    x: Length,
-    y: Length,
-    z: Length,
-    r: Length
+    pub x: Length,
+    pub y: Length,
+    pub z: Length,
+    pub r: Length
 }
 
 impl Sphere {
