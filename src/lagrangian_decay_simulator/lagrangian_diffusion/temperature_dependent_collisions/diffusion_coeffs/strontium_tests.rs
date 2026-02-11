@@ -45,10 +45,7 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_sic() {
     ];
 
     // THEN
-    //
-    // for log plots, it is hard to get diffusion coeffs to within same number 
-    // so I suppose 60% is forgivable
-    let rtol = 0.60;
+    let rtol = 0.02;
 
 
     for &(t_k, log10_d) in data {
@@ -66,6 +63,18 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_sic() {
         let got_d_m2_s = got.get::<uom::si::diffusion_coefficient::square_meter_per_second>();
 
         dbg!(&temperature);
+        if t_k > 1881.0 {
+
+            // larger tolerance for higher temperatures
+            let rtol = 0.55;
+            assert_relative_eq!(
+                got_d_m2_s,
+                expected_d_m2_s,
+                max_relative=rtol,
+            );
+
+            continue;
+        }
         assert_relative_eq!(
             got_d_m2_s,
             expected_d_m2_s,
@@ -185,7 +194,7 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_kernel() {
     //
     // I reason that experimental data can be up to 30% different
     // sometimes the log graph errors also
-    let rtol = 0.30;
+    let rtol = 0.02;
 
     for &(t_k, log10_d) in data {
         let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
@@ -202,6 +211,18 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_kernel() {
         let got_d_m2_s = got.get::<uom::si::diffusion_coefficient::square_meter_per_second>();
 
         dbg!(&temperature);
+        if t_k > 2090.0 {
+
+            // larger tolerance for higher temperatures
+            let rtol = 0.30;
+            assert_relative_eq!(
+                got_d_m2_s,
+                expected_d_m2_s,
+                max_relative=rtol,
+            );
+
+            continue;
+        }
         assert_relative_eq!(
             got_d_m2_s,
             expected_d_m2_s,
