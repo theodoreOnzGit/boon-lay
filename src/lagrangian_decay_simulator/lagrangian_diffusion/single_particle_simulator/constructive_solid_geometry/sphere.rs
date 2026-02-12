@@ -1,6 +1,6 @@
 use uom::si::{f64::*, length::meter};
 #[derive(Debug, PartialEq, Clone, Copy)]
-pub(crate) struct Sphere {
+pub struct Sphere {
     pub x: Length,
     pub y: Length,
     pub z: Length,
@@ -8,7 +8,7 @@ pub(crate) struct Sphere {
 }
 
 impl Sphere {
-    fn is_point_in_sphere(&self, point: [Length; 3]) -> bool {
+    pub fn is_point_in_sphere(&self, point: [Length; 3]) -> bool {
 
         let center_meters: [f64;3] = [
             self.x.get::<meter>(),

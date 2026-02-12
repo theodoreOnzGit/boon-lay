@@ -9,10 +9,11 @@ pub fn l2_norms_sq_3d_f64(vs: &[[f64; 3]], out: &mut [f64]) {
     }
 }
 
+#[inline]
 pub fn l2_norms_sqrt_3d_f64(vs: &[[f64;3]], out: &mut [f64]) {
 
     // first compute the square norm
-    l2_norms_sqrt_3d_f64(vs, out);
+    l2_norms_sq_3d_f64(vs, out);
 
     // then sqrt all in the vector 
     for norm_sq_ptr in out {

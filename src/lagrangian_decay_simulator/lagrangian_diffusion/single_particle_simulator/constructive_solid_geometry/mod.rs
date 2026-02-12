@@ -38,7 +38,7 @@ use uom::{si::f64::*, ConstZero};
 // it is many cocentric spheres together
 
 #[derive(Debug, PartialEq, Clone, Copy)]
-pub struct TrisoRegion {
+pub struct TrisoCell {
     fuel_region: Region,
     buffer_region: Region,
     ipyc_region: Region,
@@ -46,7 +46,8 @@ pub struct TrisoRegion {
     opyc_region: Region,
 }
 
-impl TrisoRegion {
+impl TrisoCell {
+    /// creates a new triso cell based on the radii
     pub fn new(fuel_radius: Length,
         buffer_radius: Length,
         ipyc_radius: Length,
@@ -65,7 +66,7 @@ impl TrisoRegion {
             = Region::new_sphere(center, opyc_radius);
 
         
-        return TrisoRegion {
+        return TrisoCell {
             fuel_region,
             buffer_region,
             ipyc_region,
@@ -74,6 +75,14 @@ impl TrisoRegion {
         };
 
 
+    }
+
+    /// checks the diffusion coefficient based on coordinates of the 
+    /// triso particle
+    pub fn try_get_diffusion_coefficient(
+        &self, coordinates: [Length;3]) -> Option<DiffusionCoefficient>{
+
+        todo!()
     }
 }
 
