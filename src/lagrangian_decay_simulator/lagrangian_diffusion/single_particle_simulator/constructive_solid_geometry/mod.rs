@@ -283,60 +283,99 @@ impl TrisoRegion {
             },
             TrisoRegion::Buffer => {
 
-                let fuel_sphere = triso_cell.fuel_region;
-                let (fuel_center, fuel_radius) = 
-                    fuel_sphere.try_return_center_and_radius_of_sphere()
+                let inner_sphere = triso_cell.fuel_region;
+                let (inner_center, inner_radius) = 
+                    inner_sphere.try_return_center_and_radius_of_sphere()
                     .unwrap();
 
-                let buffer_sphere = triso_cell.buffer_region;
-                let (buffer_center, buffer_radius) = 
-                    buffer_sphere.try_return_center_and_radius_of_sphere()
+                let outer_sphere = triso_cell.buffer_region;
+                let (outer_center, outer_radius) = 
+                    outer_sphere.try_return_center_and_radius_of_sphere()
                     .unwrap();
 
                 // assert both centres are the same
-                assert_eq!(fuel_center, buffer_center);
+                assert_eq!(inner_center, outer_center);
 
-                // check crossing for both fuel and buffer
-                let fuel_sphere_crossing: Option<SphereCrossing> = 
-                    sphere_first_crossing_uom(fuel_center, fuel_radius, position, velocity);
-                let buffer_sphere_crossing: Option<SphereCrossing> = 
-                    sphere_first_crossing_uom(buffer_center, buffer_radius, position, velocity);
+                // check crossing for both inner and outer
+                let inner_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(inner_center, inner_radius, position, velocity);
+                let outer_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(outer_center, outer_radius, position, velocity);
 
-                // if you are within the buffer zone, you 
-                // check if you are entering the fuel zone
-                let time_to_fuel_crossing = match fuel_sphere_crossing {
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are entering the inner sphere
+                let time_to_inner_crossing_opt: Option<Time> = match inner_sphere_crossing {
                     Some(SphereCrossing::Exit { t: _time_to_sphere_exit }) => {
+
+                        // you won't be exiting the inner sphere
+                        // if you are outside of it
+                        // this will be an error of sorts
                         return None;
                     },
                     Some(SphereCrossing::Entry { t: time_to_sphere_entry }) => {
-                        // if it's inside the fuel region,
-                        // doesn't make sense for it to enter
-                        time_to_sphere_entry
+                        // it makes sense for it to cross
+                        Some(time_to_sphere_entry)
                     },
-                    None => return None,
+                    None => None,
                 };
 
-                // if you are within the buffer zone, you 
-                // check if you are exiting the buffer sphere
-                let time_to_buffer_crossing = match buffer_sphere_crossing {
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are exiting the outer sphere
+                let time_to_outer_crossing_opt: Option<Time> = match outer_sphere_crossing {
                     Some(SphereCrossing::Exit { t: time_to_sphere_exit }) => {
-                        time_to_sphere_exit
+                        Some(time_to_sphere_exit)
                     },
                     Some(SphereCrossing::Entry { t: _ }) => {
-                        // if it's inside the buffer region,
-                        // doesn't make sense for it to enter the buffer region
+                        // if it's inside the outer region,
+                        // doesn't make sense for it to enter the outer region
                         return None;
                     },
-                    None => return None,
+                    None => None,
                 };
 
                 // check which is the shorter time, 
                 // this will be the correct time to the boundary
-                if time_to_fuel_crossing < time_to_buffer_crossing {
-                    return Some(time_to_fuel_crossing);
-                } else {
-                    return Some(time_to_buffer_crossing);
+                //
+                // first, let's deal with the fringe case both are none
+                if time_to_inner_crossing_opt == None && time_to_outer_crossing_opt == None {
+                    return None;
                 }
+
+                // now for sure, you will have an outer crossing 
+                //
+                // otherwise, there is some error
+
+                let time_to_outer_crossing: Time = match time_to_outer_crossing_opt {
+                    Some(time_to_outer_crossing) => {
+                        time_to_outer_crossing
+                    },
+                    None => {
+                        dbg!(&(triso_cell,position,velocity));
+                        panic!()
+                    },
+                };
+
+                // now let's do the time to inner crossing 
+
+                match time_to_inner_crossing_opt {
+                    Some(time_to_inner_crossing) => {
+                        if time_to_outer_crossing < time_to_inner_crossing {
+                            return Some(time_to_outer_crossing);
+                        } else {
+                            return Some(time_to_inner_crossing);
+                        }
+                    },
+                    None => {
+                        // if particle doesn't cross the inner sphere, 
+                        // just return the time to outer crossing 
+                        return Some(time_to_outer_crossing);
+
+                    },
+
+
+                }
+                
+                
 
             },
             TrisoRegion::IPyC => {
@@ -354,52 +393,320 @@ impl TrisoRegion {
                 // assert both centres are the same
                 assert_eq!(inner_center, outer_center);
 
-                // check crossing for both inner and outer sphere
+                // check crossing for both inner and outer
                 let inner_sphere_crossing: Option<SphereCrossing> = 
                     sphere_first_crossing_uom(inner_center, inner_radius, position, velocity);
                 let outer_sphere_crossing: Option<SphereCrossing> = 
                     sphere_first_crossing_uom(outer_center, outer_radius, position, velocity);
 
-                // if you are within the ipyc zone, you 
-                // check if you are entering the buffer zone
-                let time_to_inner_crossing = match inner_sphere_crossing {
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are entering the inner sphere
+                let time_to_inner_crossing_opt: Option<Time> = match inner_sphere_crossing {
                     Some(SphereCrossing::Exit { t: _time_to_sphere_exit }) => {
+
+                        // you won't be exiting the inner sphere
+                        // if you are outside of it
+                        // this will be an error of sorts
                         return None;
                     },
                     Some(SphereCrossing::Entry { t: time_to_sphere_entry }) => {
-                        // if it's inside the fuel region,
-                        // doesn't make sense for it to enter
-                        time_to_sphere_entry
+                        // it makes sense for it to cross
+                        Some(time_to_sphere_entry)
                     },
-                    None => return None,
+                    None => None,
                 };
 
-                // if you are within the ipyc zone, you 
-                // check if you are exiting the ipyc sphere
-                let time_to_outer_crossing = match outer_sphere_crossing {
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are exiting the outer sphere
+                let time_to_outer_crossing_opt: Option<Time> = match outer_sphere_crossing {
                     Some(SphereCrossing::Exit { t: time_to_sphere_exit }) => {
-                        time_to_sphere_exit
+                        Some(time_to_sphere_exit)
                     },
                     Some(SphereCrossing::Entry { t: _ }) => {
-                        // if it's inside the buffer region,
-                        // doesn't make sense for it to enter the buffer region
+                        // if it's inside the outer region,
+                        // doesn't make sense for it to enter the outer region
                         return None;
                     },
-                    None => return None,
+                    None => None,
                 };
 
                 // check which is the shorter time, 
                 // this will be the correct time to the boundary
-                if time_to_inner_crossing < time_to_outer_crossing {
-                    return Some(time_to_inner_crossing);
-                } else {
-                    return Some(time_to_outer_crossing);
+                //
+                // first, let's deal with the fringe case both are none
+                if time_to_inner_crossing_opt == None && time_to_outer_crossing_opt == None {
+                    return None;
                 }
 
+                // now for sure, you will have an outer crossing 
+                //
+                // otherwise, there is some error
+
+                let time_to_outer_crossing: Time = match time_to_outer_crossing_opt {
+                    Some(time_to_outer_crossing) => {
+                        time_to_outer_crossing
+                    },
+                    None => {
+                        dbg!(&(triso_cell,position,velocity));
+                        panic!()
+                    },
+                };
+
+                // now let's do the time to inner crossing 
+
+                match time_to_inner_crossing_opt {
+                    Some(time_to_inner_crossing) => {
+                        if time_to_outer_crossing < time_to_inner_crossing {
+                            return Some(time_to_outer_crossing);
+                        } else {
+                            return Some(time_to_inner_crossing);
+                        }
+                    },
+                    None => {
+                        // if particle doesn't cross the inner sphere, 
+                        // just return the time to outer crossing 
+                        return Some(time_to_outer_crossing);
+
+                    },
+
+
+                }
+                
+                
+
+
             },
-            TrisoRegion::SiC => todo!(),
-            TrisoRegion::OPyC => todo!(),
-            TrisoRegion::Outside => todo!(),
+            TrisoRegion::SiC => {
+
+                let inner_sphere = triso_cell.ipyc_region;
+                let (inner_center, inner_radius) = 
+                    inner_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                let outer_sphere = triso_cell.sic_region;
+                let (outer_center, outer_radius) = 
+                    outer_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                // assert both centres are the same
+                assert_eq!(inner_center, outer_center);
+
+                // check crossing for both inner and outer
+                let inner_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(inner_center, inner_radius, position, velocity);
+                let outer_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(outer_center, outer_radius, position, velocity);
+
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are entering the inner sphere
+                let time_to_inner_crossing_opt: Option<Time> = match inner_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: _time_to_sphere_exit }) => {
+
+                        // you won't be exiting the inner sphere
+                        // if you are outside of it
+                        // this will be an error of sorts
+                        return None;
+                    },
+                    Some(SphereCrossing::Entry { t: time_to_sphere_entry }) => {
+                        // it makes sense for it to cross
+                        Some(time_to_sphere_entry)
+                    },
+                    None => None,
+                };
+
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are exiting the outer sphere
+                let time_to_outer_crossing_opt: Option<Time> = match outer_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: time_to_sphere_exit }) => {
+                        Some(time_to_sphere_exit)
+                    },
+                    Some(SphereCrossing::Entry { t: _ }) => {
+                        // if it's inside the outer region,
+                        // doesn't make sense for it to enter the outer region
+                        return None;
+                    },
+                    None => None,
+                };
+
+                // check which is the shorter time, 
+                // this will be the correct time to the boundary
+                //
+                // first, let's deal with the fringe case both are none
+                if time_to_inner_crossing_opt == None && time_to_outer_crossing_opt == None {
+                    return None;
+                }
+
+                // now for sure, you will have an outer crossing 
+                //
+                // otherwise, there is some error
+
+                let time_to_outer_crossing: Time = match time_to_outer_crossing_opt {
+                    Some(time_to_outer_crossing) => {
+                        time_to_outer_crossing
+                    },
+                    None => {
+                        dbg!(&(triso_cell,position,velocity));
+                        panic!()
+                    },
+                };
+
+                // now let's do the time to inner crossing 
+
+                match time_to_inner_crossing_opt {
+                    Some(time_to_inner_crossing) => {
+                        if time_to_outer_crossing < time_to_inner_crossing {
+                            return Some(time_to_outer_crossing);
+                        } else {
+                            return Some(time_to_inner_crossing);
+                        }
+                    },
+                    None => {
+                        // if particle doesn't cross the inner sphere, 
+                        // just return the time to outer crossing 
+                        return Some(time_to_outer_crossing);
+
+                    },
+
+
+                }
+                
+                
+
+
+            },
+            TrisoRegion::OPyC => {
+
+                let inner_sphere = triso_cell.sic_region;
+                let (inner_center, inner_radius) = 
+                    inner_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                let outer_sphere = triso_cell.opyc_region;
+                let (outer_center, outer_radius) = 
+                    outer_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                // assert both centres are the same
+                assert_eq!(inner_center, outer_center);
+
+                // check crossing for both inner and outer
+                let inner_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(inner_center, inner_radius, position, velocity);
+                let outer_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(outer_center, outer_radius, position, velocity);
+
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are entering the inner sphere
+                let time_to_inner_crossing_opt: Option<Time> = match inner_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: _time_to_sphere_exit }) => {
+
+                        // you won't be exiting the inner sphere
+                        // if you are outside of it
+                        // this will be an error of sorts
+                        return None;
+                    },
+                    Some(SphereCrossing::Entry { t: time_to_sphere_entry }) => {
+                        // it makes sense for it to cross
+                        Some(time_to_sphere_entry)
+                    },
+                    None => None,
+                };
+
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are exiting the outer sphere
+                let time_to_outer_crossing_opt: Option<Time> = match outer_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: time_to_sphere_exit }) => {
+                        Some(time_to_sphere_exit)
+                    },
+                    Some(SphereCrossing::Entry { t: _ }) => {
+                        // if it's inside the outer region,
+                        // doesn't make sense for it to enter the outer region
+                        return None;
+                    },
+                    None => None,
+                };
+
+                // check which is the shorter time, 
+                // this will be the correct time to the boundary
+                //
+                // first, let's deal with the fringe case both are none
+                if time_to_inner_crossing_opt == None && time_to_outer_crossing_opt == None {
+                    return None;
+                }
+
+                // now for sure, you will have an outer crossing 
+                //
+                // otherwise, there is some error
+
+                let time_to_outer_crossing: Time = match time_to_outer_crossing_opt {
+                    Some(time_to_outer_crossing) => {
+                        time_to_outer_crossing
+                    },
+                    None => {
+                        dbg!(&(triso_cell,position,velocity));
+                        panic!()
+                    },
+                };
+
+                // now let's do the time to inner crossing 
+
+                match time_to_inner_crossing_opt {
+                    Some(time_to_inner_crossing) => {
+                        if time_to_outer_crossing < time_to_inner_crossing {
+                            return Some(time_to_outer_crossing);
+                        } else {
+                            return Some(time_to_inner_crossing);
+                        }
+                    },
+                    None => {
+                        // if particle doesn't cross the inner sphere, 
+                        // just return the time to outer crossing 
+                        return Some(time_to_outer_crossing);
+
+                    },
+
+
+                }
+                
+                
+
+
+            },
+            TrisoRegion::Outside => {
+
+                let inner_sphere = triso_cell.opyc_region;
+                let (inner_center, inner_radius) = 
+                    inner_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+
+                // check crossing for both inner and outer
+                let inner_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(inner_center, inner_radius, position, velocity);
+
+                // if you are within the region between inner and outer spheres, you 
+                // check if you are entering the inner sphere
+                let time_to_inner_crossing_opt: Option<Time> = match inner_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: _time_to_sphere_exit }) => {
+
+                        // you won't be exiting the inner sphere
+                        // if you are outside of it
+                        // this will be an error of sorts
+                        return None;
+                    },
+                    Some(SphereCrossing::Entry { t: time_to_sphere_entry }) => {
+                        // it makes sense for it to cross
+                        Some(time_to_sphere_entry)
+                    },
+                    None => None,
+                };
+
+                
+                
+
+                return time_to_inner_crossing_opt;
+
+            },
         }
 
 
@@ -413,5 +720,3 @@ impl TrisoRegion {
 
     
 }
-
-pub mod chatgpt_vibe_coded_sphere_crossing;
