@@ -43,6 +43,9 @@ impl SingleParticleDiffusionSimulatorMC {
         let no_of_collisions_f64: f64 = (collision_frequency * timestep).get::<ratio>();
         let no_of_collisions: u64 = no_of_collisions_f64 as u64;
 
+        // now thing is, when diffusion coeff is huge, then the particle 
+        // tends to skip a few cells, we need to stop that
+
         self.move_particle_gaussian_sampling(jump_distance, no_of_collisions);
 
 
