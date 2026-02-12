@@ -27,6 +27,13 @@ impl Region {
         return Region::Sphere(sphere);
 
     }
+
+    pub fn is_within_region(&self, point: [Length;3]) -> bool {
+
+        match self {
+            Region::Sphere(sphere) => sphere.is_point_in_sphere(point),
+        }
+    }
 }
 
 
@@ -53,8 +60,16 @@ impl TrisoCell {
         ipyc_radius: Length,
         sic_radius: Length,
         opyc_radius: Length) -> Self {
+        // first, need to ensure the lengths are correct
+        assert!(buffer_radius > fuel_radius);
+        assert!(ipyc_radius > buffer_radius);
+        assert!(sic_radius > ipyc_radius);
+        assert!(opyc_radius > sic_radius);
 
+        // let's have a center 
         let center = [Length::ZERO, Length::ZERO, Length::ZERO];
+
+
         let fuel_region = Region::new_sphere(center, fuel_radius);
         let buffer_region 
             = Region::new_sphere(center, buffer_radius);
@@ -64,6 +79,7 @@ impl TrisoCell {
             = Region::new_sphere(center, sic_radius);
         let opyc_region 
             = Region::new_sphere(center, opyc_radius);
+
 
         
         return TrisoCell {
@@ -82,7 +98,23 @@ impl TrisoCell {
     pub fn try_get_diffusion_coefficient(
         &self, coordinates: [Length;3]) -> Option<DiffusionCoefficient>{
 
-        todo!()
+        if self.fuel_region.is_within_region(coordinates) {
+            // obtain diffusion coeff for kernel
+        } else if self.buffer_region.is_within_region(coordinates) {
+
+        } else if self.ipyc_region.is_within_region(coordinates) {
+
+        } else if self.sic_region.is_within_region(coordinates) {
+
+        } else if self.opyc_region.is_within_region(coordinates) {
+
+        } 
+
+        // if it is not within any of these regions
+
+        return None;
+
+
     }
 }
 

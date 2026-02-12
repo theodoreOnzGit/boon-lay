@@ -28,7 +28,7 @@ pub fn get_d1_for_ag(triso_layer: TrisoPebbleLayerMaterial,) -> DiffusionCoeffic
         TrisoPebbleLayerMaterial::SiC => 3.6e-9,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 1e-6,
         TrisoPebbleLayerMaterial::Buffer => 1e-8,
     };
 
@@ -55,7 +55,7 @@ pub fn get_q1_for_ag(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::SiC => 215.0,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
@@ -89,7 +89,7 @@ pub fn get_d1_for_cs(triso_layer: TrisoPebbleLayerMaterial,
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 1e-6,
         TrisoPebbleLayerMaterial::Buffer => 1e-8,
     };
 
@@ -116,7 +116,7 @@ pub fn get_q1_for_cs(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::SiC => 125.0,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
@@ -144,7 +144,7 @@ pub fn get_d2_for_cs(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoeffici
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
@@ -171,7 +171,7 @@ pub fn get_q2_for_cs(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::SiC => 514.0,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
@@ -199,7 +199,7 @@ pub fn get_d1_for_sr(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoeffici
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 1e-6,
         TrisoPebbleLayerMaterial::Buffer => 1e-8,
     };
 
@@ -226,7 +226,7 @@ pub fn get_q1_for_sr(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::SiC => 205.0,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
@@ -253,7 +253,7 @@ pub fn get_d2_for_sr(triso_layer: TrisoPebbleLayerMaterial) -> DiffusionCoeffici
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
@@ -280,7 +280,7 @@ pub fn get_q2_for_sr(triso_layer: TrisoPebbleLayerMaterial,) -> MolarEnergy {
         TrisoPebbleLayerMaterial::SiC => 791.0,
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
@@ -352,7 +352,7 @@ pub fn get_d1_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 1e-6,
         TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
@@ -424,8 +424,8 @@ pub fn get_q1_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
-        TrisoPebbleLayerMaterial::Buffer => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
+        TrisoPebbleLayerMaterial::Buffer => 0.0,
     };
 
     return MolarEnergy::new::<kilojoule_per_mole>(coeff_kj_per_mol);
@@ -475,7 +475,7 @@ pub fn get_d2_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
@@ -527,7 +527,7 @@ pub fn get_q2_for_kr(triso_layer: TrisoPebbleLayerMaterial,
         },
         TrisoPebbleLayerMaterial::MatrixGraphite => todo!(),
         TrisoPebbleLayerMaterial::StructuralGraphite => todo!(),
-        TrisoPebbleLayerMaterial::CrackedMaterial => todo!(),
+        TrisoPebbleLayerMaterial::CrackedMaterial => 0.0,
         TrisoPebbleLayerMaterial::Buffer => todo!(),
     };
 
