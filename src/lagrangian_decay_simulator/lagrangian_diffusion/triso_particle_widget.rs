@@ -12,7 +12,7 @@ use eframe::{egui, egui::{Color32, Pos2, Stroke, Widget}};
 
 
 #[derive(Clone)]
-struct TrisoParticle {
+struct _TrisoParticle {
     // Metadata: physical diameter (not used for scaling unless you decide to map mm→px)
     diameter_mm: f32,
 
@@ -30,7 +30,7 @@ struct TrisoParticle {
     color: Color32,
 }
 
-impl Default for TrisoParticle {
+impl Default for _TrisoParticle {
     fn default() -> Self {
         Self {
             diameter_mm: 1.0,          // 1 mm (metadata)
@@ -43,7 +43,7 @@ impl Default for TrisoParticle {
 }
 
 // Implement the Widget trait so you can `ui.add(triso.clone())`
-impl Widget for TrisoParticle {
+impl Widget for _TrisoParticle {
     fn ui(self, ui: &mut egui::Ui) -> egui::Response {
         // Reserve all available space in the current UI region.
         let desired = ui.available_size();
@@ -83,11 +83,11 @@ impl Widget for TrisoParticle {
 }
 
 #[derive(Default)]
-struct App {
-    particle: TrisoParticle,
+struct _App {
+    particle: _TrisoParticle,
 }
 
-impl eframe::App for App {
+impl eframe::App for _App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default()
             .frame(egui::Frame::none().fill(Color32::from_gray(32)))

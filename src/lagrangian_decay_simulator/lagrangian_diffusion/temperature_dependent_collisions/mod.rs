@@ -2,15 +2,10 @@ use std::f64::consts::PI;
 
 use fission_yields_data::prelude::Nuclide;
 use uom::ConstZero;
-use uom::si::areal_number_density::per_square_meter;
-use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::f64::*;
-use uom::si::energy::joule;
 use uom::si::heat_capacity::boltzmann_constant;
-use uom::si::molar_energy::kilojoule_per_mole;
 use uom::si::molar_heat_capacity::molar_gas_constant;
 use uom::si::ratio::ratio;
-use uom::si::thermodynamic_temperature::kelvin;
 
 
 /// Mean speed (Maxwell–Boltzmann) at temperature T for a particle of mass m:
@@ -225,6 +220,7 @@ fn boltzmann_test() {
     use uom::si::time::second;
     use uom::si::velocity::meter_per_second;
     use uom::si::length::meter;
+    use uom::si::thermodynamic_temperature::kelvin;
     // Example: nitrogen molecule at room temperature
     // Temperature T = 300 K
     let room_temp = ThermodynamicTemperature::new::<kelvin>(300.0);
