@@ -106,10 +106,13 @@ impl TRISOSimApp {
 
         let layer_random_number: f64 = rng_for_layer.rand_float();
 
-        // 95% of the fp should be in fuel 
+        // only 1e-5 of the fuel should be in the PyC layers
+        // existing as tramp uranium
+        //
+        // so i scatter only 1e-5 of the fission products outside
 
         // within fuel
-        if layer_random_number < 0.95 {
+        if layer_random_number < 1.0 - 1e-5 {
 
             let coordinate = Self::random_point_in_spherical_shell(
                 Length::ZERO, 
