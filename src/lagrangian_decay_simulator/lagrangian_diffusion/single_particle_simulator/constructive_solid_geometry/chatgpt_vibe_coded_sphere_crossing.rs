@@ -27,21 +27,21 @@ impl SphereCrossing {
 pub fn sphere_first_crossing_uom(
     center: [Length; 3],
     radius: Length,
-    p: [Length; 3],
-    v: [Velocity; 3],
+    position: [Length; 3],
+    velocity: [Velocity; 3],
 ) -> Option<SphereCrossing> {
     // Convert to raw SI values
     let cx = center[0].get::<meter>();
     let cy = center[1].get::<meter>();
     let cz = center[2].get::<meter>();
 
-    let px = p[0].get::<meter>();
-    let py = p[1].get::<meter>();
-    let pz = p[2].get::<meter>();
+    let px = position[0].get::<meter>();
+    let py = position[1].get::<meter>();
+    let pz = position[2].get::<meter>();
 
-    let vx = v[0].get::<meter_per_second>();
-    let vy = v[1].get::<meter_per_second>();
-    let vz = v[2].get::<meter_per_second>();
+    let vx = velocity[0].get::<meter_per_second>();
+    let vy = velocity[1].get::<meter_per_second>();
+    let vz = velocity[2].get::<meter_per_second>();
 
     let r = radius.get::<meter>();
 

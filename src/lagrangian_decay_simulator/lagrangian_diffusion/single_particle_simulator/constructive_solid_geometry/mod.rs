@@ -35,6 +35,20 @@ impl Region {
             Region::Sphere(sphere) => sphere.is_point_in_sphere(point),
         }
     }
+
+    pub fn try_return_center_and_radius_of_sphere(&self) -> 
+        Option<([Length;3],Length)>{
+
+            match self {
+                Region::Sphere(sphere) => {
+                    let centre = [sphere.x, sphere.y, sphere.z];
+                    let radius = sphere.r;
+
+                    Some((centre,radius))
+                },
+
+            }
+    }
 }
 
 
@@ -42,7 +56,7 @@ pub(crate) mod sphere;
 pub(crate) use sphere::*;
 use uom::{si::{f64::*, thermodynamic_temperature::kelvin}, ConstZero};
 
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::temperature_dependent_collisions::{try_get_diffusion_coeff_jiang, TrisoPebbleLayerMaterial};
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::{single_particle_simulator::constructive_solid_geometry::chatgpt_vibe_coded_sphere_crossing::{sphere_first_crossing_uom, SphereCrossing}, temperature_dependent_collisions::{try_get_diffusion_coeff_jiang, TrisoPebbleLayerMaterial}};
 
 // for a single triso particle, 
 // it is many cocentric spheres together
@@ -231,9 +245,50 @@ impl TrisoRegion {
 
     pub fn get_time_to_sphere_boundary(
         position: [Length; 3],
-        velocity: [Length; 3],
+        velocity: [Velocity; 3],
         triso_cell: TrisoCell,
-    ){
+    ) -> Option<Time> {
+        // firstly i want to see what region i am in 
+
+        let current_region = triso_cell.get_triso_region(position);
+
+        // based on the current region, I'm going to obtain the spheres 
+
+        match current_region {
+            TrisoRegion::Fuel => {
+                // if in the fuel region
+                // get centre and radius of fuel 
+
+                let fuel_region = triso_cell.fuel_region;
+                let (center, radius) = 
+                    fuel_region.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                let sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(center, radius, position, velocity);
+
+                match sphere_crossing {
+                    Some(SphereCrossing::Exit { t }) => {
+                        return Some(t);
+                    },
+                    Some(SphereCrossing::Entry { t }) => {
+                        return Some(t);
+                    },
+                    None => return None,
+                };
+
+
+            },
+            TrisoRegion::Buffer => todo!(),
+            TrisoRegion::IPyC => todo!(),
+            TrisoRegion::SiC => todo!(),
+            TrisoRegion::OPyC => todo!(),
+            TrisoRegion::Outside => todo!(),
+        }
+
+
+
+
 
     }
 
