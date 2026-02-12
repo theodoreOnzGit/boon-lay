@@ -339,7 +339,64 @@ impl TrisoRegion {
                 }
 
             },
-            TrisoRegion::IPyC => todo!(),
+            TrisoRegion::IPyC => {
+
+                let inner_sphere = triso_cell.buffer_region;
+                let (inner_center, inner_radius) = 
+                    inner_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                let outer_sphere = triso_cell.ipyc_region;
+                let (outer_center, outer_radius) = 
+                    outer_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                // assert both centres are the same
+                assert_eq!(inner_center, outer_center);
+
+                // check crossing for both inner and outer sphere
+                let inner_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(inner_center, inner_radius, position, velocity);
+                let outer_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(outer_center, outer_radius, position, velocity);
+
+                // if you are within the ipyc zone, you 
+                // check if you are entering the buffer zone
+                let time_to_inner_crossing = match inner_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: _time_to_sphere_exit }) => {
+                        return None;
+                    },
+                    Some(SphereCrossing::Entry { t: time_to_sphere_entry }) => {
+                        // if it's inside the fuel region,
+                        // doesn't make sense for it to enter
+                        time_to_sphere_entry
+                    },
+                    None => return None,
+                };
+
+                // if you are within the ipyc zone, you 
+                // check if you are exiting the ipyc sphere
+                let time_to_outer_crossing = match outer_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: time_to_sphere_exit }) => {
+                        time_to_sphere_exit
+                    },
+                    Some(SphereCrossing::Entry { t: _ }) => {
+                        // if it's inside the buffer region,
+                        // doesn't make sense for it to enter the buffer region
+                        return None;
+                    },
+                    None => return None,
+                };
+
+                // check which is the shorter time, 
+                // this will be the correct time to the boundary
+                if time_to_inner_crossing < time_to_outer_crossing {
+                    return Some(time_to_inner_crossing);
+                } else {
+                    return Some(time_to_outer_crossing);
+                }
+
+            },
             TrisoRegion::SiC => todo!(),
             TrisoRegion::OPyC => todo!(),
             TrisoRegion::Outside => todo!(),
