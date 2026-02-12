@@ -124,6 +124,9 @@ impl SingleParticleDiffusionSimulatorMC {
 pub mod interaction_with_decaying_nuclide_simulator;
 
 
+/// implements movement within triso particle regime
+pub mod movement_within_triso_particle;
+
 /// next challenge is how do we include geometry?
 /// There is simple constructive solid geometry,
 /// then there are more complex things like STL files
