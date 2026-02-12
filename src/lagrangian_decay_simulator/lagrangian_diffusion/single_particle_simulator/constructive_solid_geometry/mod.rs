@@ -720,3 +720,6 @@ impl TrisoRegion {
 
     
 }
+/// this is a vibe coded sphere crossing code
+/// to determine time to sphere crossing
+pub mod chatgpt_vibe_coded_sphere_crossing;
