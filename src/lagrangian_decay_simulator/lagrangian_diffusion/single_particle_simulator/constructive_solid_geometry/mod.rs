@@ -259,27 +259,86 @@ impl TrisoRegion {
                 // if in the fuel region
                 // get centre and radius of fuel 
 
-                let fuel_region = triso_cell.fuel_region;
+                let fuel_sphere = triso_cell.fuel_region;
                 let (center, radius) = 
-                    fuel_region.try_return_center_and_radius_of_sphere()
+                    fuel_sphere.try_return_center_and_radius_of_sphere()
                     .unwrap();
 
                 let sphere_crossing: Option<SphereCrossing> = 
                     sphere_first_crossing_uom(center, radius, position, velocity);
 
                 match sphere_crossing {
-                    Some(SphereCrossing::Exit { t }) => {
-                        return Some(t);
+                    Some(SphereCrossing::Exit { t: time_to_sphere_exit }) => {
+                        return Some(time_to_sphere_exit);
                     },
-                    Some(SphereCrossing::Entry { t }) => {
-                        return Some(t);
+                    Some(SphereCrossing::Entry { t: _ }) => {
+                        // if it's inside the fuel region,
+                        // doesn't make sense for it to enter
+                        return None;
                     },
                     None => return None,
                 };
 
 
             },
-            TrisoRegion::Buffer => todo!(),
+            TrisoRegion::Buffer => {
+
+                let fuel_sphere = triso_cell.fuel_region;
+                let (fuel_center, fuel_radius) = 
+                    fuel_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                let buffer_sphere = triso_cell.buffer_region;
+                let (buffer_center, buffer_radius) = 
+                    buffer_sphere.try_return_center_and_radius_of_sphere()
+                    .unwrap();
+
+                // assert both centres are the same
+                assert_eq!(fuel_center, buffer_center);
+
+                // check crossing for both fuel and buffer
+                let fuel_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(fuel_center, fuel_radius, position, velocity);
+                let buffer_sphere_crossing: Option<SphereCrossing> = 
+                    sphere_first_crossing_uom(buffer_center, buffer_radius, position, velocity);
+
+                // if you are within the buffer zone, you 
+                // check if you are entering the fuel zone
+                let time_to_fuel_crossing = match fuel_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: _time_to_sphere_exit }) => {
+                        return None;
+                    },
+                    Some(SphereCrossing::Entry { t: time_to_sphere_entry }) => {
+                        // if it's inside the fuel region,
+                        // doesn't make sense for it to enter
+                        time_to_sphere_entry
+                    },
+                    None => return None,
+                };
+
+                // if you are within the buffer zone, you 
+                // check if you are exiting the buffer sphere
+                let time_to_buffer_crossing = match buffer_sphere_crossing {
+                    Some(SphereCrossing::Exit { t: time_to_sphere_exit }) => {
+                        time_to_sphere_exit
+                    },
+                    Some(SphereCrossing::Entry { t: _ }) => {
+                        // if it's inside the buffer region,
+                        // doesn't make sense for it to enter the buffer region
+                        return None;
+                    },
+                    None => return None,
+                };
+
+                // check which is the shorter time, 
+                // this will be the correct time to the boundary
+                if time_to_fuel_crossing < time_to_buffer_crossing {
+                    return Some(time_to_fuel_crossing);
+                } else {
+                    return Some(time_to_buffer_crossing);
+                }
+
+            },
             TrisoRegion::IPyC => todo!(),
             TrisoRegion::SiC => todo!(),
             TrisoRegion::OPyC => todo!(),
