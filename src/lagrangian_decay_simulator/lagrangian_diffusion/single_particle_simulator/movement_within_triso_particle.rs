@@ -41,9 +41,8 @@ impl SingleParticleDiffusionSimulatorMC {
             = diffusion_coeff * 6.0 / (jump_distance * jump_distance);
 
         let no_of_collisions_f64: f64 = (collision_frequency * timestep).get::<ratio>();
-        let no_of_collisions: u64 = no_of_collisions_f64.ceil() as u64;
+        let no_of_collisions: u64 = no_of_collisions_f64 as u64;
 
-        dbg!(&(no_of_collisions,collision_frequency));
         self.move_particle_gaussian_sampling(jump_distance, no_of_collisions);
 
 

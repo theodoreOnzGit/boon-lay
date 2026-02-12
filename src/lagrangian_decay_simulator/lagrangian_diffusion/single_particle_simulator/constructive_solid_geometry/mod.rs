@@ -94,7 +94,7 @@ impl TrisoCell {
         let opyc_region 
             = Region::new_sphere(center, opyc_radius);
 
-        let default_temperature = ThermodynamicTemperature::new::<kelvin>(600.0);
+        let default_temperature = ThermodynamicTemperature::new::<kelvin>(1800.0);
         let default_fluence = ArealNumberDensity::ZERO;
 
         
