@@ -3,6 +3,7 @@ use std::time::Duration;
 use std::thread;
 use std::sync::{Arc, Barrier, Mutex};
 
+use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoCell;
 use boon_lay::Nuclide;
 use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::prelude::decay_library::DecayLibrary;
@@ -48,6 +49,20 @@ impl TRISOSimApp {
                 &mut particle_simulator_rng
             );
 
+        let new_triso_particle_ui = TrisoParticleUi::default();
+        let fuel_radius = new_triso_particle_ui.get_diameter_after_fuel() * 0.5;
+        let buffer_radius = new_triso_particle_ui.get_diameter_after_buffer() * 0.5;
+        let ipyc_radius = new_triso_particle_ui.get_diameter_after_ipyc() * 0.5;
+        let sic_radius = new_triso_particle_ui.get_diameter_after_sic() * 0.5;
+        let opyc_radius = new_triso_particle_ui.get_diameter_after_opyc() * 0.5;
+
+        let triso_cell = TrisoCell::new(
+            fuel_radius, 
+            buffer_radius, 
+            ipyc_radius, 
+            sic_radius, 
+            opyc_radius);
+
         // this is the main loop
         loop {
 
@@ -88,11 +103,10 @@ impl TRISOSimApp {
                     simulator_state_ptr.lock().unwrap().get_user_selected_nuclide();
 
                 // get new position based on triso particle
-                let new_triso_particle = TrisoParticleUi::default();
-                let _buffer_radius = new_triso_particle.get_diameter_after_buffer() * 0.5;
-                let _ipyc_radius = new_triso_particle.get_diameter_after_ipyc() * 0.5;
-                let fuel_radius = new_triso_particle.get_diameter_after_fuel() * 0.5;
-                let opyc_radius = new_triso_particle.get_diameter_after_opyc() * 0.5;
+                let _buffer_radius = new_triso_particle_ui.get_diameter_after_buffer() * 0.5;
+                let _ipyc_radius = new_triso_particle_ui.get_diameter_after_ipyc() * 0.5;
+                let fuel_radius = new_triso_particle_ui.get_diameter_after_fuel() * 0.5;
+                let opyc_radius = new_triso_particle_ui.get_diameter_after_opyc() * 0.5;
                 let mut rng_for_position = OoRng64::from_u64(thread_number as u64 *4);
 
                 // this pre-simulates all the decay trajectories
@@ -231,21 +245,16 @@ impl TRISOSimApp {
             
             // all we are doing here is to advance_timestep
             for decay_simulation in simulation_vector.iter_mut() {
+                // advance the decay portion
                 decay_simulation.advance_timestep(timestep);
                 // then I want to move the particle 
-                let number_of_collisions_float: f64 
-                    = 1e3 * timestep.get::<second>().round();
-                let number_of_collisions: u64 = 
-                    number_of_collisions_float.round() as u64;
-                // these are placeholders
-                let mean_free_path = Length::new::<angstrom>(1.0);
+                let nuclide = decay_simulation.get_current_nuclide();
 
                 diffusion_simulator.
-                    move_single_decaying_particle_gaussian_mfp_and_no_of_collisions(
-                    decay_simulation, 
-                    mean_free_path, 
-                    number_of_collisions
-                );
+                    scatter_within_triso_particle_gaussian(
+                        triso_cell, 
+                        nuclide, 
+                        timestep);
 
             };
 
