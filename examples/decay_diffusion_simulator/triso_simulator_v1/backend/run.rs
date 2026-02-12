@@ -248,18 +248,11 @@ impl TRISOSimApp {
                 // advance the decay portion
                 decay_simulation.advance_timestep(timestep);
                 // then I want to move the particle 
-                let nuclide = decay_simulation.get_current_nuclide();
 
-
-                diffusion_simulator.position = decay_simulation.position;
-
-                diffusion_simulator.
-                    scatter_within_triso_particle_gaussian(
-                        triso_cell, 
-                        nuclide, 
-                        timestep);
-
-                decay_simulation.position = diffusion_simulator.position;
+                diffusion_simulator.move_single_decaying_particle_within_triso(
+                    decay_simulation, 
+                    triso_cell, 
+                    timestep);
 
             };
             // once the decay simulation is complete, lock the thread ptr 
@@ -365,7 +358,9 @@ impl TRISOSimApp {
             }
 
             // thread 3 is responsible for debugging  triso particles 
-            if thread_number == 3 {
+            let debug = false;
+            if thread_number == 3 && debug {
+
 
                 let (simulation_vector, _decay_library): 
                     (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 

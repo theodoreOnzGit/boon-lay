@@ -1,5 +1,6 @@
 use uom::si::f64::*;
 
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoCell;
 use crate::prelude::SingleNuclideSimulatorMC;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::SingleParticleDiffusionSimulatorMC;
 
@@ -35,6 +36,24 @@ impl SingleParticleDiffusionSimulatorMC {
         self.position = single_particle_sim.position;
 
         self.move_particle_gaussian_sampling(mean_free_path, no_of_collisions);
+
+        single_particle_sim.position = self.position;
+    }
+
+    /// moves the particle in the SingleNuclideSimulatorMC 
+    /// in a Gaussian direction
+    /// providing the mean free path and number of collisions 
+    pub fn move_single_decaying_particle_within_triso(
+        &mut self,
+        single_particle_sim: &mut SingleNuclideSimulatorMC,
+        triso_cell: TrisoCell,
+        timestep: Time,
+    ){
+
+        self.position = single_particle_sim.position;
+        let nuclide = single_particle_sim.get_current_nuclide();
+
+        self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, timestep);
 
         single_particle_sim.position = self.position;
     }
