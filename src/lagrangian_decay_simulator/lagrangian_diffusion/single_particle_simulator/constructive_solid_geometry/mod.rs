@@ -6,6 +6,7 @@
 
 
 pub mod norms;
+use fission_yields_data::prelude::Nuclide;
 pub use norms::*;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -39,7 +40,9 @@ impl Region {
 
 pub(crate) mod sphere;
 pub(crate) use sphere::*;
-use uom::{si::f64::*, ConstZero};
+use uom::{si::{f64::*, thermodynamic_temperature::kelvin}, ConstZero};
+
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::temperature_dependent_collisions::{try_get_diffusion_coeff_jiang, TrisoPebbleLayerMaterial};
 
 // for a single triso particle, 
 // it is many cocentric spheres together
@@ -51,6 +54,17 @@ pub struct TrisoCell {
     ipyc_region: Region,
     sic_region: Region,
     opyc_region: Region,
+
+    // temperatures for each region
+    fuel_region_temp: ThermodynamicTemperature,
+    buffer_region_temp: ThermodynamicTemperature,
+    ipyc_region_temp: ThermodynamicTemperature,
+    sic_region_temp: ThermodynamicTemperature,
+    opyc_region_temp: ThermodynamicTemperature,
+
+    // neutron fluence for the triso as a whole (mean free path is short,
+    // I'm just going to use one neutron fluence)
+    gamma_neutron_fluence: ArealNumberDensity,
 }
 
 impl TrisoCell {
@@ -80,6 +94,8 @@ impl TrisoCell {
         let opyc_region 
             = Region::new_sphere(center, opyc_radius);
 
+        let default_temeprature = ThermodynamicTemperature::new::<kelvin>(600.0);
+        let default_fluence = ArealNumberDensity::ZERO;
 
         
         return TrisoCell {
@@ -88,6 +104,12 @@ impl TrisoCell {
             ipyc_region,
             sic_region,
             opyc_region,
+            fuel_region_temp: default_temperature,
+            buffer_region_temp: default_temperature,
+            ipyc_region_temp: default_temperature,
+            sic_region_temp: default_temperature,
+            opyc_region_temp: default_temperature,
+            gamma_neutron_fluence: default_fluence,
         };
 
 
@@ -96,18 +118,56 @@ impl TrisoCell {
     /// checks the diffusion coefficient based on coordinates of the 
     /// triso particle
     pub fn try_get_diffusion_coefficient(
-        &self, coordinates: [Length;3]) -> Option<DiffusionCoefficient>{
+        &self, coordinates: [Length;3], 
+        nuclide: Nuclide)
+        -> Option<DiffusionCoefficient>{
 
         if self.fuel_region.is_within_region(coordinates) {
             // obtain diffusion coeff for kernel
+            let triso_layer = TrisoPebbleLayerMaterial::KernelUO2;
+            let diffusion_coeff = try_get_diffusion_coeff_jiang(
+                triso_layer, nuclide, 
+                self.fuel_region_temp, 
+                Some(self.gamma_neutron_fluence)
+            );
+            return diffusion_coeff;
+
         } else if self.buffer_region.is_within_region(coordinates) {
 
+            let triso_layer = TrisoPebbleLayerMaterial::Buffer;
+            let diffusion_coeff = try_get_diffusion_coeff_jiang(
+                triso_layer, nuclide, 
+                self.buffer_region_temp, 
+                Some(self.gamma_neutron_fluence)
+            );
+            return diffusion_coeff;
         } else if self.ipyc_region.is_within_region(coordinates) {
 
+            let triso_layer = TrisoPebbleLayerMaterial::PyC;
+            let diffusion_coeff = try_get_diffusion_coeff_jiang(
+                triso_layer, nuclide, 
+                self.ipyc_region_temp, 
+                Some(self.gamma_neutron_fluence)
+            );
+            return diffusion_coeff;
         } else if self.sic_region.is_within_region(coordinates) {
 
+            let triso_layer = TrisoPebbleLayerMaterial::SiC;
+            let diffusion_coeff = try_get_diffusion_coeff_jiang(
+                triso_layer, nuclide, 
+                self.sic_region_temp, 
+                Some(self.gamma_neutron_fluence)
+            );
+            return diffusion_coeff;
         } else if self.opyc_region.is_within_region(coordinates) {
 
+            let triso_layer = TrisoPebbleLayerMaterial::PyC;
+            let diffusion_coeff = try_get_diffusion_coeff_jiang(
+                triso_layer, nuclide, 
+                self.opyc_region_temp, 
+                Some(self.gamma_neutron_fluence)
+            );
+            return diffusion_coeff;
         } 
 
         // if it is not within any of these regions

@@ -66,7 +66,7 @@ pub fn expected_collisions_atomic_jumps(
 ///
 /// Neutron fluence is also a factor, 
 /// but if there is no neutron fluence, just give the None enum
-pub fn diffusion_coeff_jiang(
+pub fn try_get_diffusion_coeff_jiang(
     triso_layer: TrisoPebbleLayerMaterial,
     nuclide: Nuclide,
     temperature: ThermodynamicTemperature,

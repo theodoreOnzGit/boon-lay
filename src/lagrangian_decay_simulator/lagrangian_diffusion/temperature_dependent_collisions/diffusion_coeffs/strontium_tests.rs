@@ -1,4 +1,4 @@
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::temperature_dependent_collisions::{TrisoPebbleLayerMaterial, diffusion_coeff_jiang};
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::temperature_dependent_collisions::{TrisoPebbleLayerMaterial, try_get_diffusion_coeff_jiang};
 
 
 // If you already use the `approx` crate elsewhere, this is the nicest way:
@@ -51,7 +51,7 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_sic() {
     for &(t_k, log10_d) in data {
         let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
 
-        let got = diffusion_coeff_jiang(
+        let got = try_get_diffusion_coeff_jiang(
             triso_layer,
             nuclide,
             temperature,
@@ -125,7 +125,7 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_pyc() {
     for &(t_k, log10_d) in data {
         let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
 
-        let got = diffusion_coeff_jiang(
+        let got = try_get_diffusion_coeff_jiang(
             triso_layer,
             nuclide,
             temperature,
@@ -199,7 +199,7 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_kernel() {
     for &(t_k, log10_d) in data {
         let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
 
-        let got = diffusion_coeff_jiang(
+        let got = try_get_diffusion_coeff_jiang(
             triso_layer,
             nuclide,
             temperature,
@@ -272,7 +272,7 @@ fn test_diffusion_coeff_jiang_matches_tabulated_sr_in_buffer() {
     for &(t_k, log10_d) in data {
         let temperature = ThermodynamicTemperature::new::<kelvin>(t_k);
 
-        let got = diffusion_coeff_jiang(
+        let got = try_get_diffusion_coeff_jiang(
             triso_layer,
             nuclide,
             temperature,
