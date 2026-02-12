@@ -216,6 +216,14 @@ impl TrisoCell {
 
 
     }
+
+    #[inline]
+    pub fn get_time_to_sphere_boundary(&self,
+        position: [Length;3],
+        velocity: [Velocity;3],) -> Option<Time>{
+
+        TrisoRegion::get_time_to_sphere_boundary(position, velocity, *self)
+    }
 }
 
 // question is, how to do particle tracing if the length crosses boundary 
@@ -243,6 +251,7 @@ impl TrisoRegion {
     // it is more convenient to use a velocity vector 
     // to see how much time it takes to reach a boundary 
 
+    #[inline]
     pub fn get_time_to_sphere_boundary(
         position: [Length; 3],
         velocity: [Velocity; 3],

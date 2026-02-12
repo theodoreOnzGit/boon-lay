@@ -1,8 +1,8 @@
 use rand::RngCore;
-use uom::{si::{f64::*, length::meter, linear_number_density::per_meter}, ConstZero};
+use uom::{si::{f64::*, length::meter, linear_number_density::per_meter, ratio::ratio, time::second}, ConstZero};
 
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::{central_limit_theorem::{sample_dimensioned_gaussian_vector}, isotropic_scattering::{sample_free_path, sample_isotropic_direction_into_array}};
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::per_component_variance_exponential_for_3d_vector;
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::per_component_variance_exponential_for_3d_vector_u64;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
 
 #[derive(Debug,Clone,Copy,PartialEq)]
@@ -61,7 +61,7 @@ impl SingleParticleDiffusionSimulatorMC {
         no_of_collisions: u64){
 
         let per_component_variance = 
-            per_component_variance_exponential_for_3d_vector(
+            per_component_variance_exponential_for_3d_vector_u64(
                 no_of_collisions, mean_free_path);
 
         let gaussian_length_array = 
@@ -71,6 +71,18 @@ impl SingleParticleDiffusionSimulatorMC {
             );
 
         self.move_particle_using_array(gaussian_length_array);
+
+    }
+
+    pub fn get_gaussian_velocity_vector(
+        mean_free_path: Length,
+        collision_rate: Frequency) -> [Velocity;3] {
+        
+        let no_of_collisions_per_second: f64 = 
+            (collision_rate * Time::new::<second>(1.0)).get::<ratio>();
+
+        todo!()
+
 
     }
 

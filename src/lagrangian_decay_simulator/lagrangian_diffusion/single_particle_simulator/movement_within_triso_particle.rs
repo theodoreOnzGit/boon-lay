@@ -59,6 +59,8 @@ impl SingleParticleDiffusionSimulatorMC {
 
         // from this initial position, you want to sample first whether 
         // it hits a boundary, this highly depends on the TrisoRegion
+        //
+        // first, I want to see where this is going
 
         self.move_particle_gaussian_sampling(jump_distance, no_of_collisions);
 
