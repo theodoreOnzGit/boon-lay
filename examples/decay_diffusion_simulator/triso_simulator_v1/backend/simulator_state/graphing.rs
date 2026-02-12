@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
 
-use crate::decay_simulator_v1::backend::simulator_state::SimulatorState;
+use crate::triso_simulator_v1::backend::simulator_state::SimulatorState;
 
 impl SimulatorState {
 

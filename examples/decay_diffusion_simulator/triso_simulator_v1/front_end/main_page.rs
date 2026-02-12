@@ -4,9 +4,9 @@ use boon_lay::prelude::decay_library::DecayLibrary;
 use egui::{Color32, Rect, Ui};
 use oorandom::Rand64;
 
-use crate::decay_simulator_v1::{front_end::triso_particle::TrisoParticleUi, DecaySimApp};
+use crate::triso_simulator_v1::{front_end::triso_particle::TrisoParticleUi, TRISOSimApp};
 
-impl DecaySimApp {
+impl TRISOSimApp {
 
     pub fn main_page(&mut self, ui: &mut Ui) {
 

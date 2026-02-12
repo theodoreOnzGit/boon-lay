@@ -1,8 +1,8 @@
 use egui::Ui;
 
-use crate::decay_simulator_v1::DecaySimApp;
+use crate::triso_simulator_v1::TRISOSimApp;
 
-impl DecaySimApp {
+impl TRISOSimApp {
 
         pub fn citation_disclaimer_and_acknowledgements(&mut self, ui: &mut Ui){
 

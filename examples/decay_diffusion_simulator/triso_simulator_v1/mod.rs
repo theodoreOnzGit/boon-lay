@@ -8,8 +8,8 @@ use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::Nuclide;
 use rayon::prelude::*;
 
-use crate::decay_simulator_v1::backend::simulator_state::SimulatorState;
-use crate::decay_simulator_v1::front_end::Panel;
+use crate::triso_simulator_v1::backend::simulator_state::SimulatorState;
+use crate::triso_simulator_v1::front_end::Panel;
 
 pub fn decay_simulator_v1() -> eframe::Result<()> {
 
@@ -26,7 +26,7 @@ pub fn decay_simulator_v1() -> eframe::Result<()> {
             // from 
             // https://github.com/emilk/egui/tree/master/examples/images
             egui_extras::install_image_loaders(&cc.egui_ctx);
-            Ok(Box::new(DecaySimApp::new(cc)))
+            Ok(Box::new(TRISOSimApp::new(cc)))
 
     }
 
@@ -36,7 +36,7 @@ pub fn decay_simulator_v1() -> eframe::Result<()> {
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
-pub struct DecaySimApp {
+pub struct TRISOSimApp {
     // Example stuff:
     label: String,
 
@@ -85,7 +85,7 @@ pub struct DecaySimApp {
 
 }
 
-impl DecaySimApp {
+impl TRISOSimApp {
     /// Called once before the first frame.
     pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         // This is also where you can customize the look and feel of egui using
@@ -97,7 +97,7 @@ impl DecaySimApp {
         //    return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         //}
 
-        let new_decay_sim_app: DecaySimApp = Default::default();
+        let new_decay_sim_app: TRISOSimApp = Default::default();
 
         //// I'll clone the pointer and start a thread 
 
@@ -235,7 +235,7 @@ impl DecaySimApp {
     
 }
 
-impl Default for DecaySimApp {
+impl Default for TRISOSimApp {
     fn default() -> Self {
 
         let time_start = SystemTime::now();
@@ -255,7 +255,7 @@ impl Default for DecaySimApp {
             let sims: Vec<Arc<Mutex<(Vec<SingleNuclideSimulatorMC>, DecayLibrary)>>> = seeds
                 .par_iter()
                 .map(|&seed| {
-                    DecaySimApp::construct_new_single_thread_multi_particle_simulation(
+                    TRISOSimApp::construct_new_single_thread_multi_particle_simulation(
                         num_of_nuclides.try_into().unwrap(),
                         nuclide,
                         seed,
@@ -310,7 +310,7 @@ impl Default for DecaySimApp {
 
 
 
-impl eframe::App for DecaySimApp {
+impl eframe::App for TRISOSimApp {
     /// Called by the frame work to save state before shutdown.
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);

@@ -5,9 +5,9 @@ use oorandom::Rand64;
 use rand::Rng;
 use uom::{si::f64::Length, ConstZero};
 
-use crate::decay_simulator_v1::{front_end::triso_particle::TrisoParticleUi, DecaySimApp};
+use crate::triso_simulator_v1::{front_end::triso_particle::TrisoParticleUi, TRISOSimApp};
 
-impl DecaySimApp {
+impl TRISOSimApp {
 
     /// this basically constructs a simulation for a single thread to run 
     pub fn construct_new_single_thread_multi_particle_simulation(num_of_nuclides: u64,

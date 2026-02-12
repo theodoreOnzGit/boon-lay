@@ -10,9 +10,9 @@ use egui::Rect;
 use egui::Pos2;
 use egui::Painter;
 
-use crate::decay_simulator_v1::DecaySimApp;
+use crate::triso_simulator_v1::TRISOSimApp;
 
-impl DecaySimApp {
+impl TRISOSimApp {
     /// displays a periodic table of elements
     pub fn periodic_table(&mut self, ui: &mut Ui) {
 
@@ -343,7 +343,7 @@ impl Widget for ElementBox {
         let desired_size = self.size;
         let (rect, response) = ui.allocate_exact_size(desired_size, Sense::click());
 
-        let color = DecaySimApp::element_color(self.nuclide);
+        let color = TRISOSimApp::element_color(self.nuclide);
         let (z, _a) = self.nuclide.get_z_a();
         
         let rounding = Rounding::same(8.0);
@@ -361,7 +361,7 @@ impl Widget for ElementBox {
 
 
         // Choose text color for contrast.
-        let text_color = DecaySimApp::contrasting_text(color);
+        let text_color = TRISOSimApp::contrasting_text(color);
 
         // Layout constants relative to tile size.
         let padding = 6.0;
@@ -389,7 +389,7 @@ impl Widget for ElementBox {
 
         // Draw element symbol centered.
         {
-            let symbol = DecaySimApp::symbol_from_z(z);
+            let symbol = TRISOSimApp::symbol_from_z(z);
             let galley = ui.fonts(|f| {
                 f.layout_no_wrap(
                     symbol.to_string(),

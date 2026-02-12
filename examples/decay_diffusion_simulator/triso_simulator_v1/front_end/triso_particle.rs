@@ -11,7 +11,7 @@ use uom::si::ratio::ratio;
 use uom::si::length::millimeter;
 use uom::si::length::micrometer;
 
-use crate::decay_simulator_v1::DecaySimApp;
+use crate::triso_simulator_v1::TRISOSimApp;
 
 
 #[derive(Clone,Copy, Debug)]
@@ -96,11 +96,11 @@ impl Widget for TrisoParticleUi {
         let sic_nuclide = Nuclide::Si28;
         let opyc_nuclide = Nuclide::C12;
 
-        let fuel_kernel_colour = DecaySimApp::element_color(fuel_kernel_nuclide);
-        let buffer_colour = DecaySimApp::element_color(buffer_nuclide);
-        let ipyc_colour = DecaySimApp::element_color(ipyc_nuclide);
-        let sic_colour = DecaySimApp::element_color(sic_nuclide);
-        let opyc_colour = DecaySimApp::element_color(opyc_nuclide);
+        let fuel_kernel_colour = TRISOSimApp::element_color(fuel_kernel_nuclide);
+        let buffer_colour = TRISOSimApp::element_color(buffer_nuclide);
+        let ipyc_colour = TRISOSimApp::element_color(ipyc_nuclide);
+        let sic_colour = TRISOSimApp::element_color(sic_nuclide);
+        let opyc_colour = TRISOSimApp::element_color(opyc_nuclide);
 
         // painter response is important!
         //
@@ -208,7 +208,7 @@ impl TrisoParticleUi {
 
             // now let's obtain the nuclide 
             let nuclide = radionuclide_sim.get_current_nuclide();
-            let colour = DecaySimApp::element_color(nuclide);
+            let colour = TRISOSimApp::element_color(nuclide);
 
             let center = Pos2::new(
                 radionuclide_center_x_pixels, 

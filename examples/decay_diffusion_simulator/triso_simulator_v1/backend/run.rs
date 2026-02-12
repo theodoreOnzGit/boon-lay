@@ -14,13 +14,13 @@ use uom::si::f64::Time;
 use uom::si::time::millisecond;
 use uom::si::length::angstrom;
 
-use crate::decay_simulator_v1::DecaySimApp;
-use crate::decay_simulator_v1::front_end::triso_particle::TrisoParticleUi;
-use crate::decay_simulator_v1::backend::simulator_state::SimulatorState;
+use crate::triso_simulator_v1::TRISOSimApp;
+use crate::triso_simulator_v1::front_end::triso_particle::TrisoParticleUi;
+use crate::triso_simulator_v1::backend::simulator_state::SimulatorState;
 use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
 
 
-impl DecaySimApp {
+impl TRISOSimApp {
 
     /// at each simulation, the simulator will run in the background 
     ///
@@ -342,7 +342,7 @@ impl DecaySimApp {
                 }
 
                 let nuclide_fraction_vector: Vec<(Nuclide, f64)> = 
-                    DecaySimApp::fractions_vec_map(&nuclide_vector);
+                    TRISOSimApp::fractions_vec_map(&nuclide_vector);
 
                 simulator_state_ptr.lock().unwrap().set_nuclide_fraction_vector(
                     nuclide_fraction_vector);

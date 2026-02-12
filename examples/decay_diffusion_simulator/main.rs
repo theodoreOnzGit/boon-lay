@@ -7,7 +7,7 @@
 fn main() {
 
     println!("Starting Boon Lay Diffusion and Decay Simulator...");
-    decay_simulator_v1::decay_simulator_v1().unwrap();
+    triso_simulator_v1::decay_simulator_v1().unwrap();
 }
 
-pub mod decay_simulator_v1;
+pub mod triso_simulator_v1;

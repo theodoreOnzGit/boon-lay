@@ -3,10 +3,10 @@ use boon_lay::Nuclide;
 use egui::Ui;
 use uom::si::{f64::Time, ratio::ratio, time::{day, millisecond, second, year}};
 
-use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
+use crate::triso_simulator_v1::{backend::simulator_state::SimulatorState, TRISOSimApp};
 
 
-impl DecaySimApp {
+impl TRISOSimApp {
 
     pub fn side_panel(&mut self, ui: &mut Ui){
 

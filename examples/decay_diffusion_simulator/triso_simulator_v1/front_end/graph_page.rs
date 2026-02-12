@@ -3,9 +3,9 @@ use egui::Ui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
 use uom::si::{f64::Time, time::{nanosecond, second}};
 
-use crate::decay_simulator_v1::{backend::simulator_state::SimulatorState, DecaySimApp};
+use crate::triso_simulator_v1::{backend::simulator_state::SimulatorState, TRISOSimApp};
 
-impl DecaySimApp {
+impl TRISOSimApp {
 
     pub fn graph_page(&self, ui: &mut Ui){
 
