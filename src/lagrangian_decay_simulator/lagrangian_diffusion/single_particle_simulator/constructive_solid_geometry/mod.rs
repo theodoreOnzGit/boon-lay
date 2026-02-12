@@ -67,6 +67,7 @@ pub struct TrisoCell {
     gamma_neutron_fluence: ArealNumberDensity,
 }
 
+
 impl TrisoCell {
     /// creates a new triso cell based on the radii
     pub fn new(fuel_radius: Length,
@@ -113,6 +114,31 @@ impl TrisoCell {
         };
 
 
+    }
+
+    /// checks which region the particle is in 
+    pub fn get_triso_region(&self, coordinates: [Length;3]) -> TrisoRegion {
+
+        if self.fuel_region.is_within_region(coordinates) {
+            return TrisoRegion::Fuel;
+
+        } else if self.buffer_region.is_within_region(coordinates) {
+
+            return TrisoRegion::Buffer;
+        } else if self.ipyc_region.is_within_region(coordinates) {
+
+            return TrisoRegion::IPyC;
+        } else if self.sic_region.is_within_region(coordinates) {
+
+            return TrisoRegion::SiC;
+        } else if self.opyc_region.is_within_region(coordinates) {
+
+            return TrisoRegion::OPyC;
+        } 
+
+        // if it is not within any of these regions
+
+        return TrisoRegion::Outside;
     }
 
     /// checks the diffusion coefficient based on coordinates of the 
@@ -181,3 +207,40 @@ impl TrisoCell {
 // question is, how to do particle tracing if the length crosses boundary 
 // of the sphere?
 
+
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum TrisoRegion {
+    Fuel,
+    Buffer,
+    IPyC,
+    SiC,
+    OPyC,
+    Outside
+}
+
+impl TrisoRegion {
+
+    // suppose a particle was inside the fuel 
+    //
+    // how would it determine the length to the boundary?
+    // I would need a unit vector, or simply a displacement or velocity vector 
+    //
+    // it is more convenient to use a velocity vector 
+    // to see how much time it takes to reach a boundary 
+
+    pub fn get_time_to_sphere_boundary(
+        position: [Length; 3],
+        velocity: [Length; 3],
+        triso_cell: TrisoCell,
+    ){
+
+    }
+
+    
+
+
+    
+}
+
+pub mod chatgpt_vibe_coded_sphere_crossing;

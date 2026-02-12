@@ -1,3 +1,4 @@
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoRegion;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::{constructive_solid_geometry::TrisoCell, SingleParticleDiffusionSimulatorMC};
 use crate::prelude::SingleNuclideSimulatorMC;
 use fission_yields_data::prelude::Nuclide;
@@ -19,10 +20,10 @@ impl SingleParticleDiffusionSimulatorMC {
 
         // first find the diffusion coeff 
         let (x,y,z) = self.position;
-        let pos_array: [Length;3] = [x,y,z];
+        let initial_pos_array: [Length;3] = [x,y,z];
 
         let diffusion_coeff_option = 
-            triso_cell.try_get_diffusion_coefficient(pos_array, nuclide);
+            triso_cell.try_get_diffusion_coefficient(initial_pos_array, nuclide);
 
         let diffusion_coeff: DiffusionCoefficient = match diffusion_coeff_option {
             Some(coeff) => coeff,
@@ -46,8 +47,23 @@ impl SingleParticleDiffusionSimulatorMC {
 
         // now thing is, when diffusion coeff is huge, then the particle 
         // tends to skip a few cells, we need to stop that
+        //
+        //
+        // this needs to be broken down into a few steps.
+
+        // first see if the final and initial triso region is the same
+        // or rather, if it did cross regions
+
+        let initial_triso_region: TrisoRegion = 
+            triso_cell.get_triso_region(initial_pos_array);
+
+        // from this initial position, you want to sample first whether 
+        // it hits a boundary, this highly depends on the TrisoRegion
 
         self.move_particle_gaussian_sampling(jump_distance, no_of_collisions);
+
+
+
 
 
     }
@@ -92,8 +108,6 @@ impl SingleParticleDiffusionSimulatorMC {
         let no_of_collisions_f64: f64 = (collision_frequency * timestep).get::<ratio>();
         let no_of_collisions: u64 = no_of_collisions_f64 as u64;
 
-        // now thing is, when diffusion coeff is huge, then the particle 
-        // tends to skip a few cells, we need to stop that
 
         self.move_particle_gaussian_sampling(jump_distance, no_of_collisions);
 
