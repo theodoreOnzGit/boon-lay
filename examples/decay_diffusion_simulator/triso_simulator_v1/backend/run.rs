@@ -250,14 +250,18 @@ impl TRISOSimApp {
                 // then I want to move the particle 
                 let nuclide = decay_simulation.get_current_nuclide();
 
+
+                diffusion_simulator.position = decay_simulation.position;
+
                 diffusion_simulator.
                     scatter_within_triso_particle_gaussian(
                         triso_cell, 
                         nuclide, 
                         timestep);
 
-            };
+                decay_simulation.position = diffusion_simulator.position;
 
+            };
             // once the decay simulation is complete, lock the thread ptr 
             // and return the simulation vector
             *thread_ptr.lock().unwrap() = (simulation_vector, decay_library);
