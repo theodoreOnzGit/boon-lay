@@ -7,6 +7,7 @@ use uom::si::f64::*;
 /// General case: sigma2 = n * E[S^2] / 3.
 /// For exponential step lengths with mean lambda, E[S^2] = 2 lambda^2 ⇒ sigma2 = n * 2 lambda^2 / 3.
 ///
+#[inline]
 pub fn per_component_variance_from_second_moment_u64(
     no_of_collisions: u64, e_s2: Area
 ) -> Area {
@@ -26,6 +27,29 @@ pub fn per_component_variance_exponential_for_3d_vector_u64(
     per_component_variance_from_second_moment_u64(no_of_collisions, e_s2)
 }
 
+/// Compute per-component variance sigma2 for the Gaussian displacement after n isotropic steps.
+/// General case: sigma2 = n * E[S^2] / 3.
+/// For exponential step lengths with mean lambda, E[S^2] = 2 lambda^2 ⇒ sigma2 = n * 2 lambda^2 / 3.
+///
+#[inline]
+pub fn per_component_variance_from_second_moment(
+    no_of_collisions: f64, e_s2: Area
+) -> Area {
+    (no_of_collisions) * e_s2 / 3.0
+}
+
+/// this obtains the variance given n random collisions 
+/// and a mean free path length
+///
+/// denoted as lambda
+///
+/// this is meant for 3d vector
+#[inline]
+pub fn per_component_variance_exponential_for_3d_vector(
+    no_of_collisions: f64, mean_free_path: Length) -> Area {
+    let e_s2: Area = 2.0 * mean_free_path * mean_free_path;
+    per_component_variance_from_second_moment(no_of_collisions, e_s2)
+}
 
 
 

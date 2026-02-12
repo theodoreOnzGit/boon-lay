@@ -1,7 +1,7 @@
 use rand::RngCore;
 use uom::{si::{f64::*, length::meter, linear_number_density::per_meter, ratio::ratio, time::second}, ConstZero};
 
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::{central_limit_theorem::{sample_dimensioned_gaussian_vector}, isotropic_scattering::{sample_free_path, sample_isotropic_direction_into_array}};
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::{central_limit_theorem::{per_component_variance_exponential_for_3d_vector, sample_dimensioned_gaussian_vector}, isotropic_scattering::{sample_free_path, sample_isotropic_direction_into_array}};
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::per_component_variance_exponential_for_3d_vector_u64;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
 
@@ -74,14 +74,37 @@ impl SingleParticleDiffusionSimulatorMC {
 
     }
 
+    #[inline]
     pub fn get_gaussian_velocity_vector(
+        &mut self,
         mean_free_path: Length,
         collision_rate: Frequency) -> [Velocity;3] {
         
+        let unit_timestep = Time::new::<second>(1.0);
         let no_of_collisions_per_second: f64 = 
-            (collision_rate * Time::new::<second>(1.0)).get::<ratio>();
+            (collision_rate * unit_timestep).get::<ratio>();
 
-        todo!()
+        let per_component_variance = 
+            per_component_variance_exponential_for_3d_vector(
+                no_of_collisions_per_second, mean_free_path);
+
+        // this is how far you travel in 1s
+        let gaussian_length_array = 
+            sample_dimensioned_gaussian_vector(
+                &mut self.rng, 
+                per_component_variance,
+            );
+
+
+        // I get back the velocity
+        let gaussian_velocity_array = 
+            [
+            gaussian_length_array[0]/unit_timestep,
+            gaussian_length_array[1]/unit_timestep,
+            gaussian_length_array[2]/unit_timestep,
+            ];
+
+        return gaussian_velocity_array;
 
 
     }

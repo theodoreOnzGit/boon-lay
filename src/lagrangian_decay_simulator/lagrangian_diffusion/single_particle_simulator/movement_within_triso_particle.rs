@@ -6,6 +6,8 @@ use uom::si::f64::*;
 use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::length::angstrom;
 use uom::si::ratio::ratio;
+use uom::si::time::millisecond;
+use uom::ConstZero;
 
 impl SingleParticleDiffusionSimulatorMC {
 
@@ -42,30 +44,66 @@ impl SingleParticleDiffusionSimulatorMC {
         let collision_frequency: Frequency 
             = diffusion_coeff * 6.0 / (jump_distance * jump_distance);
 
-        let no_of_collisions_f64: f64 = (collision_frequency * timestep).get::<ratio>();
-        let no_of_collisions: u64 = no_of_collisions_f64 as u64;
+        let mut remaining_timestep = timestep;
 
-        // now thing is, when diffusion coeff is huge, then the particle 
-        // tends to skip a few cells, we need to stop that
-        //
-        //
-        // this needs to be broken down into a few steps.
+        while remaining_timestep > Time::ZERO {
 
-        // first see if the final and initial triso region is the same
-        // or rather, if it did cross regions
+            // let's get the velocity vector
+            let velocity = self.get_gaussian_velocity_vector(
+                jump_distance, 
+                collision_frequency
+            );
 
-        let initial_triso_region: TrisoRegion = 
-            triso_cell.get_triso_region(initial_pos_array);
+            let position = self.position;
 
-        // from this initial position, you want to sample first whether 
-        // it hits a boundary, this highly depends on the TrisoRegion
-        //
-        // first, I want to see where this is going
+            let time_opt: Option<Time> = triso_cell.get_time_to_sphere_boundary(
+                position.into(), 
+                velocity
+            );
 
-        self.move_particle_gaussian_sampling(jump_distance, no_of_collisions);
+            let time_to_next_boundary = match time_opt {
+                Some(time) => time,
+                None => {
+                    // if no time to next boundary, just 
+                    // use the naive version of the code
+                    return self.scatter_within_triso_particle_gaussian_simple(
+                        triso_cell, 
+                        nuclide, 
+                        remaining_timestep);
+                },
+            };
+
+            if time_to_next_boundary > remaining_timestep {
+
+                // if time to next boundary is bigger than remaining timestep,
+                // scatter using remaining timestep
+                // break out of the loop
+
+                break;
+
+            };
+
+            // if we get time_to_next_boundary, then use the simple scattering
+            //
+            self.scatter_within_triso_particle_gaussian_simple(
+                triso_cell, 
+                nuclide, 
+                time_to_next_boundary
+            );
 
 
 
+
+
+            remaining_timestep -= time_to_next_boundary;
+        };
+
+
+        return self.scatter_within_triso_particle_gaussian_simple(
+            triso_cell, 
+            nuclide, 
+            remaining_timestep
+        );
 
 
     }
