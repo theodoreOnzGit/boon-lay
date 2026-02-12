@@ -363,6 +363,25 @@ impl TRISOSimApp {
 
 
             }
+
+            // thread 3 is responsible for debugging  triso particles 
+            if thread_number == 3 {
+
+                let (simulation_vector, _decay_library): 
+                    (Vec<SingleNuclideSimulatorMC>, DecayLibrary) = 
+                     thread_ptr.lock().unwrap().clone();
+
+                let decay_sim = simulation_vector[0].clone();
+
+                let pos = decay_sim.position;
+                let elapsed_time_seconds = 
+                    (loop_time.elapsed().unwrap().as_secs_f64() * 100.0).round()/100.0;
+                let elapsed_time = Time::new::<second>(elapsed_time_seconds);
+                let nuclide = decay_sim.get_current_nuclide();
+
+                dbg!(&(elapsed_time,nuclide,pos));
+
+            }
             barrier.wait();
 
 
