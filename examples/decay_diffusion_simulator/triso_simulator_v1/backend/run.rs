@@ -130,7 +130,7 @@ impl TRISOSimApp {
 
                 // set timestep to 7s because diffusion is very fast
                 let timestep_based_on_diffusion: Time = 
-                    Time::new::<second>(7.0);
+                    Time::new::<second>(70.0);
 
 
                 // make sure all threads in sync 
@@ -192,7 +192,7 @@ impl TRISOSimApp {
 
                 // set timestep to 0.1% half life 
                 let timestep_based_on_diffusion: Time = 
-                    Time::new::<second>(7.0);
+                    Time::new::<second>(70.0);
                 // make sure all threads in sync 
                 barrier.wait();
 
