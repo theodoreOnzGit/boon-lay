@@ -241,7 +241,7 @@ impl Default for TRISOSimApp {
         let time_start = SystemTime::now();
 
         let num_of_nuclides = 62_500;
-        let nuclide = Nuclide::Sr90;
+        let nuclide = Nuclide::Cs137;
 
         fn build_four_vec(
             num_of_nuclides: usize,
