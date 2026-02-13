@@ -62,7 +62,7 @@ impl Default for SimulatorState {
         Self {
             is_running,
             restart_button_pressed,
-            user_selected_nuclide: Nuclide::Sr90,
+            user_selected_nuclide: Nuclide::Cs137,
             change_nuclide_button_pressed,
             user_selected_timestep,
             elapsed_time,
