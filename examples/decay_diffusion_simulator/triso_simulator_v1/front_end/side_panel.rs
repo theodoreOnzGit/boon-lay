@@ -277,6 +277,13 @@ impl TRISOSimApp {
         let nuclide_fraction_vec = &simulator_state_clone.get_nuclide_fraction_vector();
 
         ui_fraction_list(ui, nuclide_fraction_vec);
+
+        let release_fraction: f64 = simulator_state_clone.get_release_fraction()
+            .get::<ratio>();
+
+        ui.label(format!("Release Fraction Rough Estimate: {:.5}", release_fraction));
+
+
         ui.separator();
 
 

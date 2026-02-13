@@ -17,6 +17,9 @@ pub struct SimulatorState {
     nuclides_to_plot: Vec<Nuclide>,
     nuclide_fractions_over_time: Vec<(Time, Vec<f64>)>,
 
+    // release fraction 
+    release_fraction: Ratio,
+
     // graph settings
     pub graph_data_record_interval_seconds: f64,
     pub csv_display_interval_seconds: f64,
@@ -33,6 +36,7 @@ impl Default for SimulatorState {
         let user_selected_timestep = Time::new::<second>(10.0);
         let elapsed_time = Time::ZERO;
         let simulated_time = Time::ZERO;
+        let release_fraction = Ratio::ZERO;
 
         // these are for plotting
         let should_change_nuclide_to_graph_plot = true;
@@ -75,6 +79,7 @@ impl Default for SimulatorState {
             graph_data_record_interval_seconds,
             csv_display_interval_seconds,
             plot_width_pixels,
+            release_fraction,
         }
     }
 }
@@ -187,6 +192,13 @@ impl SimulatorState {
     }
     pub fn get_nuclides_fractions_over_time(&self) -> Vec<(Time, Vec<f64>)> {
         self.nuclide_fractions_over_time.clone()
+    }
+    // nuclides to plot a release fraction over time 
+    pub fn get_release_fraction(&self) -> Ratio {
+        self.release_fraction
+    }
+    pub fn set_release_fraction(&mut self, release_fraction: Ratio){
+        self.release_fraction = release_fraction;
     }
 }
 
