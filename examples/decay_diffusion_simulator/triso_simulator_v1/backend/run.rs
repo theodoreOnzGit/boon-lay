@@ -10,10 +10,8 @@ use boon_lay::prelude::decay_library::DecayLibrary;
 use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::SingleParticleDiffusionSimulatorMC;
 use rand::SeedableRng;
 use uom::si::time::second;
-use uom::si::f64::Length;
 use uom::si::f64::Time;
 use uom::si::time::millisecond;
-use uom::si::length::angstrom;
 
 use crate::triso_simulator_v1::TRISOSimApp;
 use crate::triso_simulator_v1::front_end::triso_particle::TrisoParticleUi;
@@ -128,18 +126,11 @@ impl TRISOSimApp {
                     *simulation = new_simulation;
 
                 }
-                // for convenience, i want to get the half life of this 
-                // nuclide 
-                let nuclide_info: boon_lay::prelude::NuclideReactionAndDecayData = 
-                    decay_library.try_match_nuclides_to_decay_data(user_set_nuclide)
-                    .unwrap();
 
-                // get half life 
-                let nuclide_half_life: Time = 
-                    nuclide_info.try_get_half_life().unwrap();
 
-                // set timestep to 0.1% half life 
-                let timestep_based_on_hl: Time = 1e-6 * nuclide_half_life;
+                // set timestep to 7s because diffusion is very fast
+                let timestep_based_on_diffusion: Time = 
+                    Time::new::<second>(7.0);
 
 
                 // make sure all threads in sync 
@@ -153,7 +144,7 @@ impl TRISOSimApp {
                     simulator_state_ptr.lock().unwrap().turn_off_restart_button();
                     simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
                     simulator_state_ptr.lock().unwrap().reset_simulated_time();
-                    simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_hl);
+                    simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_diffusion);
 
                     
 
@@ -198,18 +189,10 @@ impl TRISOSimApp {
                     (simulation_vector, decay_library.clone());
 
 
-                // for convenience, i want to get the half life of this 
-                // nuclide 
-                let nuclide_info: boon_lay::prelude::NuclideReactionAndDecayData = 
-                    decay_library.try_match_nuclides_to_decay_data(user_set_nuclide)
-                    .unwrap();
-
-                // get half life 
-                let nuclide_half_life: Time = 
-                    nuclide_info.try_get_half_life().unwrap();
 
                 // set timestep to 0.1% half life 
-                let timestep_based_on_hl: Time = 1e-6 * nuclide_half_life;
+                let timestep_based_on_diffusion: Time = 
+                    Time::new::<second>(7.0);
                 // make sure all threads in sync 
                 barrier.wait();
 
@@ -217,7 +200,7 @@ impl TRISOSimApp {
 
                     simulator_state_ptr.lock().unwrap().turn_off_restart_button();
                     simulator_state_ptr.lock().unwrap().turn_off_change_nuclide_button();
-                    simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_hl);
+                    simulator_state_ptr.lock().unwrap().set_timestep(timestep_based_on_diffusion);
 
                     // upon changing nuclide, we must toggle a flag to replot 
                     // the nuclides 

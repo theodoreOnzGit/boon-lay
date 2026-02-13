@@ -31,8 +31,8 @@ impl TRISOSimApp {
 
         let timestep_slider_seconds = egui::Slider::new(
             &mut user_set_timestep_seconds, 
-            0.00001..=1e20
-        ) .logarithmic(true) .text("Timestep Control (s)") .drag_value_speed(0.001);
+            0.00001..=1500.0
+        ) .logarithmic(false) .text("Timestep Control (s)") .drag_value_speed(0.001);
 
         // set timestep 
         ui.add(timestep_slider_seconds);
