@@ -17,17 +17,20 @@ impl TRISOSimApp {
         let top_most_side = ui_rectangle.top();
 
         // this part is vibe coded
-        // Fixed drawing area: 2500 x 2500 pixels
-        const SIZE: f32 = 2500.0;
+        const XSIZE: f32 = 1600.0;
+        const YSIZE: f32 = 900.0;
         const COLS: usize = 500;
         const ROWS: usize = 500;
 
         // Reserve exactly 2500x2500 px in the UI (won't resize with the panel)
-        let (rect, _response) = ui.allocate_exact_size(egui::vec2(SIZE, SIZE), egui::Sense::hover());
+        let (rect, _response) = ui.allocate_exact_size(
+            egui::vec2(XSIZE, YSIZE), 
+            egui::Sense::hover()
+        );
 
         // Grid cell size (fixed, independent of the UI rectangle size)
-        let dx = SIZE / COLS as f32; // 3.2 px
-        let dy = SIZE / ROWS as f32; // 3.2 px
+        let dx = XSIZE / COLS as f32; // 3.2 px
+        let dy = XSIZE / ROWS as f32; // 3.2 px
         let _radius = 0.45 * dx.min(dy); // ~1.44 px
         let _origin = rect.min; // top-left of the allocated 2500x2500 area
 
@@ -128,9 +131,9 @@ impl TRISOSimApp {
             let bottom_limit = top_limit + content_origin_rect.bottom();
 
 
-            let triso_width = 0.8 * (viewport.bottom() - viewport.top());
+            let triso_width = 1.0 * (viewport.bottom() - viewport.top());
 
-            let triso_centre_x = left_limit + right_limit/2.0;
+            let triso_centre_x = left_limit + right_limit/3.0;
             let triso_centre_y = top_limit + bottom_limit/2.0;
 
             triso_picture.put_self_with_size_and_centre(ui, 
