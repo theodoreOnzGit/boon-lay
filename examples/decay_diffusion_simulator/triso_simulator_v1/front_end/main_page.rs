@@ -18,7 +18,7 @@ impl TRISOSimApp {
 
         // this part is vibe coded
         const XSIZE: f32 = 1600.0;
-        const YSIZE: f32 = 900.0;
+        const YSIZE: f32 = 1000.0;
         const COLS: usize = 500;
         const ROWS: usize = 500;
 

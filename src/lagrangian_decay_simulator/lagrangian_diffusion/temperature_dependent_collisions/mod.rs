@@ -173,7 +173,12 @@ pub fn try_get_diffusion_coeff_jiang(
 
 
         },
-        _ => None
+        // for anything else, just assume it's silver
+        _ => {
+            let nuclide = Nuclide::Ag110m;
+            return try_get_diffusion_coeff_jiang(
+                triso_layer, nuclide, temperature, gamma_neutron_fluence);
+        }
     };
 
     return d;
