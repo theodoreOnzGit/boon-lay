@@ -1,7 +1,7 @@
 use boon_lay::prelude::NuclideReactionAndDecayData;
 use boon_lay::Nuclide;
 use egui::Ui;
-use uom::si::{f64::Time, ratio::ratio, time::{day, millisecond, second, year}};
+use uom::si::{f64::Time, ratio::ratio, time::{day, hour, millisecond, second, year}};
 
 use crate::triso_simulator_v1::{backend::simulator_state::SimulatorState, TRISOSimApp};
 
@@ -56,6 +56,7 @@ impl TRISOSimApp {
 
         ui.label(format!("Simulated Time (seconds): {}",     fmt5(sim_t.get::<second>())));
         ui.label(format!("Simulated Time (days): {}",        fmt5(sim_t.get::<day>())));
+        ui.label(format!("Simulated Time (hours): {}",        fmt5(sim_t.get::<hour>())));
         ui.label(format!("Simulated Time (years): {}",       fmt5(sim_t.get::<year>())));
 
         // Billion years (Ga)
@@ -70,6 +71,7 @@ impl TRISOSimApp {
         ui.label(format!("Timestep (milliseconds): {}", fmt5(dt.get::<millisecond>())));
         ui.label(format!("Timestep (seconds): {}",      fmt5(dt.get::<second>())));
         ui.label(format!("Timestep (days): {}",         fmt5(dt.get::<day>())));
+        ui.label(format!("Timestep (hours): {}",         fmt5(dt.get::<hour>())));
         ui.label(format!("Timestep (years): {}",        fmt5(dt.get::<year>())));
 
         ui.separator();
