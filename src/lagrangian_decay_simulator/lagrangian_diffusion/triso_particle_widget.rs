@@ -14,7 +14,7 @@ use eframe::{egui, egui::{Color32, Pos2, Stroke, Widget}};
 #[derive(Clone)]
 struct _TrisoParticle {
     // Metadata: physical diameter (not used for scaling unless you decide to map mm→px)
-    diameter_mm: f32,
+    _diameter_mm: f32,
 
     // Fraction of the smallest UI dimension that the particle’s diameter should occupy.
     // 0.40 means the drawn diameter will be ~40% of the panel's min(width, height).
@@ -33,7 +33,7 @@ struct _TrisoParticle {
 impl Default for _TrisoParticle {
     fn default() -> Self {
         Self {
-            diameter_mm: 1.0,          // 1 mm (metadata)
+            _diameter_mm: 1.0,          // 1 mm (metadata)
             ui_diameter_ratio: 0.40,   // occupy ~40% of the UI
             num_rings: 18,             // adjust to taste
             stroke: Stroke { width: 6.0, color: Color32::WHITE },

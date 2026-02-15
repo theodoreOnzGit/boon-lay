@@ -216,15 +216,18 @@ impl SimulatorState {
                 sic_region_counter +
                 opyc_region_counter +
                 outside_region_counter;
-        dbg!(&(
-                fuel_region_counter,
-                buffer_region_counter,
-                ipyc_region_counter,
-                sic_region_counter,
-                opyc_region_counter,
-                outside_region_counter,
-                total_region_counter,
-        ));
+        // based on this, the region counter seems to be working well. 
+        //
+        //dbg!(&(
+        //        fuel_region_counter,
+        //        buffer_region_counter,
+        //        ipyc_region_counter,
+        //        sic_region_counter,
+        //        opyc_region_counter,
+        //        outside_region_counter,
+        //        total_region_counter,
+        //));
+        assert_eq!(number_of_particles, total_region_counter as usize);
         self.set_release_fraction(release_fraction);
     }
 
