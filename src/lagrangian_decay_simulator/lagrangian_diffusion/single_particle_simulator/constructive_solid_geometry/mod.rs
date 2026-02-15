@@ -54,7 +54,7 @@ impl Region {
 
 pub(crate) mod sphere;
 pub(crate) use sphere::*;
-use uom::{ConstZero, si::{f64::*, thermodynamic_temperature::kelvin, time::second}};
+use uom::{ConstZero, si::{f64::*, length::meter, thermodynamic_temperature::kelvin, time::second}};
 
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::{single_particle_simulator::constructive_solid_geometry::chatgpt_vibe_coded_sphere_crossing::{sphere_first_crossing_uom, SphereCrossing}, temperature_dependent_collisions::{try_get_diffusion_coeff_jiang, TrisoPebbleLayerMaterial}};
 
@@ -131,28 +131,40 @@ impl TrisoCell {
     }
 
     /// checks which region the particle is in 
+    /// chatgpt fixed
     pub fn get_triso_region(&self, coordinates: [Length;3]) -> TrisoRegion {
+        // Choose eps: tune based on your smallest layer thickness.
+        // This is a conservative default.
+        let eps = Length::new::<meter>(1e-12);
 
-        if self.fuel_region.is_within_region(coordinates) {
-            return TrisoRegion::Fuel;
+        let x = coordinates[0];
+        let y = coordinates[1];
+        let z = coordinates[2];
+        let r = (x * x + y * y + z * z).sqrt();
 
-        } else if self.buffer_region.is_within_region(coordinates) {
+        // Extract radii (meters). Assumes concentric spheres.
+        let (_, r_fuel) = self.fuel_region.try_return_center_and_radius_of_sphere().unwrap();
+        let (_, r_buf)  = self.buffer_region.try_return_center_and_radius_of_sphere().unwrap();
+        let (_, r_ipyc) = self.ipyc_region.try_return_center_and_radius_of_sphere().unwrap();
+        let (_, r_sic)  = self.sic_region.try_return_center_and_radius_of_sphere().unwrap();
+        let (_, r_opyc) = self.opyc_region.try_return_center_and_radius_of_sphere().unwrap();
 
-            return TrisoRegion::Buffer;
-        } else if self.ipyc_region.is_within_region(coordinates) {
 
-            return TrisoRegion::IPyC;
-        } else if self.sic_region.is_within_region(coordinates) {
-
-            return TrisoRegion::SiC;
-        } else if self.opyc_region.is_within_region(coordinates) {
-
-            return TrisoRegion::OPyC;
-        } 
-
-        // if it is not within any of these regions
-
-        return TrisoRegion::Outside;
+        // Convention: boundaries belong to the OUTER region.
+        // i.e. r == r_fuel -> Buffer, r == r_buf -> IPyC, etc.
+        if r < r_fuel - eps {
+            TrisoRegion::Fuel
+        } else if r < r_buf - eps {
+            TrisoRegion::Buffer
+        } else if r < r_ipyc - eps {
+            TrisoRegion::IPyC
+        } else if r < r_sic - eps {
+            TrisoRegion::SiC
+        } else if r < r_opyc - eps {
+            TrisoRegion::OPyC
+        } else {
+            TrisoRegion::Outside
+        }
     }
 
     /// checks the diffusion coefficient based on coordinates of the 

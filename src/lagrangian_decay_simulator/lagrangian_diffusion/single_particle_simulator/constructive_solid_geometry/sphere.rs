@@ -39,6 +39,8 @@ fn point_in_sphere(center: [f64; 3], radius: f64, p: [f64; 3]) -> bool {
 
     // Compare squared distance to squared radius (avoids sqrt, faster)
     let dist2 = dx.mul_add(dx, dy.mul_add(dy, dz * dz));
-    dist2 <= radius * radius
+    let eps = (1e-10 * radius).max(1e-12);
+    let r = (radius - eps).max(0.0);
+    dist2 < r * r
 }
 
