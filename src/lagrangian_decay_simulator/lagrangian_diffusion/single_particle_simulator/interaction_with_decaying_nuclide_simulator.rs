@@ -35,7 +35,7 @@ impl SingleParticleDiffusionSimulatorMC {
 
         self.position = single_particle_sim.position;
 
-        self.move_particle_gaussian_sampling(mean_free_path, no_of_collisions);
+        self.move_particle_gaussian_sampling_u64(mean_free_path, no_of_collisions);
 
         single_particle_sim.position = self.position;
     }

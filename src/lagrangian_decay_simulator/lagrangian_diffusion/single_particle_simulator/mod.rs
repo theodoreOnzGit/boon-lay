@@ -1,3 +1,4 @@
+
 use rand::RngCore;
 use uom::{si::{f64::*, length::meter, linear_number_density::per_meter, ratio::ratio, time::second}, ConstZero};
 
@@ -56,7 +57,7 @@ impl SingleParticleDiffusionSimulatorMC {
 
     /// move particle assuming normal distribution 
     /// given mean free path and number of collisions 
-    pub fn move_particle_gaussian_sampling(&mut self,
+    pub fn move_particle_gaussian_sampling_u64(&mut self,
         mean_free_path: Length,
         no_of_collisions: u64){
 
@@ -69,6 +70,33 @@ impl SingleParticleDiffusionSimulatorMC {
                 &mut self.rng, 
                 per_component_variance,
             );
+
+        self.move_particle_using_array(gaussian_length_array);
+
+    }
+    /// move particle assuming normal distribution 
+    /// given mean free path and number of collisions 
+    pub fn move_particle_gaussian_sampling_f64(&mut self,
+        mean_free_path: Length,
+        no_of_collisions: f64){
+
+        let per_component_variance = 
+            per_component_variance_exponential_for_3d_vector(
+                no_of_collisions, mean_free_path);
+
+        let gaussian_length_array = 
+            sample_dimensioned_gaussian_vector(
+                &mut self.rng, 
+                per_component_variance,
+            );
+        // now, I wanna make sure the particle goes to the next 
+        // boundary, I will skew this a little more forward 
+        // this was suggested by chatgpt
+        for mut length in gaussian_length_array {
+            length += Length::new::<meter>(f64::EPSILON);
+        }
+
+
 
         self.move_particle_using_array(gaussian_length_array);
 
