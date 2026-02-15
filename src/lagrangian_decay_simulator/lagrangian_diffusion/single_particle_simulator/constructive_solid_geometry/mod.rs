@@ -250,6 +250,24 @@ impl TrisoRegion {
     //
     // it is more convenient to use a velocity vector 
     // to see how much time it takes to reach a boundary 
+    //
+    // Now, chatgpt did give some good pointers:
+    //
+    // 4) Logical fragility: returning None for situations that should be “valid but rare”
+    //
+    //You return None in many branches labeled “doesn’t make sense” (e.g. inner sphere Exit while in shell). Some of these can happen because:
+    //
+    //    get_triso_region(position) classification disagrees with geometric reality by a tiny epsilon,
+    //    sphere_first_crossing_uom labels the first hit differently than your assumptions,
+    //    you are exactly on an interface.
+    //
+    //Because your caller treats None as “do naive scattering for the whole remaining timestep”, this can directly cause the “jump straight out” symptom again.
+    //
+    //Fix direction: reserve None for “no intersection in forward time”, not “unexpected classification”. For unexpected cases, either:
+    //
+    //    correct position (epsilon nudge) and retry,
+    //    or return the best positive crossing time anyway.
+    //
 
     #[inline]
     pub fn get_time_to_sphere_boundary(
@@ -262,6 +280,7 @@ impl TrisoRegion {
         let current_region = triso_cell.get_triso_region(position);
 
         // based on the current region, I'm going to obtain the spheres 
+        //
 
         match current_region {
             TrisoRegion::Fuel => {
