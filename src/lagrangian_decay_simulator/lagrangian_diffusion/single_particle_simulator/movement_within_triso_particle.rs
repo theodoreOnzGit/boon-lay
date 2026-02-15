@@ -171,4 +171,53 @@ impl SingleParticleDiffusionSimulatorMC {
 
         single_particle_sim.position = self.position;
     }
+
+
+
+    // this deals with movement within triso particles
+    //
+    // This is for scattering within triso particles which is by brute 
+    // force, that is one scatter at a time (I reckon this will be quite lengthy)
+    #[inline]
+    pub fn scatter_within_triso_particle_brute_force(
+        &mut self, 
+        triso_cell: TrisoCell,
+        nuclide: Nuclide,
+        timestep: Time,
+        ){
+
+        // first find the diffusion coeff 
+        let (x,y,z) = self.position;
+        let pos_array: [Length;3] = [x,y,z];
+
+        let diffusion_coeff_option = 
+            triso_cell.try_get_diffusion_coefficient(pos_array, nuclide);
+
+        let diffusion_coeff: DiffusionCoefficient = match diffusion_coeff_option {
+            Some(coeff) => coeff,
+            // the default diffusion coefficient is same as a cracked layer 
+            // unless otherwise stated
+            None => DiffusionCoefficient::new::<square_meter_per_second>(1e-6),
+        };
+
+        // now when having diffusion coeff, I need a mean free path and number 
+        // of collisions
+        // I'm going to use a jump distance of 2 angstroms 
+        let jump_distance = Length::new::<angstrom>(2.0);
+
+        // using D = 1/6 lambda^2 * nu 
+
+        let collision_frequency: Frequency 
+            = diffusion_coeff * 6.0 / (jump_distance * jump_distance);
+
+        let no_of_collisions_f64: f64 
+            = (collision_frequency * timestep).get::<ratio>();
+
+
+
+        self.move_particle_gaussian_sampling_f64(jump_distance, 
+            no_of_collisions_f64);
+
+
+    }
 }
