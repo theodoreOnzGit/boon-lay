@@ -168,6 +168,13 @@ impl SimulatorState {
 
         let mut release_counter: f64 = 0.0;
 
+        let mut fuel_region_counter: f64 = 0.0;
+        let mut buffer_region_counter: f64 = 0.0;
+        let mut ipyc_region_counter: f64 = 0.0;
+        let mut sic_region_counter: f64 = 0.0;
+        let mut opyc_region_counter: f64 = 0.0;
+        let mut outside_region_counter: f64 = 0.0;
+
         let initial_nuclide = self.get_user_selected_nuclide();
         let number_of_particles = full_nuclide_sim_vec.len();
         for simulation in &full_nuclide_sim_vec {
@@ -187,13 +194,38 @@ impl SimulatorState {
                 release_counter += 1.0;
             }
 
-            let release_fraction: Ratio = 
-                Ratio::new::<ratio>(
-                    release_counter/(number_of_particles as f64)
-                );
-            self.set_release_fraction(release_fraction);
+            match particle_region {
+                TrisoRegion::Fuel => fuel_region_counter += 1.0,
+                TrisoRegion::Buffer => buffer_region_counter += 1.0,
+                TrisoRegion::IPyC => ipyc_region_counter += 1.0,
+                TrisoRegion::SiC => sic_region_counter += 1.0,
+                TrisoRegion::OPyC => opyc_region_counter += 1.0,
+                TrisoRegion::Outside => outside_region_counter += 1.0,
+            };
+
 
         }
+        let release_fraction: Ratio = 
+            Ratio::new::<ratio>(
+                release_counter/(number_of_particles as f64)
+            );
+
+        let total_region_counter = fuel_region_counter +
+                buffer_region_counter +
+                ipyc_region_counter +
+                sic_region_counter +
+                opyc_region_counter +
+                outside_region_counter;
+        dbg!(&(
+                fuel_region_counter,
+                buffer_region_counter,
+                ipyc_region_counter,
+                sic_region_counter,
+                opyc_region_counter,
+                outside_region_counter,
+                total_region_counter,
+        ));
+        self.set_release_fraction(release_fraction);
     }
 
 

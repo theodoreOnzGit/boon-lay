@@ -3,7 +3,6 @@ use std::time::Duration;
 use std::thread;
 use std::sync::{Arc, Barrier, Mutex};
 
-use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoCell;
 use boon_lay::Nuclide;
 use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::prelude::decay_library::DecayLibrary;
