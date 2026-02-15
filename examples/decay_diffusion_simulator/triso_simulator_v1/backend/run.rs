@@ -48,11 +48,6 @@ impl TRISOSimApp {
             );
 
         let new_triso_particle_ui = TrisoParticleUi::default();
-        let fuel_radius = new_triso_particle_ui.get_diameter_after_fuel() * 0.5;
-        let buffer_radius = new_triso_particle_ui.get_diameter_after_buffer() * 0.5;
-        let ipyc_radius = new_triso_particle_ui.get_diameter_after_ipyc() * 0.5;
-        let sic_radius = new_triso_particle_ui.get_diameter_after_sic() * 0.5;
-        let opyc_radius = new_triso_particle_ui.get_diameter_after_opyc() * 0.5;
 
 
         // this is the main loop
