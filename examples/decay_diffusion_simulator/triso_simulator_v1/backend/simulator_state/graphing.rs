@@ -1,6 +1,7 @@
 use std::sync::{Arc, Mutex};
 
-use boon_lay::{prelude::{decay_library::DecayLibrary, SingleNuclideSimulatorMC}, Nuclide};
+use boon_lay::{Nuclide, lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoRegion, prelude::{SingleNuclideSimulatorMC, decay_library::DecayLibrary}};
+use uom::si::{f64::Ratio, ratio::ratio};
 
 use crate::triso_simulator_v1::backend::simulator_state::SimulatorState;
 
@@ -21,7 +22,7 @@ impl SimulatorState {
     /// the decay paths and nuclides will be pre-determined. This shouldn't 
     /// be an issue
     ///
-    /// 
+    /// This code will also do the release fraction calculation
     ///
     pub fn update_fractions_using_decay_sim_thread_ptrs(
         &mut self,
@@ -160,6 +161,39 @@ impl SimulatorState {
 
         // and now we're done!
 
+        // I also want the plotting thread
+
+        // secondly, I also want thread 2 to calculate the 
+        // release fraction
+
+        let mut release_counter: f64 = 0.0;
+
+        let initial_nuclide = self.get_user_selected_nuclide();
+        let number_of_particles = full_nuclide_sim_vec.len();
+        for simulation in &full_nuclide_sim_vec {
+
+            // first i check if nuclide is not decayed 
+
+            let nuclide_not_decayed: bool = 
+                simulation.get_current_nuclide() == initial_nuclide;
+
+            let position = simulation.position;
+            // get the norm
+
+            let particle_region: TrisoRegion 
+                = self.triso_cell.get_triso_region(position.into());
+
+            if particle_region == TrisoRegion::Outside && nuclide_not_decayed {
+                release_counter += 1.0;
+            }
+
+            let release_fraction: Ratio = 
+                Ratio::new::<ratio>(
+                    release_counter/(number_of_particles as f64)
+                );
+            self.set_release_fraction(release_fraction);
+
+        }
     }
 
 

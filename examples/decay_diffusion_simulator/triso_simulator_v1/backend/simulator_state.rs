@@ -1,5 +1,7 @@
-use boon_lay::Nuclide;
+use boon_lay::{Nuclide, lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoCell};
 use uom::{ConstZero, si::{f64::{Ratio, Time}, ratio::ratio, time::second}};
+
+use crate::triso_simulator_v1::front_end::triso_particle::TrisoParticleUi;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct SimulatorState {
@@ -24,6 +26,9 @@ pub struct SimulatorState {
     pub graph_data_record_interval_seconds: f64,
     pub csv_display_interval_seconds: f64,
     pub plot_width_pixels: f64,
+
+    // triso cell and ui 
+    pub triso_cell: TrisoCell,
 }
 
 impl Default for SimulatorState {
@@ -63,6 +68,21 @@ impl Default for SimulatorState {
         let csv_display_interval_seconds = 1.0;
         let plot_width_pixels = 800.0;
 
+        let new_triso_particle_ui = TrisoParticleUi::default();
+        let fuel_radius = new_triso_particle_ui.get_diameter_after_fuel() * 0.5;
+        let buffer_radius = new_triso_particle_ui.get_diameter_after_buffer() * 0.5;
+        let ipyc_radius = new_triso_particle_ui.get_diameter_after_ipyc() * 0.5;
+        let sic_radius = new_triso_particle_ui.get_diameter_after_sic() * 0.5;
+        let opyc_radius = new_triso_particle_ui.get_diameter_after_opyc() * 0.5;
+
+        let triso_cell = TrisoCell::new(
+            fuel_radius, 
+            buffer_radius, 
+            ipyc_radius, 
+            sic_radius, 
+            opyc_radius);
+
+
         Self {
             is_running,
             restart_button_pressed,
@@ -80,6 +100,7 @@ impl Default for SimulatorState {
             csv_display_interval_seconds,
             plot_width_pixels,
             release_fraction,
+            triso_cell,
         }
     }
 }

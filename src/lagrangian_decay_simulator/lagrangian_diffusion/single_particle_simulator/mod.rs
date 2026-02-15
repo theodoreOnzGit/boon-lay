@@ -89,12 +89,6 @@ impl SingleParticleDiffusionSimulatorMC {
                 &mut self.rng, 
                 per_component_variance,
             );
-        // now, I wanna make sure the particle goes to the next 
-        // boundary, I will skew this a little more forward 
-        // this was suggested by chatgpt
-        for mut length in gaussian_length_array {
-            length += Length::new::<meter>(f64::EPSILON);
-        }
 
 
 

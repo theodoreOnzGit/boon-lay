@@ -5,13 +5,10 @@ use std::sync::{Arc, Barrier, Mutex};
 
 use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoCell;
 use boon_lay::Nuclide;
-use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoRegion;
 use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::prelude::decay_library::DecayLibrary;
 use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::SingleParticleDiffusionSimulatorMC;
 use rand::SeedableRng;
-use uom::si::f64::*;
-use uom::si::ratio::ratio;
 use uom::si::time::second;
 use uom::si::f64::Time;
 use uom::si::time::millisecond;
@@ -57,12 +54,6 @@ impl TRISOSimApp {
         let sic_radius = new_triso_particle_ui.get_diameter_after_sic() * 0.5;
         let opyc_radius = new_triso_particle_ui.get_diameter_after_opyc() * 0.5;
 
-        let triso_cell = TrisoCell::new(
-            fuel_radius, 
-            buffer_radius, 
-            ipyc_radius, 
-            sic_radius, 
-            opyc_radius);
 
         // this is the main loop
         loop {
@@ -85,6 +76,8 @@ impl TRISOSimApp {
                 continue;
             }
 
+            // get the triso cell 
+            let triso_cell = simulator_state_clone.triso_cell;
 
 
             // check if the restart button is pressed 
@@ -340,38 +333,6 @@ impl TRISOSimApp {
                 simulator_state_ptr.lock().unwrap().set_nuclide_fraction_vector(
                     nuclide_fraction_vector);
 
-                // secondly, I also want thread 2 to calculate the 
-                // release fraction
-
-                let mut release_counter: f64 = 0.0;
-
-                let initial_nuclide = simulator_state_ptr
-                    .lock().unwrap().get_user_selected_nuclide();
-                for simulation in &simulation_vector {
-
-                    // first i check if nuclide is not decayed 
-
-                    let nuclide_not_decayed: bool = 
-                        simulation.get_current_nuclide() == initial_nuclide;
-
-                    let position = simulation.position;
-                    // get the norm
-
-                    let particle_region: TrisoRegion 
-                        = triso_cell.get_triso_region(position.into());
-
-                    if particle_region == TrisoRegion::Outside && nuclide_not_decayed {
-                        release_counter += 1.0;
-                    }
-
-                    let release_fraction: Ratio = 
-                        Ratio::new::<ratio>(
-                            release_counter/(simulation_vector.len() as f64)
-                        );
-                    simulator_state_ptr.lock().unwrap().set_release_fraction(
-                        release_fraction);
-
-                }
 
 
 

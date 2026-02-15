@@ -1,4 +1,3 @@
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoRegion;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::{constructive_solid_geometry::TrisoCell, SingleParticleDiffusionSimulatorMC};
 use crate::prelude::SingleNuclideSimulatorMC;
 use fission_yields_data::prelude::Nuclide;
@@ -6,7 +5,7 @@ use uom::si::f64::*;
 use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::length::angstrom;
 use uom::si::ratio::ratio;
-use uom::si::time::millisecond;
+use uom::si::time::second;
 use uom::ConstZero;
 
 impl SingleParticleDiffusionSimulatorMC {
@@ -85,10 +84,12 @@ impl SingleParticleDiffusionSimulatorMC {
 
             // if we get time_to_next_boundary, then use the simple scattering
             //
+            // but if boundary is met, add a little bit more time so as to 
+            // ensure it will cross the boundary
             self.scatter_within_triso_particle_gaussian_simple(
                 triso_cell, 
                 nuclide, 
-                time_to_next_boundary
+                time_to_next_boundary + Time::new::<second>(f64::EPSILON)
             );
 
 
