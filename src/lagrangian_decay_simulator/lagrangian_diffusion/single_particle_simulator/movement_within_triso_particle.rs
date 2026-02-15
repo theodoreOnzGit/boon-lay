@@ -18,33 +18,33 @@ impl SingleParticleDiffusionSimulatorMC {
         timestep: Time,
         ){
 
-        // first find the diffusion coeff 
-        let (x,y,z) = self.position;
-        let initial_pos_array: [Length;3] = [x,y,z];
-
-        let diffusion_coeff_option = 
-            triso_cell.try_get_diffusion_coefficient(initial_pos_array, nuclide);
-
-        let diffusion_coeff: DiffusionCoefficient = match diffusion_coeff_option {
-            Some(coeff) => coeff,
-            // the default diffusion coefficient is same as a cracked layer 
-            // unless otherwise stated
-            None => DiffusionCoefficient::new::<square_meter_per_second>(1e-6),
-        };
-
-        // now when having diffusion coeff, I need a mean free path and number 
-        // of collisions
-        // I'm going to use a jump distance of 2 angstroms 
-        let jump_distance = Length::new::<angstrom>(2.0);
-
-        // using D = 1/6 lambda^2 * nu 
-
-        let collision_frequency: Frequency 
-            = diffusion_coeff * 6.0 / (jump_distance * jump_distance);
 
         let mut remaining_timestep = timestep;
 
         while remaining_timestep > Time::ZERO {
+            // first find the diffusion coeff 
+            let (x,y,z) = self.position;
+            let initial_pos_array: [Length;3] = [x,y,z];
+
+            let diffusion_coeff_option = 
+                triso_cell.try_get_diffusion_coefficient(initial_pos_array, nuclide);
+
+            let diffusion_coeff: DiffusionCoefficient = match diffusion_coeff_option {
+                Some(coeff) => coeff,
+                // the default diffusion coefficient is same as a cracked layer 
+                // unless otherwise stated
+                None => DiffusionCoefficient::new::<square_meter_per_second>(1e-6),
+            };
+
+            // now when having diffusion coeff, I need a mean free path and number 
+            // of collisions
+            // I'm going to use a jump distance of 2 angstroms 
+            let jump_distance = Length::new::<angstrom>(2.0);
+
+            // using D = 1/6 lambda^2 * nu 
+
+            let collision_frequency: Frequency 
+                = diffusion_coeff * 6.0 / (jump_distance * jump_distance);
 
             // let's get the velocity vector
             let velocity = self.get_gaussian_velocity_vector(
@@ -80,15 +80,28 @@ impl SingleParticleDiffusionSimulatorMC {
                 break;
 
             };
+            if time_to_next_boundary <= Time::ZERO {
+
+                // if time to next boundary is bigger than remaining timestep,
+
+                break;
+
+            };
 
             // if we get time_to_next_boundary, then use the simple scattering
             //
-            self.scatter_within_triso_particle_gaussian_simple(
-                triso_cell, 
-                nuclide, 
-                time_to_next_boundary
-            );
 
+
+            // get velocity * time 
+
+            let length_array: [Length;3] = 
+                [
+                velocity[0] * time_to_next_boundary,
+                velocity[1] * time_to_next_boundary,
+                velocity[2] * time_to_next_boundary,
+                ];
+
+            self.move_particle_using_array(length_array);
 
 
 
@@ -96,12 +109,46 @@ impl SingleParticleDiffusionSimulatorMC {
             remaining_timestep -= time_to_next_boundary;
         };
 
+        // first find the diffusion coeff 
+        let (x,y,z) = self.position;
+        let initial_pos_array: [Length;3] = [x,y,z];
 
-        return self.scatter_within_triso_particle_gaussian_simple(
-            triso_cell, 
-            nuclide, 
-            remaining_timestep
+        let diffusion_coeff_option = 
+            triso_cell.try_get_diffusion_coefficient(initial_pos_array, nuclide);
+
+        let diffusion_coeff: DiffusionCoefficient = match diffusion_coeff_option {
+            Some(coeff) => coeff,
+            // the default diffusion coefficient is same as a cracked layer 
+            // unless otherwise stated
+            None => DiffusionCoefficient::new::<square_meter_per_second>(1e-6),
+        };
+
+        // now when having diffusion coeff, I need a mean free path and number 
+        // of collisions
+        // I'm going to use a jump distance of 2 angstroms 
+        let jump_distance = Length::new::<angstrom>(2.0);
+
+        // using D = 1/6 lambda^2 * nu 
+
+        let collision_frequency: Frequency 
+            = diffusion_coeff * 6.0 / (jump_distance * jump_distance);
+
+        // let's get the velocity vector
+        let velocity = self.get_gaussian_velocity_vector(
+            jump_distance, 
+            collision_frequency
         );
+
+        // get velocity * time 
+
+        let length_array: [Length;3] = 
+            [
+            velocity[0] * remaining_timestep,
+            velocity[1] * remaining_timestep,
+            velocity[2] * remaining_timestep,
+            ];
+
+        return self.move_particle_using_array(length_array);
 
 
     }
