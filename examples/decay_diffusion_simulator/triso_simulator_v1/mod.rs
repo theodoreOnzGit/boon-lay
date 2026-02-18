@@ -11,7 +11,7 @@ use rayon::prelude::*;
 use crate::triso_simulator_v1::backend::simulator_state::SimulatorState;
 use crate::triso_simulator_v1::front_end::Panel;
 
-pub fn decay_simulator_v1() -> eframe::Result<()> {
+pub fn triso_decay_diffusion_simulator_v1() -> eframe::Result<()> {
 
 
     let native_options = eframe::NativeOptions {
