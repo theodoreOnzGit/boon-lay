@@ -48,72 +48,55 @@ impl SingleParticleDiffusionSimulatorMC {
         let mut remaining_timestep = timestep;
 
         while remaining_timestep > Time::ZERO {
-            // diffusion coeff at current position
-            let (x, y, z) = self.position;
-            let pos: [Length; 3] = [x, y, z];
+                    // diffusion coeff at current position
+        let (x, y, z) = self.position;
+        let pos: [Length; 3] = [x, y, z];
 
-            let diffusion_coeff = triso_cell
-                .try_get_diffusion_coefficient(pos, nuclide)
-                .unwrap_or_else(|| DiffusionCoefficient::new::<uom::si::diffusion_coefficient::square_meter_per_second>(1e-6));
+        let diffusion_coeff = triso_cell
+            .try_get_diffusion_coefficient(pos, nuclide)
+            .unwrap_or_else(|| DiffusionCoefficient::new::<square_meter_per_second>(1e-6));
 
-            let jump_distance = Length::new::<uom::si::length::angstrom>(2.0);
-            let collision_frequency: Frequency =
-                diffusion_coeff * 6.0 / (jump_distance * jump_distance);
+        let jump_distance = Length::new::<angstrom>(2.0);
+        let collision_frequency: Frequency =
+            diffusion_coeff * 6.0 / (jump_distance * jump_distance);
 
-            let velocity = self.get_gaussian_velocity_vector(jump_distance, collision_frequency);
+        // sample ONE velocity for this iteration
+        let velocity = self.get_gaussian_velocity_vector(jump_distance, collision_frequency);
 
-            let time_opt = triso_cell.get_time_to_sphere_boundary(pos, velocity);
+        let time_opt: Option<Time> =
+            triso_cell.get_time_to_sphere_boundary(pos, velocity);
 
-            let Some(time_to_next_boundary) = time_opt else {
-                // No boundary ahead in this direction; finish remaining time with this velocity
-                let length_array: [Length; 3] = [
-                    velocity[0] * remaining_timestep,
-                    velocity[1] * remaining_timestep,
-                    velocity[2] * remaining_timestep,
-                ];
-                self.move_particle_using_array(length_array);
-                return;
-            };
-
-            // (2) Guard: if boundary time is tiny/invalid, don't loop forever.
-            if time_to_next_boundary <= t_eps {
-                // (3) Nudge across interface to escape boundary trap, then stop trying to "hit"
-                // a boundary in zero time.
-                let p_now = {
-                    let (x, y, z) = self.position;
-                    [x, y, z]
-                };
-                let n = unit_radial(p_now);
-
-                // Decide nudge direction based on whether velocity points outward/inward
-                let vdotn = velocity[0].get::<uom::si::velocity::meter_per_second>() * n[0]
-                    + velocity[1].get::<uom::si::velocity::meter_per_second>() * n[1]
-                    + velocity[2].get::<uom::si::velocity::meter_per_second>() * n[2];
-
-                let s = if vdotn >= 0.0 { 1.0 } else { -1.0 };
-                let nudge: [Length; 3] = [
-                    Length::new::<meter>(s * r_eps.get::<meter>() * n[0]),
-                    Length::new::<meter>(s * r_eps.get::<meter>() * n[1]),
-                    Length::new::<meter>(s * r_eps.get::<meter>() * n[2]),
-                ];
-                self.move_particle_using_array(nudge);
-
-                // After nudging, break out and do a final move for remaining time (prevents spin)
-                break;
-            }
-
-            if time_to_next_boundary > remaining_timestep {
-                break;
-            }
-
-            // Move exactly to boundary
+        let Some(time_to_next_boundary) = time_opt else {
+            // no boundary ahead: finish remaining time with THIS velocity
             let length_array: [Length; 3] = [
-                velocity[0] * time_to_next_boundary,
-                velocity[1] * time_to_next_boundary,
-                velocity[2] * time_to_next_boundary,
+                velocity[0] * remaining_timestep,
+                velocity[1] * remaining_timestep,
+                velocity[2] * remaining_timestep,
             ];
             self.move_particle_using_array(length_array);
-            remaining_timestep -= time_to_next_boundary;
+            return;
+        };
+
+        // IMPORTANT: if boundary is after the remaining time, move remaining time using SAME velocity and exit
+        if time_to_next_boundary >= remaining_timestep {
+            let length_array: [Length; 3] = [
+                velocity[0] * remaining_timestep,
+                velocity[1] * remaining_timestep,
+                velocity[2] * remaining_timestep,
+            ];
+            self.move_particle_using_array(length_array);
+            return;
+        }
+
+        // otherwise move exactly to boundary
+        let length_array: [Length; 3] = [
+            velocity[0] * time_to_next_boundary,
+            velocity[1] * time_to_next_boundary,
+            velocity[2] * time_to_next_boundary,
+        ];
+        self.move_particle_using_array(length_array);
+
+        remaining_timestep -= time_to_next_boundary;
 
             // (3) Nudge across boundary so next iteration doesn't re-hit at t≈0
             let p_now = {
