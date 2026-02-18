@@ -254,23 +254,28 @@ pub enum TrisoRegion {
 }
 
 impl TrisoRegion {
-    /// this was changed with some vibe code debugging
     #[inline]
     pub fn get_time_to_sphere_boundary(
         position: [Length; 3],
         velocity: [Velocity; 3],
         triso_cell: TrisoCell,
     ) -> Option<Time> {
-        // Treat "None" strictly as "no forward-time crossing".
-        // Do NOT return None just because we got an "unexpected" Entry/Exit;
-        // that can happen due to region-classification epsilons.
-        const T_EPS_S: f64 = 1e-18;
+        // Filter out "hits" that are at t=0 or negative (common when starting on boundary)
+        const T_EPS_S: f64 = 1e-15;
         let t_eps = Time::new::<second>(T_EPS_S);
 
         #[inline]
-        fn pick_min_positive(t1: Option<Time>, t2: Option<Time>, t_eps: Time) -> Option<Time> {
-            let t1 = t1.filter(|&t| t > t_eps);
-            let t2 = t2.filter(|&t| t > t_eps);
+        fn crossing_time_any(c: Option<SphereCrossing>, t_eps: Time) -> Option<Time> {
+            let t = match c {
+                Some(SphereCrossing::Exit { t }) => Some(t),
+                Some(SphereCrossing::Entry { t }) => Some(t),
+                None => None,
+            };
+            t.filter(|&tt| tt > t_eps)
+        }
+
+        #[inline]
+        fn pick_min_positive(t1: Option<Time>, t2: Option<Time>) -> Option<Time> {
             match (t1, t2) {
                 (Some(a), Some(b)) => Some(if a < b { a } else { b }),
                 (Some(a), None) => Some(a),
@@ -279,30 +284,18 @@ impl TrisoRegion {
             }
         }
 
-        #[inline]
-        fn crossing_time_any(c: Option<SphereCrossing>) -> Option<Time> {
-            match c {
-                Some(SphereCrossing::Exit { t }) => Some(t),
-                Some(SphereCrossing::Entry { t }) => Some(t),
-                None => None,
-            }
-        }
-
         let current_region = triso_cell.get_triso_region(position);
 
         match current_region {
             TrisoRegion::Fuel => {
-                let fuel_sphere = triso_cell.fuel_region;
-                let (center, radius) = fuel_sphere
+                let (center, radius) = triso_cell
+                    .fuel_region
                     .try_return_center_and_radius_of_sphere()
                     .unwrap();
-
-                // Accept either Entry/Exit time (region classification might be epsilon-off)
-                let t = crossing_time_any(sphere_first_crossing_uom(
-                    center, radius, position, velocity,
-                ));
-
-                t.filter(|&tt| tt > t_eps)
+                crossing_time_any(
+                    sphere_first_crossing_uom(center, radius, position, velocity),
+                    t_eps,
+                )
             }
 
             TrisoRegion::Buffer => {
@@ -316,10 +309,11 @@ impl TrisoRegion {
                     .unwrap();
                 assert_eq!(c1, c2);
 
-                let t_inner = crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity));
-                let t_outer = crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity));
-
-                pick_min_positive(t_inner, t_outer, t_eps)
+                let t_inner =
+                    crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity), t_eps);
+                let t_outer =
+                    crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity), t_eps);
+                pick_min_positive(t_inner, t_outer)
             }
 
             TrisoRegion::IPyC => {
@@ -333,10 +327,11 @@ impl TrisoRegion {
                     .unwrap();
                 assert_eq!(c1, c2);
 
-                let t_inner = crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity));
-                let t_outer = crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity));
-
-                pick_min_positive(t_inner, t_outer, t_eps)
+                let t_inner =
+                    crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity), t_eps);
+                let t_outer =
+                    crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity), t_eps);
+                pick_min_positive(t_inner, t_outer)
             }
 
             TrisoRegion::SiC => {
@@ -350,10 +345,11 @@ impl TrisoRegion {
                     .unwrap();
                 assert_eq!(c1, c2);
 
-                let t_inner = crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity));
-                let t_outer = crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity));
-
-                pick_min_positive(t_inner, t_outer, t_eps)
+                let t_inner =
+                    crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity), t_eps);
+                let t_outer =
+                    crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity), t_eps);
+                pick_min_positive(t_inner, t_outer)
             }
 
             TrisoRegion::OPyC => {
@@ -367,10 +363,11 @@ impl TrisoRegion {
                     .unwrap();
                 assert_eq!(c1, c2);
 
-                let t_inner = crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity));
-                let t_outer = crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity));
-
-                pick_min_positive(t_inner, t_outer, t_eps)
+                let t_inner =
+                    crossing_time_any(sphere_first_crossing_uom(c1, r1, position, velocity), t_eps);
+                let t_outer =
+                    crossing_time_any(sphere_first_crossing_uom(c2, r2, position, velocity), t_eps);
+                pick_min_positive(t_inner, t_outer)
             }
 
             TrisoRegion::Outside => {
@@ -378,16 +375,15 @@ impl TrisoRegion {
                     .opyc_region
                     .try_return_center_and_radius_of_sphere()
                     .unwrap();
-
-                let t = crossing_time_any(sphere_first_crossing_uom(
-                    center, radius, position, velocity,
-                ));
-
-                t.filter(|&tt| tt > t_eps)
+                crossing_time_any(
+                    sphere_first_crossing_uom(center, radius, position, velocity),
+                    t_eps,
+                )
             }
         }
     }
 }
+
 /// this is a vibe coded sphere crossing code
 /// to determine time to sphere crossing
 pub mod chatgpt_vibe_coded_sphere_crossing;
