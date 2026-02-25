@@ -236,6 +236,23 @@ impl TrisoCell {
 
         TrisoRegion::get_time_to_sphere_boundary(position, velocity, *self)
     }
+
+    #[inline]
+    /// Sets a uniform temperature across all regions of the TRISO cell.
+    pub fn set_uniform_temperature(&mut self, temp: ThermodynamicTemperature) {
+        self.fuel_region_temp = temp;
+        self.buffer_region_temp = temp;
+        self.ipyc_region_temp = temp;
+        self.sic_region_temp = temp;
+        self.opyc_region_temp = temp;
+    }
+
+    #[inline]
+    /// Gets the current uniform temperature of the TRISO cell.
+    /// Assumes all regions have the same temperature.
+    pub fn get_uniform_temperature(&self) -> ThermodynamicTemperature {
+        self.fuel_region_temp // Can return any of the region temperatures as they are uniform
+    }
 }
 
 // question is, how to do particle tracing if the length crosses boundary 

@@ -1,5 +1,8 @@
 use boon_lay::{Nuclide, lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoCell};
-use uom::{ConstZero, si::{f64::{Ratio, Time}, ratio::ratio, time::second}};
+use uom::si::f64::{*};
+use uom::ConstZero;
+use uom::si::time::second;
+use uom::si::ratio::ratio;
 
 use crate::triso_simulator_v1::front_end::triso_particle::TrisoParticleUi;
 
@@ -29,6 +32,10 @@ pub struct SimulatorState {
 
     // triso cell and ui 
     pub triso_cell: TrisoCell,
+
+    
+    // RENAMED: Field to store the temperature selected by the slider, but not yet applied
+    pub user_selected_temperature: ThermodynamicTemperature,
 }
 
 impl Default for SimulatorState {
@@ -82,6 +89,8 @@ impl Default for SimulatorState {
             sic_radius, 
             opyc_radius);
 
+        let user_selected_temperature = triso_cell.get_uniform_temperature();
+
 
         Self {
             is_running,
@@ -101,6 +110,7 @@ impl Default for SimulatorState {
             plot_width_pixels,
             release_fraction,
             triso_cell,
+            user_selected_temperature,
         }
     }
 }
@@ -220,6 +230,32 @@ impl SimulatorState {
     }
     pub fn set_release_fraction(&mut self, release_fraction: Ratio){
         self.release_fraction = release_fraction;
+    }
+
+
+    
+    #[inline]
+    // Proxy getter for the TRISO cell's uniform temperature
+    pub fn get_triso_uniform_temperature(&self) -> ThermodynamicTemperature {
+        self.triso_cell.get_uniform_temperature()
+    }
+
+    #[inline]
+    // Proxy setter for the TRISO cell's uniform temperature
+    // also sets user selected temperature to the value
+    pub fn set_triso_uniform_temperature(&mut self, temp: ThermodynamicTemperature) {
+        self.triso_cell.set_uniform_temperature(temp);
+        // When the temperature is applied, the user_selected_temperature should also reflect it
+        self.user_selected_temperature = temp;
+    }
+    // : Getter for the user selected temperature (from the slider)
+    pub fn get_user_selected_temperature(&self) -> ThermodynamicTemperature {
+        self.user_selected_temperature
+    }
+
+    // : Setter for the user selected temperature (from the slider)
+    pub fn set_user_selected_temperature(&mut self, temp: ThermodynamicTemperature) {
+        self.user_selected_temperature = temp;
     }
 }
 
