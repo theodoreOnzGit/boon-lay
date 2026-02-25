@@ -1,7 +1,7 @@
 use boon_lay::prelude::NuclideReactionAndDecayData;
 use boon_lay::Nuclide;
 use egui::Ui;
-use uom::si::{f64::{ThermodynamicTemperature, Time}, ratio::ratio, thermodynamic_temperature::kelvin, time::{day, hour, millisecond, second, year}};
+use uom::si::{f64::{ThermodynamicTemperature, Time}, ratio::ratio, thermodynamic_temperature::{degree_celsius, kelvin}, time::{day, hour, millisecond, second, year}};
 
 use crate::triso_simulator_v1::{backend::simulator_state::SimulatorState, TRISOSimApp};
 
@@ -230,42 +230,49 @@ impl TRISOSimApp {
 
         
         // NEW: Temperature Control Slider
-        ui.heading("TRISO Particle Temperature");
+        // Get the current temperature from the TrisoCell via SimulatorState's proxy method
+        // We need to lock the simulator state to read and write to it
+        ui.heading("TRISO Particle Temperature Control");
         // Get the current temperature from the TrisoCell via SimulatorState's proxy method
         // We need to lock the simulator state to read and write to it
         let mut simulator_state_guard = self.simulator_state.lock().unwrap();
         // Display the currently active temperature
+        // Slider for the USER SELECTED temperature
+        // Temperature Control Slider and Button
+
+        // Display the currently active temperature in Celsius
+        ui.label(format!(
+                "Current Active Temperature: {:.2} °C",
+                simulator_state_guard.get_triso_uniform_temperature().get::<degree_celsius >() // Display in Celsius
+        ));
         ui.label(format!(
                 "Current Active Temperature: {:.2} K",
                 simulator_state_guard.get_triso_uniform_temperature().get::<kelvin>()
         ));
 
-        // Slider for the USER SELECTED temperature
-        let mut user_selected_temp_kelvin = simulator_state_guard.get_user_selected_temperature().get::<kelvin>();
 
-        ui.add(egui::Slider::new(&mut user_selected_temp_kelvin, 300.0..=2500.0) // Example range: 300K to 2500K
-            .text("Desired Temperature (Kelvin)")
-            .suffix(" K")
+        // Slider for the USER SELECTED temperature
+        // Get the value in Celsius for the slider
+        let mut user_selected_temp_celsius = simulator_state_guard.get_user_selected_temperature().get::<degree_celsius >();
+
+        ui.add(egui::Slider::new(&mut user_selected_temp_celsius, 0.0..=2200.0) // Example range for Celsius (0°C to 2200°C)
+            .text("Desired Temperature (Celsius)")
+            .suffix(" °C") // Change suffix
             .logarithmic(false)
             .drag_value_speed(1.0)
         );
 
         // Update the user selected temperature in the state as the slider moves
-        let new_user_selected_temp = ThermodynamicTemperature::new::<kelvin>(user_selected_temp_kelvin);
+        // Convert the Celsius value from the slider back to ThermodynamicTemperature
+        let new_user_selected_temp = ThermodynamicTemperature::new::<degree_celsius >(user_selected_temp_celsius);
         if new_user_selected_temp != simulator_state_guard.get_user_selected_temperature() {
             simulator_state_guard.set_user_selected_temperature(new_user_selected_temp);
         }
 
         // "Change Temperature" button
         if ui.button("Change Temperature").clicked() {
-            let user_selected_temperature = 
-                simulator_state_guard.get_user_selected_temperature();
-            // Apply the user selected temperature to the TrisoCell
-            simulator_state_guard.set_triso_uniform_temperature(
-                user_selected_temperature
-            );
-            // The `set_triso_uniform_temperature` method also updates `user_selected_temperature`
-            // so no extra step is needed here to synchronize them after the button click.
+            let temp_to_apply = simulator_state_guard.get_user_selected_temperature();
+            simulator_state_guard.set_triso_uniform_temperature(temp_to_apply);
         }
 
         drop(simulator_state_guard);
