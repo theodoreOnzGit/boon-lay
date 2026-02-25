@@ -114,6 +114,10 @@ impl TrisoCell {
         // Modeling fission product diffusion in TRISO fuel particles with 
         // BISON. Journal of Nuclear Materials, 548, 152840.
         let default_temperature = ThermodynamicTemperature::new::<degree_celsius>(1600.0);
+
+        // i thought that neutron fluence will cause more diffusion 
+        // and hence the bug, 
+        // but this is not the case, default fluence is zero
         let default_fluence = ArealNumberDensity::ZERO;
 
         
