@@ -324,7 +324,7 @@ impl TRISOSimApp {
         let release_fraction: f64 = simulator_state_clone.get_release_fraction()
             .get::<ratio>();
 
-        ui.label(format!("Release Fraction Rough Estimate: {:.5}", release_fraction));
+        ui.label(format!("Release Fraction: {:.5}", release_fraction));
 
 
         ui.separator();

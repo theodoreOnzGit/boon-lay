@@ -1,7 +1,7 @@
 use boon_lay::Nuclide;
 use egui::Ui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
-use uom::si::{f64::Time, time::{nanosecond, second}};
+use uom::si::{f64::{ThermodynamicTemperature, Time}, thermodynamic_temperature::kelvin, time::{nanosecond, second}};
 
 use crate::triso_simulator_v1::{backend::simulator_state::SimulatorState, TRISOSimApp};
 
@@ -76,6 +76,27 @@ impl TRISOSimApp {
         });
 
 
+
+        ui.separator();
+
+        // Release Fraction Plot
+        let release_fractions_over_time: &Vec<(Time, f64)> = 
+            simulator_state_clone.get_release_fractions_over_time();
+        ui.heading("Release Fraction over Time");
+        let mut release_plot = Plot::new("Release Fraction over time").legend(Legend::default());
+        release_plot = release_plot.width(simulator_state_clone.plot_width_pixels as f32);
+        release_plot = release_plot.view_aspect(16.0/9.0);
+        release_plot = release_plot.x_axis_label("time (seconds)".to_owned());
+        release_plot = release_plot.y_axis_label("Release Fraction".to_owned());
+
+        release_plot.show(ui, |plot_ui| {
+            let mut plot_points_release_fraction: Vec<[f64; 2]> = vec![];
+            for (sim_time, fraction) in release_fractions_over_time.iter() {
+                plot_points_release_fraction.push([sim_time.get::<second>(), *fraction]);
+            }
+            plot_ui.line(Line::new(PlotPoints::from(plot_points_release_fraction))
+                .name("Release Fraction"));
+                });
 
         ui.separator();
 
@@ -223,6 +244,47 @@ impl TRISOSimApp {
         }
         ui.separator();
 
+                ui.heading("TRISO Particle Temperature");
+        // Get the current temperature from the TrisoCell via SimulatorState's proxy method
+        // We need to lock the simulator state to read and write to it
+        let mut simulator_state_guard = self.simulator_state.lock().unwrap();
+        // Display the currently active temperature
+        ui.label(format!(
+                "Current Active Temperature: {:.2} K",
+                simulator_state_guard.get_triso_uniform_temperature().get::<kelvin>()
+        ));
+
+        // Slider for the USER SELECTED temperature
+        let mut user_selected_temp_kelvin = simulator_state_guard.get_user_selected_temperature().get::<kelvin>();
+
+        ui.add(egui::Slider::new(&mut user_selected_temp_kelvin, 300.0..=2500.0) // Example range: 300K to 2500K
+            .text("Desired Temperature (Kelvin)")
+            .suffix(" K")
+            .logarithmic(false)
+            .drag_value_speed(1.0)
+        );
+
+        // Update the user selected temperature in the state as the slider moves
+        let new_user_selected_temp = ThermodynamicTemperature::new::<kelvin>(user_selected_temp_kelvin);
+        if new_user_selected_temp != simulator_state_guard.get_user_selected_temperature() {
+            simulator_state_guard.set_user_selected_temperature(new_user_selected_temp);
+        }
+
+        // "Change Temperature" button
+        if ui.button("Change Temperature").clicked() {
+            let user_selected_temperature = 
+                simulator_state_guard.get_user_selected_temperature();
+            // Apply the user selected temperature to the TrisoCell
+            simulator_state_guard.set_triso_uniform_temperature(
+                user_selected_temperature
+            );
+            // The `set_triso_uniform_temperature` method also updates `user_selected_temperature`
+            // so no extra step is needed here to synchronize them after the button click.
+        }
+
+        drop(simulator_state_guard);
+
+
         // just for convenience
 
 
@@ -287,8 +349,11 @@ impl TRISOSimApp {
         // let's add all the nuclides to it 
         
         let nuclides_to_plot = csv_simulator_state_clone.get_nuclides_to_plot();
-        let nuclide_fractions_over_time: Vec<(Time, Vec<f64>)> = 
+        let nuclide_fractions_over_time_csv: Vec<(Time, Vec<f64>)> = 
             csv_simulator_state_clone.get_nuclides_fractions_over_time();
+        // NEW: Get release fractions for CSV
+        let release_fractions_over_time_csv: &Vec<(Time, f64)> = 
+            csv_simulator_state_clone.get_release_fractions_over_time();
 
         for nuclide in nuclides_to_plot {
             let nuclide_string = format!("{:?}", nuclide);
@@ -298,11 +363,14 @@ impl TRISOSimApp {
 
         }
 
+        // Add Release Fraction to header
+        label_string += "Release Fraction"; // No trailing comma for the last item
 
         ui.label(label_string);
 
         // now we can print the main csv data
-        for (time, nuclide_fraction_vector) in nuclide_fractions_over_time {
+                // now we can print the main csv data
+        for (idx, (time, nuclide_fraction_vector)) in nuclide_fractions_over_time_csv.iter().enumerate() {
 
             let mut data_string = "".to_string();
 
@@ -317,10 +385,17 @@ impl TRISOSimApp {
             // now, for each nuclide we must do the same 
 
             for nuclide_fraction in nuclide_fraction_vector {
-                data_string += &nuclide_fraction.to_string();
+                data_string += &format!("{:.5}", nuclide_fraction); // Format for consistency
                 data_string += ", ";
-
             }
+
+            // NEW: Add release fraction data
+            if let Some((_, release_frac)) = release_fractions_over_time_csv.get(idx) {
+                data_string += &format!("{:.5}", release_frac); // Format for consistency
+            } else {
+                data_string += "N/A"; // Fallback, though should not happen if vectors are synchronized
+            }
+
 
             // this allows us to selectively show data for csv
             let blank_data_row = 
