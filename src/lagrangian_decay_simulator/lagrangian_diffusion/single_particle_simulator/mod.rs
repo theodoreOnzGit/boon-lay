@@ -197,3 +197,12 @@ pub mod movement_within_triso_particle;
 /// where the norm can be used to determine if a a coordinate is within 
 /// the sphere or not 
 pub mod constructive_solid_geometry;
+
+/// from 
+/// https://www-eng.lbl.gov/~shuman/NEXT/MATERIALS&COMPONENTS/Xe_damage/Crank-The-Mathematics-of-Diffusion.pdf
+/// page 91 
+/// the total amount of diffusing substance entering or leaving a sphere is 
+/// Mt/M_infty = 1 - 6/(pi^2) \sum_(i=1)^infty 1/n^2 exp (- D n^2 pi^2 t/a^2)
+///
+///
+pub mod diffusion_analytical_solution;
