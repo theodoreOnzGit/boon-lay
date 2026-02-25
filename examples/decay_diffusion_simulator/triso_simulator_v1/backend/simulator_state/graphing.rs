@@ -205,9 +205,10 @@ impl SimulatorState {
 
 
         }
+        let release_fraction_value = release_counter / (number_of_particles as f64);
         let release_fraction: Ratio = 
             Ratio::new::<ratio>(
-                release_counter/(number_of_particles as f64)
+                release_fraction_value
             );
 
         let total_region_counter = fuel_region_counter +
@@ -229,6 +230,13 @@ impl SimulatorState {
         //));
         assert_eq!(number_of_particles, total_region_counter as usize);
         self.set_release_fraction(release_fraction);
+
+        // NEW: Store the current release fraction in the history vector
+        self.release_fractions_over_time.push(
+            (simulated_time_now, release_fraction_value)
+        );
+        // NEW: Apply the same history trimming
+        keep_last_5000(&mut self.release_fractions_over_time);
     }
 
 

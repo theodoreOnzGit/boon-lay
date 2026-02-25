@@ -24,6 +24,8 @@ pub struct SimulatorState {
 
     // release fraction 
     release_fraction: Ratio,
+    // NEW: History of release fraction over time for plotting
+    pub release_fractions_over_time: Vec<(Time, f64)>,
 
     // graph settings
     pub graph_data_record_interval_seconds: f64,
@@ -70,6 +72,8 @@ impl Default for SimulatorState {
         // nuclides to plot
         // 
         let nuclide_fractions_over_time: Vec<(Time, Vec<f64>)> = vec![];
+        // NEW: Initialize the new history vector
+        let release_fractions_over_time: Vec<(Time, f64)> = vec![];
 
         let graph_data_record_interval_seconds = 0.1;
         let csv_display_interval_seconds = 1.0;
@@ -111,6 +115,7 @@ impl Default for SimulatorState {
             release_fraction,
             triso_cell,
             user_selected_temperature,
+            release_fractions_over_time,
         }
     }
 }
@@ -248,14 +253,19 @@ impl SimulatorState {
         // When the temperature is applied, the user_selected_temperature should also reflect it
         self.user_selected_temperature = temp;
     }
-    // : Getter for the user selected temperature (from the slider)
+    // Getter for the user selected temperature (from the slider)
     pub fn get_user_selected_temperature(&self) -> ThermodynamicTemperature {
         self.user_selected_temperature
     }
 
-    // : Setter for the user selected temperature (from the slider)
+    // Setter for the user selected temperature (from the slider)
     pub fn set_user_selected_temperature(&mut self, temp: ThermodynamicTemperature) {
         self.user_selected_temperature = temp;
+    }
+
+    // Getter for release_fractions_over_time
+    pub fn get_release_fractions_over_time(&self) -> &Vec<(Time, f64)> {
+        &self.release_fractions_over_time
     }
 }
 
