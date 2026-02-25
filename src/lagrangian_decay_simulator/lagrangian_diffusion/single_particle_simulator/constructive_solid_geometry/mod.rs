@@ -54,7 +54,7 @@ impl Region {
 
 pub(crate) mod sphere;
 pub(crate) use sphere::*;
-use uom::{ConstZero, si::{f64::*, length::meter, thermodynamic_temperature::kelvin, time::second}};
+use uom::{si::{f64::*, length::meter, thermodynamic_temperature::{degree_celsius, kelvin}, time::second}, ConstZero};
 
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::{single_particle_simulator::constructive_solid_geometry::chatgpt_vibe_coded_sphere_crossing::{sphere_first_crossing_uom, SphereCrossing}, temperature_dependent_collisions::{try_get_diffusion_coeff_jiang, TrisoPebbleLayerMaterial}};
 
@@ -109,7 +109,11 @@ impl TrisoCell {
         let opyc_region 
             = Region::new_sphere(center, opyc_radius);
 
-        let default_temperature = ThermodynamicTemperature::new::<kelvin>(1800.0);
+        // this makes the default case same as 3a in 
+        // Hales, J. D., Jiang, W., Toptan, A., & Gamble, K. A. (2021). 
+        // Modeling fission product diffusion in TRISO fuel particles with 
+        // BISON. Journal of Nuclear Materials, 548, 152840.
+        let default_temperature = ThermodynamicTemperature::new::<degree_celsius>(1600.0);
         let default_fluence = ArealNumberDensity::ZERO;
 
         
