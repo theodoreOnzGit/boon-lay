@@ -204,5 +204,6 @@ pub mod constructive_solid_geometry;
 /// the total amount of diffusing substance entering or leaving a sphere is 
 /// Mt/M_infty = 1 - 6/(pi^2) \sum_(i=1)^infty 1/n^2 exp (- D n^2 pi^2 t/a^2)
 ///
+/// Crank, J. (1975). The mathematics of diffusion (2nd ed.). Clarendon Press.
 ///
 pub mod diffusion_analytical_solution;
