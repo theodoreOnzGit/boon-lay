@@ -3,9 +3,10 @@
 // uom = { version = "0.35", features = ["f64", "si"] }
 
 // Add these `use` statements at the top of your relevant file (e.g., a new verification module)
-use uom::si::f64::{DiffusionCoefficient, Length, Time};
+use uom::si::f64::*;
 use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::length::meter;
+use uom::si::ratio::ratio;
 use uom::si::time::second;
 use std::f64::consts::PI;
 
@@ -34,35 +35,43 @@ pub fn calculate_analytical_fraction_released(
     time: Time,
     num_terms: usize,
 ) -> f64 {
-    // Extract raw f64 values with consistent units
-    let d_val = diffusion_coefficient.get::<square_meter_per_second>();
-    let r_val = radius.get::<meter>();
-    let t_val = time.get::<second>();
-
-    // Basic validation
-    if r_val <= 0.0 {
+    // Basic validation using raw values for comparison, but calculations use uom
+    if radius.get::<meter>() <= 0.0 {
         panic!("Radius must be positive for analytical solution.");
     }
-    if t_val < 0.0 {
+    if time.get::<second>() < 0.0 {
         panic!("Time cannot be negative for analytical solution.");
     }
-    if d_val < 0.0 {
+    if diffusion_coefficient.get::<square_meter_per_second>() < 0.0 {
         panic!("Diffusion coefficient cannot be negative.");
     }
 
-    // Handle t=0 case explicitly to avoid exp(0) issues with very small D*t/R^2
-    if t_val == 0.0 {
+    // Handle t=0 case explicitly
+    if time.get::<second>() == 0.0 {
         return 0.0; // No release at t=0
     }
 
     let mut sum_terms = 0.0;
 
+    // Calculate D*t / R^2 using uom quantities
+    // (DiffusionCoefficient * Time) results in Area
+    let dt_product: Area = diffusion_coefficient * time;
+    // (Length * Length) results in Area
+    let r_squared: Area = radius * radius;
+
+    // (Area / Area) results in Dimensionless
+    // We use .get::<ratio>() to extract the f64 value from the Dimensionless quantity
+    let dimensionless_ratio_dt_r2: f64 = (dt_product / r_squared).get::<ratio>();
+
     // Sum the infinite series for fraction remaining
     for n in 1..=num_terms {
         let n_f64 = n as f64;
-        let term_exponent = -d_val * n_f64.powi(2) * PI.powi(2) * t_val / r_val.powi(2);
-        let term_coefficient = 6.0 / (n_f64.powi(2) * PI.powi(2));
-        sum_terms += term_coefficient * term_exponent.exp();
+        let n_pi_squared = (n_f64 * PI).powi(2); // This part is dimensionless
+
+        let term_exponent_value = -dimensionless_ratio_dt_r2 * n_pi_squared;
+        let term_coefficient = 6.0 / n_pi_squared;
+        
+        sum_terms += term_coefficient * term_exponent_value.exp();
     }
 
     let fraction_remaining = sum_terms;
