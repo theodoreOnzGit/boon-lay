@@ -163,7 +163,7 @@ impl TrisoCell {
         let buffer_radius: Length = inner_kernel_radius + buffer_thickness;
         let ipyc_radius: Length = buffer_radius + ipyc_thickness;
         let sic_radius: Length = ipyc_radius + sic_thickness;
-        let opyc_radius: Length = sic_thickness + opyc_thickness;
+        let opyc_radius: Length = sic_radius + opyc_thickness;
 
         Self::new(inner_kernel_radius, buffer_radius, ipyc_radius, sic_radius, opyc_radius)
     }
