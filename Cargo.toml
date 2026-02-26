@@ -44,4 +44,4 @@ name = "boon_lay_decay_simulator"
 
 
 [[example]]
-name = "decay_diffusion_simulator"
+name = "triso_simulator"
