@@ -66,6 +66,10 @@ impl SingleParticleDiffusionSimulatorMC {
         let time_opt: Option<Time> =
             triso_cell.get_time_to_sphere_boundary(pos, velocity);
 
+        
+
+
+
         let Some(time_to_next_boundary) = time_opt else {
             // no boundary ahead: finish remaining time with THIS velocity
             let length_array: [Length; 3] = [
