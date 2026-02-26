@@ -210,8 +210,8 @@ impl TrisoParticleUi {
                 radionuclide_center_x_pixels, 
                 radionuclide_center_y_pixels
             );
-            let radius = radionuclide_x_width_pixels;
-            painter.circle_filled(center, radius, colour);
+            let fission_prod_radius = radionuclide_x_width_pixels;
+            painter.circle_filled(center, fission_prod_radius, colour);
         }
 
 
