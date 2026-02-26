@@ -54,9 +54,15 @@ impl Region {
 
 pub(crate) mod sphere;
 pub(crate) use sphere::*;
-use uom::{si::{f64::*, length::meter, thermodynamic_temperature::{degree_celsius, kelvin}, time::second}, ConstZero};
+use uom::ConstZero;
+use uom::si::time::second;
+use uom::si::thermodynamic_temperature::degree_celsius;
+use uom::si::length::{meter, micrometer};
+use uom::si::f64::*;
 
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::{single_particle_simulator::constructive_solid_geometry::chatgpt_vibe_coded_sphere_crossing::{sphere_first_crossing_uom, SphereCrossing}, temperature_dependent_collisions::{try_get_diffusion_coeff_jiang, TrisoPebbleLayerMaterial}};
+
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::temperature_dependent_collisions::{try_get_diffusion_coeff_jiang, TrisoPebbleLayerMaterial};
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::chatgpt_vibe_coded_sphere_crossing::{sphere_first_crossing_uom, SphereCrossing};
 
 // for a single triso particle, 
 // it is many cocentric spheres together
@@ -79,6 +85,7 @@ pub struct TrisoCell {
     // neutron fluence for the triso as a whole (mean free path is short,
     // I'm just going to use one neutron fluence)
     gamma_neutron_fluence: ArealNumberDensity,
+
 }
 
 
@@ -136,6 +143,29 @@ impl TrisoCell {
         };
 
 
+    }
+
+    /// gotten typical triso geometry from:
+    /// Hales, J. D., Williamson, R. L., Novascone, S. R., Perez, D. M., 
+    /// Spencer, B. W., & Pastore, G. (2013). Multidimensional 
+    /// multiphysics simulation of TRISO particle fuel. Journal of 
+    /// Nuclear Materials, 443(1-3), 531-543.
+    pub fn new_crp6_geometry() -> Self {
+
+        // Nominal values commonly cited in literature
+        let kernel_diameter: Length = Length::new::<micrometer>(425.0);   // diameter
+        let buffer_thickness: Length = Length::new::<micrometer>(100.0);  // thickness
+        let ipyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
+        let sic_thickness: Length = Length::new::<micrometer>(35.0);      // thickness
+        let opyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
+                                                                          //
+        let inner_kernel_radius: Length = 0.5 * kernel_diameter;
+        let buffer_radius: Length = inner_kernel_radius + buffer_thickness;
+        let ipyc_radius: Length = buffer_radius + ipyc_thickness;
+        let sic_radius: Length = ipyc_radius + sic_thickness;
+        let opyc_radius: Length = sic_thickness + opyc_thickness;
+
+        Self::new(inner_kernel_radius, buffer_radius, ipyc_radius, sic_radius, opyc_radius)
     }
 
     /// checks which region the particle is in 
@@ -260,6 +290,33 @@ impl TrisoCell {
     /// Assumes all regions have the same temperature.
     pub fn get_uniform_temperature(&self) -> ThermodynamicTemperature {
         self.fuel_region_temp // Can return any of the region temperatures as they are uniform
+    }
+
+    
+    // NEW: Getter methods for the radius of each layer
+    #[inline]
+    pub fn get_fuel_radius(&self) -> Length {
+        self.fuel_region.try_return_center_and_radius_of_sphere().unwrap().1
+    }
+
+    #[inline]
+    pub fn get_buffer_radius(&self) -> Length {
+        self.buffer_region.try_return_center_and_radius_of_sphere().unwrap().1
+    }
+
+    #[inline]
+    pub fn get_ipyc_radius(&self) -> Length {
+        self.ipyc_region.try_return_center_and_radius_of_sphere().unwrap().1
+    }
+
+    #[inline]
+    pub fn get_sic_radius(&self) -> Length {
+        self.sic_region.try_return_center_and_radius_of_sphere().unwrap().1
+    }
+
+    #[inline]
+    pub fn get_opyc_radius(&self) -> Length {
+        self.opyc_region.try_return_center_and_radius_of_sphere().unwrap().1
     }
 }
 
@@ -408,6 +465,8 @@ impl TrisoRegion {
         }
     }
 }
+
+
 
 /// this is a vibe coded sphere crossing code
 /// to determine time to sphere crossing

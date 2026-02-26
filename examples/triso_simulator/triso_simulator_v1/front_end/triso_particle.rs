@@ -1,4 +1,5 @@
 
+use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoCell;
 use boon_lay::Nuclide;
 use boon_lay::prelude::SingleNuclideSimulatorMC;
 use eframe::egui;
@@ -17,36 +18,18 @@ use crate::triso_simulator_v1::TRISOSimApp;
 #[derive(Clone,Copy, Debug)]
 pub struct TrisoParticleUi {
 
-
-    // fuel kernel diameter 
-    kernel_diameter: Length, 
-
-    // buffer thickness 
-    buffer_thickness: Length,
-
-    // inner pyrolytic carbon layer thickness
-    ipyc_thickness: Length,
-    // silicon carbide thickness
-    sic_thickness: Length,
-    // outer pyrolytic carbon thickness
-    opyc_thickness: Length,
+    // trisocell for TrisoParticleUi,
+    // we nest the whole triso cell here
+    triso_cell: TrisoCell,
 }
 
 impl Default for TrisoParticleUi {
     fn default() -> Self {
-        // Nominal values commonly cited in literature
-        let kernel_diameter: Length = Length::new::<micrometer>(425.0);   // diameter
-        let buffer_thickness: Length = Length::new::<micrometer>(100.0);  // thickness
-        let ipyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
-        let sic_thickness: Length = Length::new::<micrometer>(35.0);      // thickness
-        let opyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
+
+        let triso_cell = TrisoCell::new_crp6_geometry();
 
         Self {
-            kernel_diameter,
-            buffer_thickness,
-            ipyc_thickness,
-            sic_thickness,
-            opyc_thickness,
+            triso_cell,
         }
     }
 }
@@ -70,7 +53,7 @@ impl Widget for TrisoParticleUi {
         // lets do a proper triso particle 
 
         // first let's get the inner kernel diameter 
-        let inner_kernel_radius: Length = 0.5 * self.kernel_diameter;
+        let inner_kernel_radius: Length = 0.5 * self.get_diameter_after_fuel();
         let buffer_radius: Length = 0.5 * self.get_diameter_after_buffer();
         let ipyc_radius: Length = 0.5 * self.get_diameter_after_ipyc();
         let sic_radius: Length = 0.5 * self.get_diameter_after_sic();
@@ -117,7 +100,22 @@ impl Widget for TrisoParticleUi {
 }
 
 
+/// vibe coded partially
 impl TrisoParticleUi {
+    /// Gets an immutable reference to the internal TrisoCell.
+    pub fn get_triso_cell(&self) -> &TrisoCell {
+        &self.triso_cell
+    }
+
+    /// Gets a mutable reference to the internal TrisoCell.
+    pub fn get_triso_cell_mut(&mut self) -> &mut TrisoCell {
+        &mut self.triso_cell
+    }
+
+    /// Sets the internal TrisoCell, replacing the existing one.
+    pub fn set_triso_cell(&mut self, cell: TrisoCell) {
+        self.triso_cell = cell;
+    }
 
     /// copied this from my tuas solver
     ///
@@ -158,7 +156,7 @@ impl TrisoParticleUi {
     ){
 
         // first i get the diameter
-        let triso_diameter: Length = self.get_diameter_after_opyc();
+        let triso_diameter: Length = self.get_diameter_after_opyc(); // This now uses self.triso_cell
 
         // then I scale the width of the radionuclide by like 2% of the triso 
         // particle
@@ -167,9 +165,7 @@ impl TrisoParticleUi {
         // next i need a code to convert diameter coordinates to pixels 
 
         // first is to get scaling right 
-        let scale_length_per_pixel: Length = triso_diameter/triso_width_pixels as f64;
-
-
+        let scale_length_per_pixel: Length = triso_diameter / triso_width_pixels as f64;
 
         let painter = ui.painter();
         // first, i want to get a slice of 
@@ -222,20 +218,22 @@ impl TrisoParticleUi {
     }
 
     // vibe coded
+        // --- Getter methods now delegate to the internal triso_cell ---
+
     pub fn get_diameter_after_buffer(&self) -> Length {
-        self.kernel_diameter + self.buffer_thickness * 2.0
+        self.triso_cell.get_buffer_radius() * 2.0
     }
     pub fn get_diameter_after_ipyc(&self) -> Length {
-        self.get_diameter_after_buffer() + self.ipyc_thickness * 2.0
+        self.triso_cell.get_ipyc_radius() * 2.0
     }
     pub fn get_diameter_after_sic(&self) -> Length {
-        self.get_diameter_after_ipyc() + self.sic_thickness * 2.0
+        self.triso_cell.get_sic_radius() * 2.0
     }
     pub fn get_diameter_after_opyc(&self) -> Length {
-        self.get_diameter_after_sic() + self.opyc_thickness * 2.0
+        self.triso_cell.get_opyc_radius() * 2.0
     }
     pub fn get_diameter_after_fuel(&self) -> Length {
-        self.kernel_diameter
+        self.triso_cell.get_fuel_radius() * 2.0
     }
 
     pub fn convert_coordinate_to_pixel( 
@@ -243,12 +241,28 @@ impl TrisoParticleUi {
         scale_length_per_pixel: Length) -> (f32, f32, f32) {
 
         let (x,y,z) = coordinate;
-        let x_pixel: f32 = (x/scale_length_per_pixel).get::<ratio>() as f32;
-        let y_pixel: f32 = (y/scale_length_per_pixel).get::<ratio>() as f32;
-        let z_pixel: f32 = (z/scale_length_per_pixel).get::<ratio>() as f32;
+        let x_pixel: f32 = (x / scale_length_per_pixel).get::<ratio>() as f32;
+        let y_pixel: f32 = (y / scale_length_per_pixel).get::<ratio>() as f32;
+        let z_pixel: f32 = (z / scale_length_per_pixel).get::<ratio>() as f32;
 
-        return (x_pixel,y_pixel,z_pixel);
-
+        (x_pixel, y_pixel, z_pixel)
     }
 
+}
+
+/// vibe coded
+
+// Implement AsRef to allow cheap borrowing
+impl AsRef<TrisoCell> for TrisoParticleUi {
+    fn as_ref(&self) -> &TrisoCell {
+        &self.triso_cell
+    }
+}
+
+/// vibe coded
+// Implement AsMut for mutable borrowing, which is very useful
+impl AsMut<TrisoCell> for TrisoParticleUi {
+    fn as_mut(&mut self) -> &mut TrisoCell {
+        &mut self.triso_cell
+    }
 }
