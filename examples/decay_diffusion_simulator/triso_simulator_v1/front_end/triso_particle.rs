@@ -35,7 +35,7 @@ pub struct TrisoParticleUi {
 impl Default for TrisoParticleUi {
     fn default() -> Self {
         // Nominal values commonly cited in literature
-        let kernel_diameter: Length = Length::new::<micrometer>(350.0);   // diameter
+        let kernel_diameter: Length = Length::new::<micrometer>(425.0);   // diameter
         let buffer_thickness: Length = Length::new::<micrometer>(100.0);  // thickness
         let ipyc_thickness: Length = Length::new::<micrometer>(40.0);     // thickness
         let sic_thickness: Length = Length::new::<micrometer>(35.0);      // thickness
