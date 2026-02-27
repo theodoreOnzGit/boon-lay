@@ -1,3 +1,4 @@
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::TrisoRegion;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::{constructive_solid_geometry::TrisoCell, SingleParticleDiffusionSimulatorMC};
 use crate::prelude::SingleNuclideSimulatorMC;
 use fission_yields_data::prelude::Nuclide;
@@ -63,14 +64,51 @@ impl SingleParticleDiffusionSimulatorMC {
         // sample ONE velocity for this iteration
         let velocity = self.get_gaussian_velocity_vector(jump_distance, collision_frequency);
 
-        let time_opt: Option<Time> =
+        let time_opt_to_sphere_boundary: Option<Time> =
             triso_cell.get_time_to_sphere_boundary(pos, velocity);
 
-        
+        // now after velocity sampled, I also want to sample a timestep 
+
+        let calc_diffusion_timestep = false; 
+
+        if calc_diffusion_timestep {
+
+            // next get lengthscale
+            let region = triso_cell.get_triso_region(pos);
+
+            let triso_layer_lengthscale = match region {
+                TrisoRegion::Fuel => triso_cell.get_fuel_radius(),
+                TrisoRegion::Buffer => triso_cell.get_buffer_radius() - triso_cell.get_fuel_radius(),
+                TrisoRegion::IPyC => triso_cell.get_ipyc_radius() - triso_cell.get_buffer_radius(),
+                TrisoRegion::SiC => triso_cell.get_sic_radius() - triso_cell.get_ipyc_radius(),
+                TrisoRegion::OPyC => triso_cell.get_opyc_radius() - triso_cell.get_sic_radius(),
+
+                // For the 'Outside' region, there is no containing shell. A reasonable
+                // default is the radius of the entire particle, representing the boundary
+                // that was just crossed. Another option could be Length::ZERO if this
+                // state should be handled specially, but using the particle radius is safer
+                // to avoid potential division-by-zero errors later.
+                TrisoRegion::Outside => triso_cell.get_opyc_radius(),
+            };
+
+            // we get a diffusion scaled timestep 
+
+            let mut diffusion_scaled_timestep: Time = 
+                triso_layer_lengthscale * 
+                triso_layer_lengthscale / 
+                diffusion_coeff;
+
+            // this is an arbitrary timesteps scale factor to 
+            // enable the 
+            let timestep_scale_factor = 1e-5;
+
+            diffusion_scaled_timestep *= timestep_scale_factor;
+            //dbg!(&diffusion_scaled_timestep);
+        };
 
 
 
-        let Some(time_to_next_boundary) = time_opt else {
+        let Some(time_to_next_boundary) = time_opt_to_sphere_boundary else {
             // no boundary ahead: finish remaining time with THIS velocity
             let length_array: [Length; 3] = [
                 velocity[0] * remaining_timestep,

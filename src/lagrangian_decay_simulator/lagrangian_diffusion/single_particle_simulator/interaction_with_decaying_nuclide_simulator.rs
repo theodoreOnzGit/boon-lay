@@ -71,23 +71,6 @@ impl SingleParticleDiffusionSimulatorMC {
             .try_get_diffusion_coefficient(pos, nuclide)
             .unwrap_or_else(|| DiffusionCoefficient::new::<square_meter_per_second>(1e-6));
 
-        // next get lengthscale
-        let region = triso_cell.get_triso_region(pos);
-
-        let lengthscale = match region {
-            TrisoRegion::Fuel => triso_cell.get_fuel_radius(),
-            TrisoRegion::Buffer => triso_cell.get_buffer_radius() - triso_cell.get_fuel_radius(),
-            TrisoRegion::IPyC => triso_cell.get_ipyc_radius() - triso_cell.get_buffer_radius(),
-            TrisoRegion::SiC => triso_cell.get_sic_radius() - triso_cell.get_ipyc_radius(),
-            TrisoRegion::OPyC => triso_cell.get_opyc_radius() - triso_cell.get_sic_radius(),
-
-            // For the 'Outside' region, there is no containing shell. A reasonable
-            // default is the radius of the entire particle, representing the boundary
-            // that was just crossed. Another option could be Length::ZERO if this
-            // state should be handled specially, but using the particle radius is safer
-            // to avoid potential division-by-zero errors later.
-            TrisoRegion::Outside => triso_cell.get_opyc_radius(),
-        };
 
         
 
