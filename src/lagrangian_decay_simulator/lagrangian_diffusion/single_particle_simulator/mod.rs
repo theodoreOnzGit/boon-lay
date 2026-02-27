@@ -206,4 +206,10 @@ pub mod constructive_solid_geometry;
 ///
 /// Crank, J. (1975). The mathematics of diffusion (2nd ed.). Clarendon Press.
 ///
-pub mod diffusion_analytical_solution;
+/// This is for a sphere
+///
+pub mod release_fraction_analytical_solution;
+
+/// for CRP 6 case 1a and 1b we can compare the Monte Carlo simulation 
+/// to the analytical solution
+pub mod release_fraction_crp_6_case_1a_1b;
