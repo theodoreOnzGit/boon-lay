@@ -267,6 +267,27 @@ impl TrisoCell {
 
     }
 
+    /// for the outside region, i just get opyc radius, not going to 
+    /// really bother timestepping well
+    #[inline]
+    pub fn get_lengthscale_for_fourier_number(&self,
+        coordinates: [Length;3], ) -> Length {
+
+        let triso_cell_region: TrisoRegion = 
+            self.get_triso_region(coordinates);
+
+        match triso_cell_region {
+            TrisoRegion::Fuel => return self.get_fuel_radius(),
+            TrisoRegion::Buffer => return self.get_buffer_radius() - self.get_fuel_radius(),
+            TrisoRegion::IPyC => return self.get_ipyc_radius() - self.get_buffer_radius(),
+            TrisoRegion::SiC => return self.get_sic_radius() - self.get_ipyc_radius(),
+            TrisoRegion::OPyC => return self.get_opyc_radius() - self.get_sic_radius(),
+            TrisoRegion::Outside => return self.get_opyc_radius() ,
+        };
+
+    }
+
+
     #[inline]
     pub fn get_time_to_sphere_boundary(&self,
         position: [Length;3],

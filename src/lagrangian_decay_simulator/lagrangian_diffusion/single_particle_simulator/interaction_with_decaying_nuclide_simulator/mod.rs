@@ -1,5 +1,7 @@
 use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::f64::*;
+use uom::si::ratio::ratio;
+use uom::ConstZero;
 
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::constructive_solid_geometry::{TrisoCell, TrisoRegion};
 use crate::prelude::SingleNuclideSimulatorMC;
@@ -57,6 +59,26 @@ impl SingleParticleDiffusionSimulatorMC {
 
         self.position = single_particle_sim.position;
         let nuclide = single_particle_sim.get_current_nuclide();
+
+
+        
+
+
+        self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, timestep);
+
+        single_particle_sim.position = self.position;
+    }
+
+    /// this helps to auto_timestep based on the fourier number
+    pub fn move_single_decaying_particle_within_triso_based_on_fourier_no(
+        &mut self,
+        single_particle_sim: &mut SingleNuclideSimulatorMC,
+        triso_cell: TrisoCell,
+        timestep: Time,
+    ){
+
+        self.position = single_particle_sim.position;
+        let nuclide = single_particle_sim.get_current_nuclide();
         // I would like to scale timestep appropriately, based on diffusion 
         // coeff and lengthscales 
         //
@@ -71,11 +93,37 @@ impl SingleParticleDiffusionSimulatorMC {
             .try_get_diffusion_coefficient(pos, nuclide)
             .unwrap_or_else(|| DiffusionCoefficient::new::<square_meter_per_second>(1e-6));
 
+        let threshold_fourier_number: Ratio = Ratio::new::<ratio>(1e-2);
 
+        let fourier_number_lengthscale: Length = 
+            triso_cell.get_lengthscale_for_fourier_number(pos);
+
+        // Fo = Dt/x^2 
+        // t = Fo * x^2/D
+        let auto_timestep: Time = threshold_fourier_number 
+            * fourier_number_lengthscale * fourier_number_lengthscale 
+            / diffusion_coeff;
         
+        let mut timestep_remaining = timestep;
+
+        if timestep > auto_timestep {
+
+            // this is sub-timestepping step
+            while timestep_remaining > Time::ZERO {
+
+                self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, auto_timestep);
+
+                timestep_remaining -= auto_timestep;
+            }
+
+            // once done, use remaining timestep
+            self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, timestep_remaining);
 
 
-        self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, timestep);
+        } else {
+
+            self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, timestep);
+        }
 
         single_particle_sim.position = self.position;
     }
