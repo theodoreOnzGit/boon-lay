@@ -7,7 +7,6 @@ use uom::si::diffusion_coefficient::square_meter_per_second;
 use uom::si::length::{angstrom, meter};
 use uom::si::ratio::ratio;
 use uom::ConstZero;
-use uom::si::time::second;
 
 impl SingleParticleDiffusionSimulatorMC {
 
@@ -20,21 +19,12 @@ impl SingleParticleDiffusionSimulatorMC {
         timestep: Time,
     ) {
         // --- tolerances for (2) and (3) ---
-        const T_EPS_S: f64 = 1e-15;
-        let t_eps = Time::new::<second>(T_EPS_S);
 
         // nudge length: choose something tiny relative to geometry
         // (meter here; tune based on your smallest layer thickness)
         const R_EPS_M: f64 = 1e-12;
         let r_eps = Length::new::<meter>(R_EPS_M);
 
-        #[inline]
-        fn norm(p: [Length; 3]) -> Length {
-            let x = p[0].get::<meter>();
-            let y = p[1].get::<meter>();
-            let z = p[2].get::<meter>();
-            Length::new::<meter>((x * x + y * y + z * z).sqrt())
-        }
 
         #[inline]
         fn unit_radial(p: [Length; 3]) -> [f64; 3] {
