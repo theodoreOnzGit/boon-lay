@@ -98,5 +98,7 @@ impl SingleParticleDiffusionSimulatorMC {
 /// so Dt/x^2 = some constant 
 ///
 /// this is like a Courant number analogue
+///
+/// This module is strictly mean to test for this
 #[cfg(test)]
 pub mod tests_for_auto_timestepping;
