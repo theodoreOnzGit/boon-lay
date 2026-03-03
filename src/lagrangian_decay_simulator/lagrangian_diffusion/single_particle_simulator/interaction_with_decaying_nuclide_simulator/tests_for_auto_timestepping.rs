@@ -161,4 +161,7 @@ fn diffusion_fourier_number_calc(){
         max_relative=1e-3
     );
 
+    // conjecture, if fourier number greater than 1e-5, it is best 
+    // to subtimestep
+
 }
