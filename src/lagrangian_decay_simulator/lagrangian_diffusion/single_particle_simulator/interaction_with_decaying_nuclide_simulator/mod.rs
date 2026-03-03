@@ -93,7 +93,8 @@ impl SingleParticleDiffusionSimulatorMC {
             .try_get_diffusion_coefficient(pos, nuclide)
             .unwrap_or_else(|| DiffusionCoefficient::new::<square_meter_per_second>(1e-6));
 
-        let threshold_fourier_number: Ratio = Ratio::new::<ratio>(1e-4);
+        // 1e-4 is quite slow!
+        let threshold_fourier_number: Ratio = Ratio::new::<ratio>(1e-2);
 
         let fourier_number_lengthscale: Length = 
             triso_cell.get_lengthscale_for_fourier_number(pos);
@@ -111,6 +112,7 @@ impl SingleParticleDiffusionSimulatorMC {
             // this is sub-timestepping step
             while timestep_remaining > Time::ZERO {
 
+                // this method is brute force
                 self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, auto_timestep);
 
                 timestep_remaining -= auto_timestep;
@@ -118,6 +120,25 @@ impl SingleParticleDiffusionSimulatorMC {
 
             // once done, use remaining timestep
             self.scatter_within_triso_particle_gaussian(triso_cell, nuclide, timestep_remaining);
+
+            // now, this algorithm is slow
+            // Very slow! when too many particles end up in the buffer
+            //
+            // I'm thinking to use a pre-cached response, a library 
+            // with:
+            //
+            // 1000 samples of 
+            // - 1 normal distribution scatter
+            // - 10 normal distribution scatters
+            // - 100 normal distribution scatters 
+            // - 1000 normal distribution scatters 
+            // - 10000 normal distribution scatters
+            //
+            // Perhaps each normal distribution scatter can be based on the last 
+            // one
+            //
+            // These will be standard normals, can be hard coded in
+            // to save on calculation time.
 
 
         } else {
