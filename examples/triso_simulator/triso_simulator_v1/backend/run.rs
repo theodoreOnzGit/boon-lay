@@ -222,7 +222,7 @@ impl TRISOSimApp {
                 decay_simulation.advance_timestep(timestep);
                 // then I want to move the particle 
 
-                diffusion_simulator.move_single_decaying_particle_within_triso(
+                diffusion_simulator.move_single_decaying_particle_within_triso_based_on_fourier_no(
                     decay_simulation, 
                     triso_cell, 
                     timestep);
