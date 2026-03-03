@@ -93,7 +93,7 @@ impl SingleParticleDiffusionSimulatorMC {
             .try_get_diffusion_coefficient(pos, nuclide)
             .unwrap_or_else(|| DiffusionCoefficient::new::<square_meter_per_second>(1e-6));
 
-        let threshold_fourier_number: Ratio = Ratio::new::<ratio>(1e-2);
+        let threshold_fourier_number: Ratio = Ratio::new::<ratio>(1e-6);
 
         let fourier_number_lengthscale: Length = 
             triso_cell.get_lengthscale_for_fourier_number(pos);
