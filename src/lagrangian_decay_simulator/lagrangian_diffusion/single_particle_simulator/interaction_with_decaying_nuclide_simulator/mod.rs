@@ -71,22 +71,6 @@ impl SingleParticleDiffusionSimulatorMC {
             .try_get_diffusion_coefficient(pos, nuclide)
             .unwrap_or_else(|| DiffusionCoefficient::new::<square_meter_per_second>(1e-6));
 
-        // now, for particle movement, I may want to consider sub-timestepping the 
-        // thing for the buffer layer or for any layer where diffusion is too small 
-        // It seems that 10 seconds is too high for the 
-        // fuel kernel, IPyC, and buffer layer 
-        //
-        // 1 second is okay for fuel kernel and IPyC but not buffer layer 
-        //
-        // I wonder what is the proper criteria though, for diffusion
-        //
-        // if 1s is okay and 10s is not okay, I want to look at the 
-        // diffusion coeff based timestep within those values
-        // That is, the D = x^2/t 
-        //
-        // so Dt/x^2 = some constant 
-        //
-        // this is like a Courant number analogue
 
         
 
@@ -97,3 +81,22 @@ impl SingleParticleDiffusionSimulatorMC {
     }
 
 }
+
+/// now, for particle movement, I may want to consider sub-timestepping the 
+/// thing for the buffer layer or for any layer where diffusion is too small 
+/// It seems that 10 seconds is too high for the 
+/// fuel kernel, IPyC, and buffer layer 
+///
+/// 1 second is okay for fuel kernel and IPyC but not buffer layer 
+///
+/// I wonder what is the proper criteria though, for diffusion
+///
+/// if 1s is okay and 10s is not okay, I want to look at the 
+/// diffusion coeff based timestep within those values
+/// That is, the D = x^2/t 
+///
+/// so Dt/x^2 = some constant 
+///
+/// this is like a Courant number analogue
+#[cfg(test)]
+pub mod tests_for_auto_timestepping;
