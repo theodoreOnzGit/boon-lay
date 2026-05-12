@@ -4,6 +4,7 @@ use std::thread;
 use std::sync::{Arc, Barrier, Mutex};
 
 use boon_lay::Nuclide;
+use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::cached_normals::DiffusionRandomCache;
 use boon_lay::prelude::SingleNuclideSimulatorMC;
 use boon_lay::prelude::decay_library::DecayLibrary;
 use boon_lay::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::SingleParticleDiffusionSimulatorMC;
@@ -48,6 +49,7 @@ impl TRISOSimApp {
 
         let new_triso_particle_ui = TrisoParticleUi::default();
 
+        let cached_normals = DiffusionRandomCache::new(1e5 as usize);
 
         // this is the main loop
         loop {
@@ -222,11 +224,18 @@ impl TRISOSimApp {
                 decay_simulation.advance_timestep(timestep);
                 // then I want to move the particle 
 
+                //diffusion_simulator.move_single_decaying_particle_within_triso_based_on_fourier_no_cached(
+                //    decay_simulation, 
+                //    triso_cell, 
+                //    timestep,
+                //    &cached_normals
+                //);
+
                 diffusion_simulator.move_single_decaying_particle_within_triso_based_on_fourier_no(
                     decay_simulation, 
                     triso_cell, 
-                    timestep);
-
+                    timestep,
+                );
 
             };
             // once the decay simulation is complete, lock the thread ptr 

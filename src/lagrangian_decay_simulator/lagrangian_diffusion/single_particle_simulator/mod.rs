@@ -2,7 +2,10 @@
 use rand::RngCore;
 use uom::{si::{f64::*, length::meter, linear_number_density::per_meter, ratio::ratio, time::second}, ConstZero};
 
-use crate::lagrangian_decay_simulator::lagrangian_diffusion::{central_limit_theorem::{per_component_variance_exponential_for_3d_vector, sample_dimensioned_gaussian_vector}, isotropic_scattering::{sample_free_path, sample_isotropic_direction_into_array}};
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::isotropic_scattering::sample_isotropic_direction_into_array;
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::sample_dimensioned_gaussian_vector;
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::per_component_variance_exponential_for_3d_vector;
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::isotropic_scattering::sample_free_path;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::per_component_variance_exponential_for_3d_vector_u64;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::oorandom_rng::OoRng64;
 
@@ -212,6 +215,9 @@ pub mod constructive_solid_geometry;
 /// This is for a sphere
 ///
 pub mod release_fraction_analytical_solution;
+
+/// this is for caching of standard normals so that simulations are sped up 
+pub mod cached_normals;
 
 /// for CRP 6 case 1a and 1b we can compare the Monte Carlo simulation 
 /// to the analytical solution

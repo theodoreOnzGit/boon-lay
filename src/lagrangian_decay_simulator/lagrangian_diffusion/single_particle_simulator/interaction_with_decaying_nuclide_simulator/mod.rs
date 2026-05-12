@@ -94,6 +94,7 @@ impl SingleParticleDiffusionSimulatorMC {
             .unwrap_or_else(|| DiffusionCoefficient::new::<square_meter_per_second>(1e-6));
 
         // 1e-4 is quite slow!
+        // but it is the necessary accurate number
         let threshold_fourier_number: Ratio = Ratio::new::<ratio>(1e-2);
 
         let fourier_number_lengthscale: Length = 
