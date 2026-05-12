@@ -1,6 +1,7 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 use rand::prelude::*;
 use rand_distr::StandardNormal;
+use uom::si::time::second;
 
 /// Fast cached pool of standard normal random numbers for diffusion simulation
 pub struct DiffusionRandomCache {
@@ -91,6 +92,7 @@ impl PartialEq for DiffusionRandomCache {
 
 
 
+use crate::lagrangian_decay_simulator::lagrangian_diffusion::central_limit_theorem::per_component_variance_exponential_for_3d_vector;
 use crate::lagrangian_decay_simulator::lagrangian_diffusion::single_particle_simulator::{constructive_solid_geometry::TrisoCell, SingleParticleDiffusionSimulatorMC};
 use crate::prelude::SingleNuclideSimulatorMC;
 use fission_yields_data::prelude::Nuclide;
@@ -107,21 +109,27 @@ impl SingleParticleDiffusionSimulatorMC {
     #[inline]
     fn get_gaussian_velocity_vector_cached(
         &self,
-        jump_distance: Length,
-        collision_frequency: Frequency,
+        mean_free_path: Length,
+        collision_rate: Frequency,
         cache: &DiffusionRandomCache,
     ) -> [Velocity; 3] {
         // Get three cached normal samples
         let (n1, n2, n3) = cache.get_normal_3d();
         
         // Calculate velocity scale
-        let velocity_scale = jump_distance * collision_frequency;
-        let v_mps = velocity_scale.get::<meter_per_second>();
+        let unit_timestep = Time::new::<second>(1.0);
+        let no_of_collisions_per_second: f64 = 
+            (collision_rate * unit_timestep).get::<ratio>();
+
+        let per_component_variance: Area = 
+            per_component_variance_exponential_for_3d_vector(
+                no_of_collisions_per_second, mean_free_path);
+        let std_deviation: Length = per_component_variance.sqrt();
         
         [
-            Velocity::new::<meter_per_second>(n1 * v_mps),
-            Velocity::new::<meter_per_second>(n2 * v_mps),
-            Velocity::new::<meter_per_second>(n3 * v_mps),
+            n1 * std_deviation/unit_timestep,
+            n2 * std_deviation/unit_timestep,
+            n3 * std_deviation/unit_timestep,
         ]
     }
 

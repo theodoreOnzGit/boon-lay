@@ -224,18 +224,18 @@ impl TRISOSimApp {
                 decay_simulation.advance_timestep(timestep);
                 // then I want to move the particle 
 
-                //diffusion_simulator.move_single_decaying_particle_within_triso_based_on_fourier_no_cached(
-                //    decay_simulation, 
-                //    triso_cell, 
-                //    timestep,
-                //    &cached_normals
-                //);
-
-                diffusion_simulator.move_single_decaying_particle_within_triso_based_on_fourier_no(
+                diffusion_simulator.move_single_decaying_particle_within_triso_based_on_fourier_no_cached(
                     decay_simulation, 
                     triso_cell, 
                     timestep,
+                    &cached_normals
                 );
+
+                //diffusion_simulator.move_single_decaying_particle_within_triso_based_on_fourier_no(
+                //    decay_simulation, 
+                //    triso_cell, 
+                //    timestep,
+                //);
 
             };
             // once the decay simulation is complete, lock the thread ptr 
