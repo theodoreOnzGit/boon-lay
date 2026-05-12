@@ -47,7 +47,7 @@ impl Default for SimulatorState {
         let is_running = true;
         let restart_button_pressed = false;
         let change_nuclide_button_pressed = false;
-        let user_selected_timestep = Time::new::<second>(1.0);
+        let user_selected_timestep = Time::new::<second>(0.01);
         let elapsed_time = Time::ZERO;
         let simulated_time = Time::ZERO;
         let release_fraction = Ratio::ZERO;
