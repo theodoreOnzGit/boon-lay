@@ -5,6 +5,7 @@ use boon_lay::prelude::SingleNuclideSimulatorMC;
 use eframe::egui;
 use eframe::egui::Widget;
 use eframe::egui::Pos2;
+use egui::Color32;
 use egui::Rect;
 use egui::Ui;
 use uom::si::f64::*;
@@ -80,7 +81,8 @@ impl Widget for TrisoParticleUi {
         let opyc_nuclide = Nuclide::C12;
 
         let fuel_kernel_colour = TRISOSimApp::element_color(fuel_kernel_nuclide);
-        let buffer_colour = TRISOSimApp::element_color(buffer_nuclide);
+        let _buffer_colour = TRISOSimApp::element_color(buffer_nuclide);
+        let buffer_colour = Color32::from_rgb(100, 200, 100);
         let ipyc_colour = TRISOSimApp::element_color(ipyc_nuclide);
         let sic_colour = TRISOSimApp::element_color(sic_nuclide);
         let opyc_colour = TRISOSimApp::element_color(opyc_nuclide);

@@ -226,7 +226,9 @@ impl TRISOSimApp {
         if z == 1 {
             base
         } else {
-            base.gamma_multiply(factor)
+            let darkened = base.gamma_multiply(factor);
+            // Ensure the result is fully opaque
+            Color32::from_rgb(darkened.r(), darkened.g(), darkened.b())
         }
     }
 }
