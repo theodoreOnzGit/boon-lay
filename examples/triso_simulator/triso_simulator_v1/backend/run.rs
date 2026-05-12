@@ -264,7 +264,7 @@ impl TRISOSimApp {
                 thread::sleep(time_to_sleep_realtime);
             } else {
                 let time_to_sleep_milliseconds: u64 = 
-                    50;
+                    20;
                 let time_to_sleep_non_realtime: Duration = 
                     Duration::from_millis(time_to_sleep_milliseconds);
                 thread::sleep(time_to_sleep_non_realtime);
